@@ -22,6 +22,9 @@ public static class ports {
     //PWM
 
     //CAN
+    public final static int PORT_MOTEUR_DROIT = 1;
+    public final static int PORT_MOTEUR_GAUCHE = 2;
+
 
     //DIGITAL
 
