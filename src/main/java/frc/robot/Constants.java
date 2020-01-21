@@ -22,6 +22,8 @@ public final class Constants {
     public static class Ports {
 
         // PWM
+        public static final int PORT_MOTEUR_GRIMPEUR = 0;
+        public static final int PORT_SERVO_RATCHET = 1;
 
         // CAN
         public static final int PORT_MOTEUR_DROIT = 1;

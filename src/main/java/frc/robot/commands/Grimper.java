@@ -7,37 +7,36 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.BasePilotable;
+import frc.robot.subsystems.Grimpeur;
 
-public class Piloter extends CommandBase {
+public class Grimper extends CommandBase {
 
-  BasePilotable basePilotable;
-  Joystick joystick;
-  public Piloter(Joystick joystick, BasePilotable basePilotable) {
-    addRequirements(basePilotable);
-    this.basePilotable = basePilotable;
-    this.joystick = joystick;
+  private Grimpeur grimpeur;
 
+  public Grimper(Grimpeur grimpeur) {
+    addRequirements(grimpeur);
+    this.grimpeur = grimpeur;
   }
 
-
+  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
   }
 
-
+  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    basePilotable.drive(joystick.getY(), joystick.getX());
+    grimpeur.grimper();
   }
 
-
+  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    grimpeur.idle();
   }
 
+  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;
