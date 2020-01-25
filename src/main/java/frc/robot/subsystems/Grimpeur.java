@@ -17,12 +17,12 @@ public class Grimpeur extends SubsystemBase {
   private Servo ratchet;
   private VictorSP moteur;
 
-  public static double RATCHET_ON_ANGLE = 0;
-  public static double RATCHET_OFF_ANGLE = 90;
+  public static double kRatchetAngleOn = 0;
+  public static double kRatchetAngleOff = 90;
 
-  public static double VITESSE_DESCENDRE = -1;
-  public static double VITESSE_MONTER = 1;
-  public static double VITESSE_GRIMPER = 0.5;
+  public static double kVitesseDescendre = -1;
+  public static double kVitesseMonter = 1;
+  public static double kVitesseGrimper = 0.5;
 
   /**
    * Creates a new Grimpeur.
@@ -36,23 +36,23 @@ public class Grimpeur extends SubsystemBase {
   public void periodic() { }
 
   public void idle(){
-    ratchet.setAngle(RATCHET_ON_ANGLE);
+    ratchet.setAngle(kRatchetAngleOn);
     moteur.set(0);
   }
 
   public void monter(){
     // ratchet.setAngle(RATCHET_OFF_ANGLE);
     ratchet.setSpeed(1.0);
-    moteur.set(VITESSE_MONTER);
+    moteur.set(kVitesseMonter);
   }
 
   public void descendre(){
-    ratchet.setAngle(RATCHET_OFF_ANGLE);
-    moteur.set(VITESSE_DESCENDRE);
+    ratchet.setAngle(kRatchetAngleOff);
+    moteur.set(kVitesseDescendre);
   }
 
   public void grimper(){
-    ratchet.setAngle(RATCHET_ON_ANGLE);
-    moteur.set(VITESSE_GRIMPER);
+    ratchet.setAngle(kRatchetAngleOn);
+    moteur.set(kVitesseGrimper);
   }
 }
