@@ -7,18 +7,32 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Roulette extends SubsystemBase {
-  /**
-   * Creates a new Roulette.
-   */
+
+  public static double kVitesseTourner = 0.75;
+  public static double kTempsTourner = 10;
+  
+  private VictorSP moteurRoulette;
+
   public Roulette() {
+    moteurRoulette = new VictorSP(Constants.Ports.ROULETTE_MOTEUR);
 
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public void tourner() {
+    moteurRoulette.set(kVitesseTourner);
+  }
+
+  public void stop() {
+    moteurRoulette.set(0.0);
   }
 }

@@ -22,12 +22,14 @@ public final class Constants {
     public static class Ports {
 
         // PWM
-        public static final int PORT_MOTEUR_GRIMPEUR = 0;
-        public static final int PORT_SERVO_RATCHET = 1;
-
+        public static final int GRIMPEUR_MOTEUR = 0;
+        public static final int GRIMPEUR_SERVO = 1;
+        public static final int ROULETTE_MOTEUR = 2;
+        
         // CAN
-        public static final int PORT_MOTEUR_DROIT = 1;
-        public static final int PORT_MOTEUR_GAUCHE = 2;
+        public static final int BASE_PILOTABLE_MOTEUR_GAUCHE = 2;
+        public static final int BASE_PILOTABLE_MOTEUR_DROIT = 3;
+        public static final int SHOOTER_MOTEUR = 1;
 
         // DIGITAL
     }

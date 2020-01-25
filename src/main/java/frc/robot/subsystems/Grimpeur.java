@@ -28,8 +28,8 @@ public class Grimpeur extends SubsystemBase {
    * Creates a new Grimpeur.
    */
   public Grimpeur() {
-    ratchet = new Servo(Constants.Ports.PORT_SERVO_RATCHET);
-    moteur = new VictorSP(Constants.Ports.PORT_MOTEUR_GRIMPEUR);
+    ratchet = new Servo(Constants.Ports.GRIMPEUR_SERVO);
+    moteur = new VictorSP(Constants.Ports.GRIMPEUR_MOTEUR);
   }
 
   @Override

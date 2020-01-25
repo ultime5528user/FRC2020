@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -16,18 +17,29 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class BasePilotable extends SubsystemBase {
 
-  public static final double WHEEL_DIAMETER = 8 * 0.0254;
-  public static final double GEARBOX_RATIO = 1 / 10.0;
-  public static final double POSITION_CONVERSION_FACTOR = GEARBOX_RATIO * WHEEL_DIAMETER * Math.PI;
-  public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;
-  public static final double RAMP_RATE = 0;
+  public static final double kWheelDiameter = 8 * 0.0254;
+  public static final double kGearboxRatio = 1 / 10.75;
+  public static final double kPositionConversionFactor = kGearboxRatio * kWheelDiameter * Math.PI;
+  public static final double kVelocityConversionFactor = kPositionConversionFactor / 60;
+  public static final double kRampRate = 0;
+  public static final double kS = 0;
+  public static final double kV = 0;
+  public static final double kA = 0;
+  public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(0.541);
+  public static final double kMaxSpeedMetersPerSecond = 0;
+  public static final double kMaxAccelerationMetersPerSecondSquared = 0;
+  public static final double kRamseteB = 0;
+  public static final double kRamseteZeta = 0;
+  public static final double kPDriveVel = 0;
 
   public static final boolean GYRO_REVERSED = false;
 
@@ -37,21 +49,28 @@ public class BasePilotable extends SubsystemBase {
   private CANEncoder encoderDroit;
   private CANEncoder encoderGauche;
 
-  private Gyro gyro = new ADXRS450_Gyro();
+  private AHRS gyro = new AHRS();
 
   private DifferentialDrive drive;
 
   private DifferentialDriveOdometry odometry;
 
   public BasePilotable() {
-    moteurDroit = new CANSparkMax(Constants.Ports.PORT_MOTEUR_DROIT, MotorType.kBrushless);
-    moteurGauche = new CANSparkMax(Constants.Ports.PORT_MOTEUR_GAUCHE, MotorType.kBrushless);
+    
+    moteurDroit = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_DROIT, MotorType.kBrushless);
+    SendableRegistry.addChild(this, moteurDroit);
+    moteurGauche = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_GAUCHE, MotorType.kBrushless);
+    SendableRegistry.addChild(this, moteurGauche);
+
+    SendableRegistry.addChild(this, gyro);
 
     configureMotor(moteurDroit);
     configureMotor(moteurGauche);
 
     encoderDroit = moteurDroit.getEncoder();
+    SendableRegistry.addChild(this, encoderDroit);
     encoderGauche = moteurGauche.getEncoder();
+    SendableRegistry.addChild(this, encoderGauche);
 
     drive = new DifferentialDrive(moteurGauche, moteurDroit);
 
@@ -62,16 +81,15 @@ public class BasePilotable extends SubsystemBase {
     motor.restoreFactoryDefaults();
 
     motor.enableVoltageCompensation(12.0);
-    motor.setClosedLoopRampRate(RAMP_RATE);
-    motor.getEncoder().setPositionConversionFactor(POSITION_CONVERSION_FACTOR);
-    motor.getEncoder().setVelocityConversionFactor(VELOCITY_CONVERSION_FACTOR);
+    motor.setClosedLoopRampRate(kRampRate);
+    motor.getEncoder().setPositionConversionFactor(kPositionConversionFactor);
+    motor.getEncoder().setVelocityConversionFactor(kVelocityConversionFactor);
   }
 
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    odometry.update(Rotation2d.fromDegrees(getHeading()), encoderGauche.getPosition(),
-                      encoderDroit.getPosition());
+    odometry.update(Rotation2d.fromDegrees(getHeading()), encoderGauche.getPosition(), encoderDroit.getPosition());
   }
 
   public Pose2d getPose() {
@@ -127,7 +145,8 @@ public class BasePilotable extends SubsystemBase {
   }
 
   /**
-   * Sets the max output of the drive.  Useful for scaling the drive to drive more slowly.
+   * Sets the max output of the drive. Useful for scaling the drive to drive more
+   * slowly.
    *
    * @param maxOutput the maximum output to which the drive will be constrained
    */
@@ -145,10 +164,10 @@ public class BasePilotable extends SubsystemBase {
   /**
    * Returns the heading of the robot.
    *
-   * @return the robot's heading in degrees, from 180 to 180
+   * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return Math.IEEEremainder(gyro.getAngle(), 360) * (GYRO_REVERSED ? -1.0 : 1.0);
+    return Math.IEEEremainder(gyro.getAngle(), 360) * (GYRO_REVERSED ? -1.0 : 1.0); // TODO Vraiment nécessaire IEEEremainer?
   }
 
   /**
@@ -158,6 +177,11 @@ public class BasePilotable extends SubsystemBase {
    */
   public double getTurnRate() {
     return gyro.getRate() * (GYRO_REVERSED ? -1.0 : 1.0);
+  }
+
+  public void tankDriveVolts(double leftVolts, double rightVolts) {
+    moteurGauche.setVoltage(leftVolts);
+    moteurDroit.setVoltage(-rightVolts); // TODO Vérifier si négatif est nécessaire
   }
 
 }
