@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import io.github.oblarg.oblog.Loggable;
@@ -37,6 +38,9 @@ public class Grimpeur extends SubsystemBase implements Loggable {
   public Grimpeur() {
     ratchet = new Servo(Constants.Ports.GRIMPEUR_SERVO);
     moteur = new VictorSP(Constants.Ports.GRIMPEUR_MOTEUR);
+    SendableRegistry.addLW(ratchet, getSubsystem(), "Servo Grimpeur");
+    SendableRegistry.addLW(moteur, getSubsystem(), "Moteur Grimpeur");
+
   }
 
   @Override

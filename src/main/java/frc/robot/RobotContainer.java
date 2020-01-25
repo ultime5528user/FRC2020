@@ -20,6 +20,7 @@ import frc.robot.subsystems.BasePilotable;
 import frc.robot.subsystems.Grimpeur;
 import frc.robot.subsystems.Roulette;
 import frc.robot.subsystems.Shooter;
+import io.github.oblarg.oblog.Logger;
 
 public class RobotContainer {
 
@@ -43,6 +44,9 @@ public class RobotContainer {
     roulette = new Roulette();
 
     configureButtonBindings();
+
+    Logger.configureLoggingAndConfig(this, true);
+
   }
 
   private void configureButtonBindings() {

@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import io.github.oblarg.oblog.Loggable;
@@ -23,7 +24,7 @@ public class Roulette extends SubsystemBase implements Loggable {
 
   public Roulette() {
     moteurRoulette = new VictorSP(Constants.Ports.ROULETTE_MOTEUR);
-
+    SendableRegistry.addLW(moteurRoulette, getSubsystem(), "Moteur Roulette");
   }
 
   @Override

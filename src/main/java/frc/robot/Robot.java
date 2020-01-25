@@ -31,7 +31,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
-    Logger.configureLoggingAndConfig(this, false);
     m_robotContainer = new RobotContainer();
   }
 

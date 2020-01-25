@@ -12,7 +12,6 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -62,6 +61,8 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   private DifferentialDriveOdometry odometry;
 
   public BasePilotable() {
+
+    
 
     if (Constants.ENABLE_CAN) {
       moteurDroit = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_DROIT, MotorType.kBrushless);
