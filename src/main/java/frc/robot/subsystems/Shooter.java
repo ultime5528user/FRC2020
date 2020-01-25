@@ -26,10 +26,6 @@ public class Shooter extends SubsystemBase {
   private CANPIDController pidController;
 
   public Shooter() {
-    moteur = new CANSparkMax(Constants.Ports.SHOOTER_MOTEUR, MotorType.kBrushless);
-
-    pidController = moteur.getPIDController();
-    pidController.setFeedbackDevice(encoder);
 
     kP = 5e-5;
     kI = 1e-6;
@@ -40,12 +36,18 @@ public class Shooter extends SubsystemBase {
     kMinOutput = -1;
     maxRPM = 5700;
 
-    pidController.setP(kP);
-    pidController.setI(kI);
-    pidController.setD(kD);
-    pidController.setIZone(kIz);
-    pidController.setFF(kFF);
-    pidController.setOutputRange(kMinOutput, kMaxOutput);
+    if (Constants.ENABLE_CAN) {
+      moteur = new CANSparkMax(Constants.Ports.SHOOTER_MOTEUR, MotorType.kBrushless);
+      
+      pidController = moteur.getPIDController();
+      pidController.setFeedbackDevice(encoder);
+      pidController.setP(kP);
+      pidController.setI(kI);
+      pidController.setD(kD);
+      pidController.setIZone(kIz);
+      pidController.setFF(kFF);
+      pidController.setOutputRange(kMinOutput, kMaxOutput);
+    }
 
   }
 
@@ -55,12 +57,14 @@ public class Shooter extends SubsystemBase {
   }
 
   public void tirer() {
-    pidController.setReference(kRPM, ControlType.kVelocity);
-
+    if (Constants.ENABLE_CAN) {
+      pidController.setReference(kRPM, ControlType.kVelocity);
+    }
   }
 
   public void stop() {
-    pidController.setReference(0, ControlType.kVelocity);
-
+    if (Constants.ENABLE_CAN) {
+      pidController.setReference(0, ControlType.kVelocity);
+    }
   }
 }

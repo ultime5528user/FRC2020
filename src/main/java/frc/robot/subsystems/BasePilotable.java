@@ -12,11 +12,10 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
@@ -49,7 +48,7 @@ public class BasePilotable extends SubsystemBase {
   private CANEncoder encoderDroit;
   private CANEncoder encoderGauche;
 
-  private AHRS gyro = new AHRS();
+  private AHRS gyro;
 
   private DifferentialDrive drive;
 
@@ -57,22 +56,21 @@ public class BasePilotable extends SubsystemBase {
 
   public BasePilotable() {
     
-    moteurDroit = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_DROIT, MotorType.kBrushless);
-    SendableRegistry.addChild(this, moteurDroit);
-    moteurGauche = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_GAUCHE, MotorType.kBrushless);
-    SendableRegistry.addChild(this, moteurGauche);
+    if (Constants.ENABLE_CAN) {
+      moteurDroit = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_DROIT, MotorType.kBrushless);
+      moteurGauche = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_GAUCHE, MotorType.kBrushless);
+  
+      configureMotor(moteurDroit);
+      configureMotor(moteurGauche);
+      
+      encoderDroit = moteurDroit.getEncoder();
+      encoderGauche = moteurGauche.getEncoder();
+      
+      drive = new DifferentialDrive(moteurGauche, moteurDroit);
+    }
 
-    SendableRegistry.addChild(this, gyro);
-
-    configureMotor(moteurDroit);
-    configureMotor(moteurGauche);
-
-    encoderDroit = moteurDroit.getEncoder();
-    SendableRegistry.addChild(this, encoderDroit);
-    encoderGauche = moteurGauche.getEncoder();
-    SendableRegistry.addChild(this, encoderGauche);
-
-    drive = new DifferentialDrive(moteurGauche, moteurDroit);
+    gyro = new AHRS();
+    SendableRegistry.addLW(gyro, getSubsystem(), "navX");
 
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
   }
@@ -89,7 +87,9 @@ public class BasePilotable extends SubsystemBase {
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    odometry.update(Rotation2d.fromDegrees(getHeading()), encoderGauche.getPosition(), encoderDroit.getPosition());
+    if (Constants.ENABLE_CAN) {
+      odometry.update(Rotation2d.fromDegrees(getHeading()), encoderGauche.getPosition(), encoderDroit.getPosition());
+    }
   }
 
   public Pose2d getPose() {
@@ -97,7 +97,11 @@ public class BasePilotable extends SubsystemBase {
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(encoderGauche.getVelocity(), encoderDroit.getVelocity());
+    if (Constants.ENABLE_CAN) {
+      return new DifferentialDriveWheelSpeeds(encoderGauche.getVelocity(), encoderDroit.getVelocity());
+    } else {
+      return new DifferentialDriveWheelSpeeds(0.0, 0.0);
+    }
   }
 
   public void resetOdometry(Pose2d pose) {
@@ -106,15 +110,19 @@ public class BasePilotable extends SubsystemBase {
   }
 
   public void drive(double xSpeed, double zRotation) {
-    drive.arcadeDrive(xSpeed, zRotation);
+    if (Constants.ENABLE_CAN) {
+      drive.arcadeDrive(xSpeed, zRotation);
+    }
   }
 
   /**
    * Resets the drive encoders to currently read a position of 0.
    */
   public void resetEncoders() {
-    encoderGauche.setPosition(0);
-    encoderDroit.setPosition(0);
+    if (Constants.ENABLE_CAN) {
+      encoderGauche.setPosition(0);
+      encoderDroit.setPosition(0);
+    }
   }
 
   /**
@@ -123,7 +131,11 @@ public class BasePilotable extends SubsystemBase {
    * @return the average of the two encoder readings
    */
   public double getAverageEncoderDistance() {
-    return (encoderGauche.getPosition() + encoderDroit.getPosition()) / 2.0;
+    if (Constants.ENABLE_CAN) {
+      return (encoderGauche.getPosition() + encoderDroit.getPosition()) / 2.0;
+    } else {
+      return 0.0;
+    }
   }
 
   /**
@@ -180,8 +192,10 @@ public class BasePilotable extends SubsystemBase {
   }
 
   public void tankDriveVolts(double leftVolts, double rightVolts) {
-    moteurGauche.setVoltage(leftVolts);
-    moteurDroit.setVoltage(-rightVolts); // TODO Vérifier si négatif est nécessaire
+    if (Constants.ENABLE_CAN) {
+      moteurGauche.setVoltage(leftVolts);
+      moteurDroit.setVoltage(-rightVolts); // TODO Vérifier si négatif est nécessaire
+    }
   }
 
 }

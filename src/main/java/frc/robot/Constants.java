@@ -19,6 +19,8 @@ package frc.robot;
  */
 public final class Constants {
 
+    public static final boolean ENABLE_CAN = false;
+
     public static class Ports {
 
         // PWM
