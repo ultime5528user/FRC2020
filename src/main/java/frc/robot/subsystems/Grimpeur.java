@@ -11,17 +11,24 @@ import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
 
-public class Grimpeur extends SubsystemBase {
+public class Grimpeur extends SubsystemBase implements Loggable {
 
   private Servo ratchet;
   private VictorSP moteur;
 
+  @Config
   public static double kRatchetAngleOn = 0;
+  @Config
   public static double kRatchetAngleOff = 90;
 
+  @Config
   public static double kVitesseDescendre = -1;
+  @Config
   public static double kVitesseMonter = 1;
+  @Config
   public static double kVitesseGrimper = 0.5;
 
   /**
@@ -33,25 +40,26 @@ public class Grimpeur extends SubsystemBase {
   }
 
   @Override
-  public void periodic() { }
+  public void periodic() {
+  }
 
-  public void idle(){
+  public void idle() {
     ratchet.setAngle(kRatchetAngleOn);
     moteur.set(0);
   }
 
-  public void monter(){
+  public void monter() {
     // ratchet.setAngle(RATCHET_OFF_ANGLE);
     ratchet.setSpeed(1.0);
     moteur.set(kVitesseMonter);
   }
 
-  public void descendre(){
+  public void descendre() {
     ratchet.setAngle(kRatchetAngleOff);
     moteur.set(kVitesseDescendre);
   }
 
-  public void grimper(){
+  public void grimper() {
     ratchet.setAngle(kRatchetAngleOn);
     moteur.set(kVitesseGrimper);
   }

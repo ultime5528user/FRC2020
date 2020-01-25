@@ -10,12 +10,15 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
 
-public class Roulette extends SubsystemBase {
+public class Roulette extends SubsystemBase implements Loggable {
 
+  @Config
   public static double kVitesseTourner = 0.75;
+  @Config
   public static double kTempsTourner = 10;
-  
   private VictorSP moteurRoulette;
 
   public Roulette() {

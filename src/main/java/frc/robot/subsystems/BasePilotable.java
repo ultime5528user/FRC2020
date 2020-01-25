@@ -22,8 +22,10 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Log;
 
-public class BasePilotable extends SubsystemBase {
+public class BasePilotable extends SubsystemBase implements Loggable {
 
   public static final double kWheelDiameter = 8 * 0.0254;
   public static final double kGearboxRatio = 1 / 10.75;
@@ -45,7 +47,12 @@ public class BasePilotable extends SubsystemBase {
   private CANSparkMax moteurDroit;
   private CANSparkMax moteurGauche;
 
+  @Log.Graph(name = "Vitesse Encoder Droit", methodName = "getVelocity", rowIndex = 3, columnIndex = 0, width = 3, height = 2)
+  @Log.Graph(name = "Position Encoder Droit", methodName = "getPosition", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
   private CANEncoder encoderDroit;
+
+  @Log.Graph(name = "Vitesse Encoder Gauche", methodName = "getVelocity", rowIndex = 0, columnIndex = 0, width = 3, height = 2)
+  @Log.Graph(name = "Position Encoder Gauche", methodName = "getPosition", rowIndex = 0, columnIndex = 2, width = 3, height = 2)
   private CANEncoder encoderGauche;
 
   private AHRS gyro;
@@ -55,17 +62,17 @@ public class BasePilotable extends SubsystemBase {
   private DifferentialDriveOdometry odometry;
 
   public BasePilotable() {
-    
+
     if (Constants.ENABLE_CAN) {
       moteurDroit = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_DROIT, MotorType.kBrushless);
       moteurGauche = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_GAUCHE, MotorType.kBrushless);
-  
+
       configureMotor(moteurDroit);
       configureMotor(moteurGauche);
-      
+
       encoderDroit = moteurDroit.getEncoder();
       encoderGauche = moteurGauche.getEncoder();
-      
+
       drive = new DifferentialDrive(moteurGauche, moteurDroit);
     }
 
@@ -179,7 +186,8 @@ public class BasePilotable extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return Math.IEEEremainder(gyro.getAngle(), 360) * (GYRO_REVERSED ? -1.0 : 1.0); // TODO Vraiment nécessaire IEEEremainer?
+    return Math.IEEEremainder(gyro.getAngle(), 360) * (GYRO_REVERSED ? -1.0 : 1.0); // TODO Vraiment nécessaire
+                                                                                    // IEEEremainer?
   }
 
   /**
