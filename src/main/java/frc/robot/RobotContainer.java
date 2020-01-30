@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DescendreGrimpeur;
+import frc.robot.commands.EnvoyerAvaler;
 import frc.robot.commands.Grimper;
 import frc.robot.commands.MonterGrimpeur;
 import frc.robot.commands.Piloter;
@@ -18,6 +19,7 @@ import frc.robot.commands.Tirer;
 import frc.robot.commands.TournerRoulette;
 import frc.robot.subsystems.BasePilotable;
 import frc.robot.subsystems.Grimpeur;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Roulette;
 import frc.robot.subsystems.Shooter;
 import io.github.oblarg.oblog.Logger;
@@ -30,6 +32,7 @@ public class RobotContainer {
   private final Grimpeur grimpeur;
   private final Shooter shooter;
   private final Roulette roulette;
+  private final Intake intake;
 
   public RobotContainer() {
     joystick = new Joystick(0);
@@ -43,6 +46,9 @@ public class RobotContainer {
 
     roulette = new Roulette();
 
+    intake = new Intake();
+    
+
     configureButtonBindings();
 
     Logger.configureLoggingAndConfig(this, true);
@@ -54,7 +60,8 @@ public class RobotContainer {
     new JoystickButton(joystick, 2).whenHeld(new DescendreGrimpeur(grimpeur));
     new JoystickButton(joystick, 3).whenHeld(new Grimper(grimpeur));
     new JoystickButton(joystick, 4).whenPressed(new TournerRoulette(roulette));
-    new JoystickButton(joystick, 9).whenPressed(new Tirer(shooter));
+    new JoystickButton(joystick, 9).whenPressed(new Tirer(shooter, intake));
+    new JoystickButton(joystick, 5).toggleWhenPressed(new EnvoyerAvaler(intake));
   }
 
   public Command getAutonomousCommand() {

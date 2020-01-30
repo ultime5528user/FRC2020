@@ -19,7 +19,8 @@ package frc.robot;
  */
 public final class Constants {
 
-    public static final boolean ENABLE_CAN = false;
+    public static final boolean ENABLE_CAN_BASE_PILOTABLE = false;
+    public static final boolean ENABLE_CAN_SHOOTER = false;
 
     public static class Ports {
 
@@ -27,12 +28,24 @@ public final class Constants {
         public static final int GRIMPEUR_MOTEUR = 0;
         public static final int GRIMPEUR_SERVO = 1;
         public static final int ROULETTE_MOTEUR = 2;
-        
+
+        public static final int INTAKE_MOTEUR = 3;
+        public static final int TRANSPORTEUR_MOTEUR = 4;
+
         // CAN
-        public static final int BASE_PILOTABLE_MOTEUR_GAUCHE = 2;
-        public static final int BASE_PILOTABLE_MOTEUR_DROIT = 3;
-        public static final int SHOOTER_MOTEUR = 1;
+
+        public static final int BASE_PILOTABLE_MOTEUR_DROIT1 = 1;
+        public static final int BASE_PILOTABLE_MOTEUR_DROIT2 = 2;
+        public static final int BASE_PILOTABLE_MOTEUR_DROIT3 = 3;
+        public static final int BASE_PILOTABLE_MOTEUR_GAUCHE1 = 4;
+        public static final int BASE_PILOTABLE_MOTEUR_GAUCHE2 = 5;
+        public static final int BASE_PILOTABLE_MOTEUR_GAUCHE3 = 6;
+        public static final int SHOOTER_MOTEUR = 7;
 
         // DIGITAL
+        public static final int PHOTOCELL_BAS = 1;
+        public static final int PHOTOCELL_HAUT = 2;
+        
+
     }
 }

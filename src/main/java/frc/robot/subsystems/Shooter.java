@@ -24,6 +24,9 @@ public class Shooter extends SubsystemBase implements Loggable {
   @Config(rowIndex = 1, columnIndex = 3, width = 1, height = 1)
   public static double kRPM = 2500;
 
+  @Config(rowIndex = 1, columnIndex = 3, width = 1, height = 1)
+  public static double kPrecision = 0.95;
+
   @Config.NumberSlider(min = 0, max = 60, rowIndex = 0, columnIndex = 3, width = 2, height = 1)
   public static double kTempsTir = 5;
 
@@ -47,7 +50,7 @@ public class Shooter extends SubsystemBase implements Loggable {
     kMaxOutput = 1;
     kMinOutput = -1;
 
-    if (Constants.ENABLE_CAN) {
+    if (Constants.ENABLE_CAN_SHOOTER) {
       moteur = new CANSparkMax(Constants.Ports.SHOOTER_MOTEUR, MotorType.kBrushless);
 
       pidController = moteur.getPIDController();
@@ -68,14 +71,18 @@ public class Shooter extends SubsystemBase implements Loggable {
   }
 
   public void tirer() {
-    if (Constants.ENABLE_CAN) {
+    if (Constants.ENABLE_CAN_SHOOTER) {
       pidController.setReference(kRPM, ControlType.kVelocity);
     }
   }
 
   public void stop() {
-    if (Constants.ENABLE_CAN) {
+    if (Constants.ENABLE_CAN_SHOOTER) {
       pidController.setReference(0, ControlType.kVelocity);
     }
+  }
+
+  public double getVitesse() {
+    return encoder.getVelocity();
   }
 }

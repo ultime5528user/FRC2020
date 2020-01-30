@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -44,7 +45,11 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   public static final boolean GYRO_REVERSED = false;
 
   private CANSparkMax moteurDroit;
+  private CANSparkMax moteurDroit2;
+  private CANSparkMax moteurDroit3;
   private CANSparkMax moteurGauche;
+  private CANSparkMax moteurGauche2;
+  private CANSparkMax moteurGauche3;
 
   @Log.Graph(name = "Vitesse Encoder Droit", methodName = "getVelocity", rowIndex = 3, columnIndex = 0, width = 3, height = 2)
   @Log.Graph(name = "Position Encoder Droit", methodName = "getPosition", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
@@ -64,15 +69,28 @@ public class BasePilotable extends SubsystemBase implements Loggable {
 
     
 
-    if (Constants.ENABLE_CAN) {
-      moteurDroit = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_DROIT, MotorType.kBrushless);
-      moteurGauche = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_GAUCHE, MotorType.kBrushless);
+    if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
+      moteurDroit = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_DROIT1, MotorType.kBrushless);
+      moteurDroit2 = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_DROIT2, MotorType.kBrushless);
+      moteurDroit3 = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_DROIT3, MotorType.kBrushless);
+      
+      moteurGauche = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_GAUCHE1, MotorType.kBrushless);
+      moteurGauche2 = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_GAUCHE2, MotorType.kBrushless);
+      moteurGauche3 = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_GAUCHE3, MotorType.kBrushless);
 
       configureMotor(moteurDroit);
+      configureMotor(moteurDroit2);
+      configureMotor(moteurDroit3);
       configureMotor(moteurGauche);
-
+      configureMotor(moteurGauche2);
+      configureMotor(moteurGauche3);
+      
       encoderDroit = moteurDroit.getEncoder();
       encoderGauche = moteurGauche.getEncoder();
+      moteurDroit2.follow(moteurDroit);
+      moteurDroit3.follow(moteurDroit);
+      moteurGauche2.follow(moteurGauche);
+      moteurGauche3.follow(moteurGauche);
 
       drive = new DifferentialDrive(moteurGauche, moteurDroit);
     }
@@ -85,7 +103,8 @@ public class BasePilotable extends SubsystemBase implements Loggable {
 
   public void configureMotor(CANSparkMax motor) {
     motor.restoreFactoryDefaults();
-
+    motor.clearFaults();
+    motor.setIdleMode(IdleMode.kCoast);
     motor.enableVoltageCompensation(12.0);
     motor.setClosedLoopRampRate(kRampRate);
     motor.getEncoder().setPositionConversionFactor(kPositionConversionFactor);
@@ -95,7 +114,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    if (Constants.ENABLE_CAN) {
+    if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
       odometry.update(Rotation2d.fromDegrees(getHeading()), encoderGauche.getPosition(), encoderDroit.getPosition());
     }
   }
@@ -105,7 +124,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    if (Constants.ENABLE_CAN) {
+    if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
       return new DifferentialDriveWheelSpeeds(encoderGauche.getVelocity(), encoderDroit.getVelocity());
     } else {
       return new DifferentialDriveWheelSpeeds(0.0, 0.0);
@@ -118,8 +137,8 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   }
 
   public void drive(double xSpeed, double zRotation) {
-    if (Constants.ENABLE_CAN) {
-      drive.arcadeDrive(xSpeed, zRotation);
+    if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
+      drive.arcadeDrive(-xSpeed, -zRotation);
     }
   }
 
@@ -127,7 +146,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
    * Resets the drive encoders to currently read a position of 0.
    */
   public void resetEncoders() {
-    if (Constants.ENABLE_CAN) {
+    if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
       encoderGauche.setPosition(0);
       encoderDroit.setPosition(0);
     }
@@ -139,7 +158,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
    * @return the average of the two encoder readings
    */
   public double getAverageEncoderDistance() {
-    if (Constants.ENABLE_CAN) {
+    if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
       return (encoderGauche.getPosition() + encoderDroit.getPosition()) / 2.0;
     } else {
       return 0.0;
@@ -201,7 +220,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   }
 
   public void tankDriveVolts(double leftVolts, double rightVolts) {
-    if (Constants.ENABLE_CAN) {
+    if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
       moteurGauche.setVoltage(leftVolts);
       moteurDroit.setVoltage(-rightVolts); // TODO Vérifier si négatif est nécessaire
     }
