@@ -5,39 +5,38 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package com.ultime5528.frc2020.commands;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.BasePilotable;
+import frc.robot.subsystems.Grimpeur;
 
-public class Piloter extends CommandBase {
+public class MonterGrimpeur extends CommandBase {
+  
+  private Grimpeur grimpeur;
 
-  BasePilotable basePilotable;
-  Joystick joystick;
-  public Piloter(Joystick joystick, BasePilotable basePilotable) {
-    addRequirements(basePilotable);
-    this.basePilotable = basePilotable;
-    this.joystick = joystick;
-
+  public MonterGrimpeur(Grimpeur grimpeur) {
+    addRequirements(grimpeur);
+    this.grimpeur = grimpeur;
   }
 
-
+  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
   }
 
-
+  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    basePilotable.drive(joystick.getY(), joystick.getX());
+    grimpeur.monter();
   }
 
-
+  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    grimpeur.idle();
   }
 
+  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;

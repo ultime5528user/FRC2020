@@ -5,41 +5,41 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package com.ultime5528.frc2020.commands;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.BasePilotable;
 
-public class Avaler extends CommandBase {
+public class Piloter extends CommandBase {
 
-  private Intake intake;
-
-  public Avaler(Intake intake) {
-    this.intake = intake;
-    addRequirements(intake);
+  BasePilotable basePilotable;
+  Joystick joystick;
+  public Piloter(Joystick joystick, BasePilotable basePilotable) {
+    addRequirements(basePilotable);
+    this.basePilotable = basePilotable;
+    this.joystick = joystick;
 
   }
 
-  // Called when the command is initially scheduled.
+
   @Override
   public void initialize() {
   }
 
+
   @Override
   public void execute() {
-    intake.avaler();
-
+    basePilotable.drive(joystick.getY(), joystick.getX());
   }
+
 
   @Override
   public void end(boolean interrupted) {
-    intake.stopIntake();
-
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return intake.hasBallonBas();
+    return false;
   }
 }

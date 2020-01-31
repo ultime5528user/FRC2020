@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot;
+package com.ultime5528.frc2020;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide

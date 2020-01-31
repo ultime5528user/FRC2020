@@ -5,58 +5,40 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package com.ultime5528.frc2020.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
-import frc.robot.util.Timer;
+import frc.robot.subsystems.Grimpeur;
 
-public class Tirer extends CommandBase {
-  
-  private Shooter shooter;
-  private Timer timer;
-  private Intake intake;
+public class Grimper extends CommandBase {
 
-  public Tirer(Shooter shooter, Intake intake) {
-    this.shooter = shooter;
-    this.intake = intake;
-    this.timer = new Timer();
-    addRequirements(shooter);
+  private Grimpeur grimpeur;
+
+  public Grimper(Grimpeur grimpeur) {
+    addRequirements(grimpeur);
+    this.grimpeur = grimpeur;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    timer.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.tirer();
-    if(shooter.getVitesse() >= Shooter.kRPM * Shooter.kPrecision){
-      intake.transporter();
-    }
-    if(!intake.hasBallonHaut()){
-      timer.start();
-    } else if(timer.isRunning()){
-      timer.stop();
-      timer.reset();
-    }
+    grimpeur.grimper();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.stop();
-    timer.stop();
+    grimpeur.idle();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.get() >= 2;
-
+    return false;
   }
 }

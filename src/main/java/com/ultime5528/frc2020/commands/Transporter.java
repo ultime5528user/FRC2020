@@ -5,10 +5,10 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package com.ultime5528.frc2020.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Intake;
+import com.ultime5528.frc2020.subsystems.Intake;
 
 public class Transporter extends CommandBase {
 

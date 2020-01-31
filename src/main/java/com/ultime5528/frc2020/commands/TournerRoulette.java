@@ -5,40 +5,47 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package com.ultime5528.frc2020.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Grimpeur;
+import com.ultime5528.frc2020.subsystems.Roulette;
 
-public class MonterGrimpeur extends CommandBase {
-  
-  private Grimpeur grimpeur;
+public class TournerRoulette extends CommandBase {
+  private Roulette roulette;
+  private Timer timer;
 
-  public MonterGrimpeur(Grimpeur grimpeur) {
-    addRequirements(grimpeur);
-    this.grimpeur = grimpeur;
+  public TournerRoulette(Roulette roulette) {
+    this.roulette = roulette;
+    this.timer = new Timer();
+
+    addRequirements(roulette);
+
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timer.reset();
+    timer.start();
+
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    grimpeur.monter();
+    roulette.tourner();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    grimpeur.idle();
+    timer.stop();
+    roulette.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return timer.get() >= Roulette.kTempsTourner; // TODO regarder si c'est le bon temps (28 tour de moteur devrait
+                                                  // faire l'affaire)
   }
 }

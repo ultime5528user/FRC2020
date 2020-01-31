@@ -5,23 +5,23 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot;
+package com.ultime5528.frc2020;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.DescendreGrimpeur;
-import frc.robot.commands.EnvoyerAvaler;
-import frc.robot.commands.Grimper;
-import frc.robot.commands.MonterGrimpeur;
-import frc.robot.commands.Piloter;
-import frc.robot.commands.Tirer;
-import frc.robot.commands.TournerRoulette;
-import frc.robot.subsystems.BasePilotable;
-import frc.robot.subsystems.Grimpeur;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Roulette;
-import frc.robot.subsystems.Shooter;
+import com.ultime5528.frc2020.commands.DescendreGrimpeur;
+import com.ultime5528.frc2020.commands.EnvoyerAvaler;
+import com.ultime5528.frc2020.commands.Grimper;
+import com.ultime5528.frc2020.commands.MonterGrimpeur;
+import com.ultime5528.frc2020.commands.Piloter;
+import com.ultime5528.frc2020.commands.Tirer;
+import com.ultime5528.frc2020.commands.TournerRoulette;
+import com.ultime5528.frc2020.subsystems.BasePilotable;
+import com.ultime5528.frc2020.subsystems.Grimpeur;
+import com.ultime5528.frc2020.subsystems.Intake;
+import com.ultime5528.frc2020.subsystems.Roulette;
+import com.ultime5528.frc2020.subsystems.Shooter;
 import io.github.oblarg.oblog.Logger;
 
 public class RobotContainer {
