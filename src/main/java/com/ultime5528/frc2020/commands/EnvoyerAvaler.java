@@ -8,7 +8,7 @@
 package com.ultime5528.frc2020.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.subsystems.Intake;
+import com.ultime5528.frc2020.subsystems.Intake;
 
 public class EnvoyerAvaler extends SequentialCommandGroup {
 private Intake intake;

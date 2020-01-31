@@ -9,7 +9,7 @@ package com.ultime5528.frc2020.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.BasePilotable;
+import com.ultime5528.frc2020.subsystems.BasePilotable;
 
 public class Piloter extends CommandBase {
 
