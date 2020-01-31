@@ -19,8 +19,8 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import com.ultime5528.frc2020.subsystems.BasePilotable;
+import com.ultime5528.util.RamseteCommand;
 
 public class SuivreTrajectoire {
 
