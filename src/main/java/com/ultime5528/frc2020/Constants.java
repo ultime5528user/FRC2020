@@ -41,6 +41,7 @@ public final class Constants {
         public static final int BASE_PILOTABLE_MOTEUR_GAUCHE2 = 5;
         public static final int BASE_PILOTABLE_MOTEUR_GAUCHE3 = 6;
         public static final int SHOOTER_MOTEUR = 7;
+        public static final int SHOOTER_MOTEUR2 = 8;
 
         // DIGITAL
         public static final int PHOTOCELL_BAS = 1;

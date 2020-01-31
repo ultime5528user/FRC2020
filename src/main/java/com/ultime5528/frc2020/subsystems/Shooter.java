@@ -37,11 +37,12 @@ public class Shooter extends SubsystemBase implements Loggable {
 
   @Config(rowIndex = 1, columnIndex = 3, width = 1, height = 1)
   public static double kDeadzoneY = 0;
-  
+
   @Config(rowIndex = 1, columnIndex = 3, width = 1, height = 1)
   public static double kDeadzoneX = 0;
 
   private CANSparkMax moteur;
+  private CANSparkMax moteur2;
   @Log.Graph(name = "Vitesse Encoder Shooter", methodName = "getVelocity", rowIndex = 0, columnIndex = 0, width = 3, height = 2)
   private CANEncoder encoder;
 
@@ -65,6 +66,7 @@ public class Shooter extends SubsystemBase implements Loggable {
 
     if (Constants.ENABLE_CAN_SHOOTER) {
       moteur = new CANSparkMax(Constants.Ports.SHOOTER_MOTEUR, MotorType.kBrushless);
+      moteur2 = new CANSparkMax(Constants.Ports.SHOOTER_MOTEUR2, MotorType.kBrushless);
 
       pidController = moteur.getPIDController();
       pidController.setFeedbackDevice(encoder);
@@ -74,6 +76,9 @@ public class Shooter extends SubsystemBase implements Loggable {
       pidController.setIZone(kIz);
       pidController.setFF(kFF);
       pidController.setOutputRange(kMinOutput, kMaxOutput);
+
+      moteur2.follow(moteur);
+      moteur2.setInverted(true);
     }
 
   }
