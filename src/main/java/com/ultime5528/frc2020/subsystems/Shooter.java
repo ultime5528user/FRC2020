@@ -14,6 +14,8 @@ import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ultime5528.frc2020.Constants;
+import com.ultime5528.util.CubicInterpolator;
+
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
@@ -30,6 +32,15 @@ public class Shooter extends SubsystemBase implements Loggable {
   @Config.NumberSlider(min = 0, max = 60, rowIndex = 0, columnIndex = 3, width = 2, height = 1)
   public static double kTempsTir = 5;
 
+  @Config(rowIndex = 1, columnIndex = 3, width = 1, height = 1)
+  public static double kCourbure = 0;
+
+  @Config(rowIndex = 1, columnIndex = 3, width = 1, height = 1)
+  public static double kDeadzoneY = 0;
+  
+  @Config(rowIndex = 1, columnIndex = 3, width = 1, height = 1)
+  public static double kDeadzoneX = 0;
+
   private CANSparkMax moteur;
   @Log.Graph(name = "Vitesse Encoder Shooter", methodName = "getVelocity", rowIndex = 0, columnIndex = 0, width = 3, height = 2)
   private CANEncoder encoder;
@@ -39,6 +50,8 @@ public class Shooter extends SubsystemBase implements Loggable {
   @Config(rowIndex = 3, columnIndex = 0, width = 1, height = 1, methodName = "setD")
   @Config(rowIndex = 3, columnIndex = 1, width = 1, height = 1, methodName = "setFF")
   private CANPIDController pidController;
+
+  private CubicInterpolator interpolator = new CubicInterpolator(kCourbure, kDeadzoneY, kDeadzoneX);
 
   public Shooter() {
 
@@ -70,9 +83,10 @@ public class Shooter extends SubsystemBase implements Loggable {
 
   }
 
-  public void tirer() {
+  public void tirer(double distance) {
     if (Constants.ENABLE_CAN_SHOOTER) {
       pidController.setReference(kRPM, ControlType.kVelocity);
+      // pidController.setReference(interpolator.interpolate(distance), ControlType.kVelocity);
     }
   }
 
