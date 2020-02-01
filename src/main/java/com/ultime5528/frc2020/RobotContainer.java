@@ -29,7 +29,8 @@ public class RobotContainer {
   private final Joystick joystick;
 
   private final BasePilotable basePilotable;
-  private final Grimpeur grimpeur;
+  private final Grimpeur grimpeurDroit;
+  private final Grimpeur grimpeurGauche;
   private final Shooter shooter;
   private final Roulette roulette;
   private final Intake intake;
@@ -40,8 +41,10 @@ public class RobotContainer {
     basePilotable = new BasePilotable();
     basePilotable.setDefaultCommand(new Piloter(joystick, basePilotable));
 
-    grimpeur = new Grimpeur();
-
+    grimpeurDroit = new Grimpeur(Constants.Ports.GRIMPEUR_SERVO_DROIT, Constants.Ports.GRIMPEUR_MOTEUR_DROIT, "Grimpeur Droit");
+    
+    grimpeurGauche = new Grimpeur(Constants.Ports.GRIMPEUR_SERVO_GAUCHE, Constants.Ports.GRIMPEUR_MOTEUR_GAUCHE, "Grimpeur Gauche");
+    
     shooter = new Shooter();
 
     roulette = new Roulette();
@@ -56,9 +59,9 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    new JoystickButton(joystick, 1).whenHeld(new MonterGrimpeur(grimpeur));
-    new JoystickButton(joystick, 2).whenHeld(new DescendreGrimpeur(grimpeur));
-    new JoystickButton(joystick, 3).whenHeld(new Grimper(grimpeur));
+    new JoystickButton(joystick, 1).whenHeld(new MonterGrimpeur(grimpeurDroit));
+    new JoystickButton(joystick, 2).whenHeld(new DescendreGrimpeur(grimpeurDroit));
+    new JoystickButton(joystick, 3).whenHeld(new Grimper(grimpeurDroit));
     new JoystickButton(joystick, 4).whenPressed(new TournerRoulette(roulette));
     new JoystickButton(joystick, 9).whenPressed(new Tirer(shooter, intake));
     new JoystickButton(joystick, 5).toggleWhenPressed(new EnvoyerAvaler(intake));

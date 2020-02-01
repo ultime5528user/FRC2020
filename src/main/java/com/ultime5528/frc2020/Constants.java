@@ -25,9 +25,11 @@ public final class Constants {
     public static class Ports {
 
         // PWM
-        public static final int GRIMPEUR_MOTEUR = 0;
-        public static final int GRIMPEUR_SERVO = 1;
-        public static final int ROULETTE_MOTEUR = 2;
+        public static final int GRIMPEUR_MOTEUR_DROIT = 0;
+        public static final int GRIMPEUR_SERVO_DROIT = 1;
+        public static final int GRIMPEUR_MOTEUR_GAUCHE = 2;
+        public static final int GRIMPEUR_SERVO_GAUCHE = 3;
+        public static final int ROULETTE_MOTEUR = 4;
 
         public static final int INTAKE_MOTEUR = 3;
         public static final int TRANSPORTEUR_MOTEUR = 4;

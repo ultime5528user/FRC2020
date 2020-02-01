@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ultime5528.frc2020.Constants;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
 
@@ -21,9 +20,9 @@ public class Grimpeur extends SubsystemBase implements Loggable {
   private VictorSP moteur;
 
   @Config
-  public static double kRatchetAngleOn = 0;
+  public static double kRatchetLocked = 0;
   @Config
-  public static double kRatchetAngleOff = 90;
+  public static double kRatchetUnlocked = 90;
 
   @Config
   public static double kVitesseDescendre = -1;
@@ -35,9 +34,9 @@ public class Grimpeur extends SubsystemBase implements Loggable {
   /**
    * Creates a new Grimpeur.
    */
-  public Grimpeur() {
-    ratchet = new Servo(Constants.Ports.GRIMPEUR_SERVO);
-    moteur = new VictorSP(Constants.Ports.GRIMPEUR_MOTEUR);
+  public Grimpeur(int portServo, int portMoteur, String name) {
+    ratchet = new Servo(portServo);
+    moteur = new VictorSP(portMoteur);
     SendableRegistry.addLW(ratchet, getSubsystem(), "Servo Grimpeur");
     SendableRegistry.addLW(moteur, getSubsystem(), "Moteur Grimpeur");
 
@@ -47,24 +46,23 @@ public class Grimpeur extends SubsystemBase implements Loggable {
   public void periodic() {
   }
 
-  public void idle() {
-    ratchet.setAngle(kRatchetAngleOn);
+  public void stop() {
+    ratchet.setAngle(kRatchetLocked);
     moteur.set(0);
   }
 
   public void monter() {
-    // ratchet.setAngle(RATCHET_OFF_ANGLE);
-    ratchet.setSpeed(1.0);
+    ratchet.setAngle(kRatchetUnlocked);
     moteur.set(kVitesseMonter);
   }
 
   public void descendre() {
-    ratchet.setAngle(kRatchetAngleOff);
+    ratchet.setAngle(kRatchetLocked);
     moteur.set(kVitesseDescendre);
   }
 
   public void grimper() {
-    ratchet.setAngle(kRatchetAngleOn);
+    ratchet.setAngle(kRatchetLocked);
     moteur.set(kVitesseGrimper);
   }
 }
