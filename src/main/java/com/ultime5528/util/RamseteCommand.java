@@ -10,8 +10,6 @@ package com.ultime5528.util;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-import com.ultime5528.frc2020.subsystems.BasePilotable;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
