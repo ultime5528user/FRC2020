@@ -7,18 +7,50 @@
 
 package com.ultime5528.frc2020.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.OptionalDouble;
 
-public class Vision extends SubsystemBase {
-  /**
-   * Creates a new Vision.
-   */
-  public Vision() {
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
+public class Vision {
+
+  private NetworkTableEntry xEntry;
+  private NetworkTableEntry largeurEntry;
+  private NetworkTableEntry foundEntry;
+
+  private static Vision instance;
+
+  private static double kFOV = 49.8; //Degrés
+  private static double kFocale = 1/Math.tan(Math.toRadians(kFOV)/2);
+
+  private Vision() {
+    xEntry = NetworkTableInstance.getDefault().getTable("Vision").getEntry("xcible");
+    largeurEntry = NetworkTableInstance.getDefault().getTable("Vision").getEntry("largeurcible");
+    foundEntry = NetworkTableInstance.getDefault().getTable("Vision").getEntry("found");
   }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  public static Vision getInstance(){
+    if(instance == null)
+      instance = new Vision();
+    return instance;
+  }
+
+  public static OptionalDouble getLargeurCible(){
+    if(getInstance().foundEntry.getBoolean(false)){
+      return OptionalDouble.of(getInstance().largeurEntry.getDouble(0.0));
+    } else {
+      return OptionalDouble.empty();
+    }
+  }
+
+  public static OptionalDouble getAngleCible(){
+    if(getInstance().foundEntry.getBoolean(false)){
+      double x = getInstance().xEntry.getDouble(0);
+      double angle = Math.atan(kFocale / x);
+
+      return OptionalDouble.of(angle);
+    } else {
+      return OptionalDouble.empty();
+    }
   }
 }
