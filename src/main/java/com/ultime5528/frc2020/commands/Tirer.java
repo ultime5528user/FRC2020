@@ -35,7 +35,7 @@ public class Tirer extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.tirer(1);
+    shooter.tirer();
     if(shooter.getVitesse() >= Shooter.kRPM * Shooter.kPrecision){
       intake.transporter();
     }

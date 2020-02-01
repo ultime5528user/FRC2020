@@ -12,9 +12,11 @@ import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ultime5528.frc2020.Constants;
-import com.ultime5528.util.CubicInterpolator;
+import com.ultime5528.util.LinearInterpolator;
+import com.ultime5528.util.Point;
 
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
@@ -23,6 +25,7 @@ import io.github.oblarg.oblog.annotations.Log;
 public class Shooter extends SubsystemBase implements Loggable {
 
   public static double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
+
   @Config(rowIndex = 1, columnIndex = 3, width = 1, height = 1)
   public static double kRPM = 2500;
 
@@ -52,7 +55,8 @@ public class Shooter extends SubsystemBase implements Loggable {
   @Config(rowIndex = 3, columnIndex = 1, width = 1, height = 1, methodName = "setFF")
   private CANPIDController pidController;
 
-  private CubicInterpolator interpolator = new CubicInterpolator(kCourbure, kDeadzoneY, kDeadzoneX);
+  private LinearInterpolator interpolator = new LinearInterpolator(
+      new Point[] { new Point(0.0, 0.0), new Point(1.0, 1.0) });
 
   public Shooter() {
 
@@ -79,8 +83,8 @@ public class Shooter extends SubsystemBase implements Loggable {
 
       moteur2.follow(moteur);
       moteur2.setInverted(true);
-    }
 
+    }
   }
 
   @Override
@@ -88,10 +92,25 @@ public class Shooter extends SubsystemBase implements Loggable {
 
   }
 
-  public void tirer(double distance) {
+  public void tirer() {
     if (Constants.ENABLE_CAN_SHOOTER) {
-      pidController.setReference(kRPM, ControlType.kVelocity);
-      // pidController.setReference(interpolator.interpolate(distance), ControlType.kVelocity);
+      if (Constants.ENABLE_VISION) {
+
+        Vision.getLargeurCible().ifPresentOrElse(
+          
+          largeur -> {
+            double vitesse = interpolator.interpolate(largeur);
+            pidController.setReference(vitesse, ControlType.kVelocity);
+          },
+          
+          () -> pidController.setReference(kRPM, ControlType.kVelocity) //TODO est-ce qu'on veut vraiment kRPM si on voit pas la cible?
+
+        );
+
+      } else {
+        pidController.setReference(kRPM, ControlType.kVelocity);
+      }
+
     }
   }
 
