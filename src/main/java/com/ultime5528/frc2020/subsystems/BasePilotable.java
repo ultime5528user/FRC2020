@@ -13,6 +13,9 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -28,16 +31,25 @@ import io.github.oblarg.oblog.annotations.Log;
 public class BasePilotable extends SubsystemBase implements Loggable {
 
   public static final double kWheelDiameter = 8 * 0.0254;
-  public static final double kGearboxRatio = 1 / 10.75;
+  public static final double kGearboxRatio = (1.0 / 7.0) * (18.0/42.0);
   public static final double kPositionConversionFactor = kGearboxRatio * kWheelDiameter * Math.PI;
   public static final double kVelocityConversionFactor = kPositionConversionFactor / 60;
-  public static final double kRampRate = 0;
+  public static final double kRampRate = 0.5;
+
   public static final double kS = 0;
   public static final double kV = 0;
   public static final double kA = 0;
-  public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(0.541);
+  public static final SimpleMotorFeedforward kFeedForward = new SimpleMotorFeedforward(kS, kV, kA);
+
+  public static final double kTrackWidth = 0.541;
+  public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidth);
+
   public static final double kMaxSpeedMetersPerSecond = 0;
   public static final double kMaxAccelerationMetersPerSecondSquared = 0;
+
+  public static final double kMaxSpeedRadianPerSecond = kMaxSpeedMetersPerSecond/(kTrackWidth/2);
+  public static final double kMaxAccelerationRadianPerSecondSquared = kMaxAccelerationMetersPerSecondSquared/(kTrackWidth/2);
+  
   public static final double kRamseteB = 0;
   public static final double kRamseteZeta = 0;
   public static final double kPDriveVel = 0;
@@ -59,6 +71,9 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   @Log.Graph(name = "Position Encoder Gauche", methodName = "getPosition", rowIndex = 0, columnIndex = 2, width = 3, height = 2)
   private CANEncoder encoderGauche;
 
+  private PIDController pidDroit = BasePilotable.createPIDController();
+  private PIDController pidGauche = BasePilotable.createPIDController();
+
   private AHRS gyro;
 
   private DifferentialDrive drive;
@@ -67,13 +82,11 @@ public class BasePilotable extends SubsystemBase implements Loggable {
 
   public BasePilotable() {
 
-    
-
     if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
       moteurDroit = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_DROIT1, MotorType.kBrushless);
       moteurDroit2 = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_DROIT2, MotorType.kBrushless);
       moteurDroit3 = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_DROIT3, MotorType.kBrushless);
-      
+
       moteurGauche = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_GAUCHE1, MotorType.kBrushless);
       moteurGauche2 = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_GAUCHE2, MotorType.kBrushless);
       moteurGauche3 = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_GAUCHE3, MotorType.kBrushless);
@@ -84,7 +97,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
       configureMotor(moteurGauche);
       configureMotor(moteurGauche2);
       configureMotor(moteurGauche3);
-      
+
       encoderDroit = moteurDroit.getEncoder();
       encoderGauche = moteurGauche.getEncoder();
       moteurDroit2.follow(moteurDroit);
@@ -226,4 +239,29 @@ public class BasePilotable extends SubsystemBase implements Loggable {
     }
   }
 
+  public void tankDriveSpeeds(DifferentialDriveWheelSpeeds speeds, DifferentialDriveWheelSpeeds prevSpeeds){
+    if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
+      double leftFeedforward =
+        kFeedForward.calculate(speeds.leftMetersPerSecond,
+              (speeds.leftMetersPerSecond - prevSpeeds.leftMetersPerSecond) / TimedRobot.kDefaultPeriod);
+
+      double rightFeedforward =
+        kFeedForward.calculate(speeds.rightMetersPerSecond,
+              (speeds.rightMetersPerSecond - prevSpeeds.rightMetersPerSecond) / TimedRobot.kDefaultPeriod);
+
+      double leftOutput = leftFeedforward
+          + pidGauche.calculate(encoderGauche.getVelocity(),
+          speeds.leftMetersPerSecond);
+
+      double rightOutput = rightFeedforward
+          + pidDroit.calculate(encoderDroit.getVelocity(),
+          speeds.rightMetersPerSecond);
+        
+      tankDriveVolts(leftOutput, rightOutput);
+    }
+  }
+
+  public static PIDController createPIDController(){
+    return new PIDController(kPDriveVel, 0, 0);
+  }
 }

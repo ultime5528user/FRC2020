@@ -9,7 +9,6 @@ package com.ultime5528.frc2020.commands;
 
 import java.util.List;
 
-import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -46,9 +45,9 @@ public class SuivreTrajectoire {
 
     RamseteCommand ramseteCommand = new RamseteCommand(exampleTrajectory, basePilotable::getPose,
         new RamseteController(BasePilotable.kRamseteB, BasePilotable.kRamseteZeta),
-        new SimpleMotorFeedforward(BasePilotable.kS, BasePilotable.kV, BasePilotable.kA),
+        BasePilotable.kFeedForward,
         BasePilotable.kDriveKinematics, basePilotable::getWheelSpeeds,
-        new PIDController(BasePilotable.kPDriveVel, 0, 0), new PIDController(BasePilotable.kPDriveVel, 0, 0),
+        BasePilotable.createPIDController(), BasePilotable.createPIDController(),
         // RamseteCommand passes volts to the callback
         basePilotable::tankDriveVolts, basePilotable);
 
