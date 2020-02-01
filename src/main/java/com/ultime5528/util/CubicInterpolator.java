@@ -49,16 +49,16 @@ public class CubicInterpolator {
 		return deadzoneY;
 	}
 
-	public void setDeadzoneVitesse(double deadzoneVitesse) {
-		this.deadzoneY = deadzoneVitesse;
+	public void setDeadzoneY(double deadzoneY) {
+		this.deadzoneY = deadzoneY;
 	}
 
 	public double getDeadzoneJoystick() {
 		return deadzoneX;
 	}
 
-	public void setDeadzoneJoystick(double deadzoneJoystick) {
-		this.deadzoneX = deadzoneJoystick;
+	public void setDeadzoneX(double deadzoneX) {
+		this.deadzoneX = deadzoneX;
 	}
 
 }
