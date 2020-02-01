@@ -58,10 +58,12 @@ public class Intake extends SubsystemBase {
   public void stopTransporteur() {
     moteurTransporteur.set(0.0);
   }
-public boolean hasBallonBas(){
-  return photocellBas.get();
-}
-public boolean hasBallonHaut(){
-  return photocellHaut.get();
-}
+
+  public boolean hasBallonBas() {
+    return photocellBas.get();
+  }
+
+  public boolean hasBallonHaut() {
+    return photocellHaut.get();
+  }
 }
