@@ -38,7 +38,7 @@ public class Vision {
   }
 
   public static void readSnapshot(){
-    currentSnapshot = VisionSnapshot.from(snapshotEntry.getString());
+    //currentSnapshot = VisionSnapshot.from(snapshotEntry.getString());
   }
 
   public static OptionalDouble getLargeurCible() {

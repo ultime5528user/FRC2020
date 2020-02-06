@@ -65,4 +65,8 @@ public class Grimpeur extends SubsystemBase implements Loggable {
     ratchet.setAngle(kRatchetLocked);
     moteur.set(kVitesseGrimper);
   }
+  public void grimperSansRatchet() {
+    ratchet.setAngle(kRatchetUnlocked);
+    moteur.set(kVitesseGrimper);
+  }
 }
