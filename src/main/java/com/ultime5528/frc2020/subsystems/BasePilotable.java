@@ -24,9 +24,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ultime5528.frc2020.Constants;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -112,7 +110,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
     }
 
     gyro = new AHRS();
-    SendableRegistry.addLW(gyro, getSubsystem(), "navX");
+    addChild("navX", gyro);
 
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
   }

@@ -9,7 +9,6 @@ package com.ultime5528.frc2020.subsystems;
 
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.VictorSP;
-import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
@@ -37,8 +36,8 @@ public class Grimpeur extends SubsystemBase implements Loggable {
   public Grimpeur(int portServo, int portMoteur, String name) {
     ratchet = new Servo(portServo);
     moteur = new VictorSP(portMoteur);
-    SendableRegistry.addLW(ratchet, getSubsystem(), "Servo Grimpeur");
-    SendableRegistry.addLW(moteur, getSubsystem(), "Moteur Grimpeur");
+    addChild("Servo Grimpeur", ratchet);
+    addChild("Moteur Grimpeur", moteur);
 
   }
 
