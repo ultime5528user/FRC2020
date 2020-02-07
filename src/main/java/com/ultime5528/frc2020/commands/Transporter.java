@@ -29,6 +29,7 @@ public class Transporter extends CommandBase {
   @Override
   public void execute() {
     intake.transporter();
+    intake.avaler();
 
   }
 

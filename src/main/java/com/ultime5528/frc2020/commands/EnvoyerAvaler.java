@@ -11,7 +11,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import com.ultime5528.frc2020.subsystems.Intake;
 
 public class EnvoyerAvaler extends SequentialCommandGroup {
-private Intake intake;
+  private Intake intake;
+
   public EnvoyerAvaler(Intake intake) {
     super(new Avaler(intake), new Transporter(intake));
   }
@@ -19,7 +20,7 @@ private Intake intake;
   @Override
   public void end(boolean interrupted) {
     super.end(interrupted);
-    if(!interrupted && intake.hasBallonBas()){
+    if (!interrupted && intake.hasBallonBas()) {
       schedule();
     }
   }

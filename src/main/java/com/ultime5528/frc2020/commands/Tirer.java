@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import com.ultime5528.util.Timer;
 
 public class Tirer extends CommandBase {
-  
+
   private Shooter shooter;
   private Timer timer;
   private Intake intake;
@@ -36,12 +36,14 @@ public class Tirer extends CommandBase {
   @Override
   public void execute() {
     shooter.tirer();
-    if(shooter.getVitesse() >= Shooter.kRPM * Shooter.kPrecision){
+
+    if (shooter.getVitesse() >= Shooter.kRPM * Shooter.kPrecision) {
       intake.transporter();
+      intake.avaler();
     }
-    if(!intake.hasBallonHaut()){
+    if (!intake.hasBallonHaut()) {
       timer.start();
-    } else if(timer.isRunning()){
+    } else if (timer.isRunning()) {
       timer.stop();
       timer.reset();
     }

@@ -8,6 +8,7 @@
 package com.ultime5528.frc2020;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import com.ultime5528.frc2020.commands.DescendreGrimpeur;
@@ -35,22 +36,27 @@ public class RobotContainer {
   private final Roulette roulette;
   private final Intake intake;
 
+  private final PowerDistributionPanel pdp;
+
   public RobotContainer() {
     joystick = new Joystick(0);
 
     basePilotable = new BasePilotable();
     basePilotable.setDefaultCommand(new Piloter(joystick, basePilotable));
 
-    grimpeurDroit = new Grimpeur(Constants.Ports.GRIMPEUR_SERVO_DROIT, Constants.Ports.GRIMPEUR_MOTEUR_DROIT, "Grimpeur Droit");
-    
-    grimpeurGauche = new Grimpeur(Constants.Ports.GRIMPEUR_SERVO_GAUCHE, Constants.Ports.GRIMPEUR_MOTEUR_GAUCHE, "Grimpeur Gauche");
-    
+    grimpeurDroit = new Grimpeur(Constants.Ports.GRIMPEUR_SERVO_DROIT, Constants.Ports.GRIMPEUR_MOTEUR_DROIT,
+        "Grimpeur Droit");
+
+    grimpeurGauche = new Grimpeur(Constants.Ports.GRIMPEUR_SERVO_GAUCHE, Constants.Ports.GRIMPEUR_MOTEUR_GAUCHE,
+        "Grimpeur Gauche");
+
     shooter = new Shooter();
 
     roulette = new Roulette();
-
-    intake = new Intake();
     
+    pdp = new PowerDistributionPanel();
+
+    intake = new Intake(pdp);
 
     configureButtonBindings();
 

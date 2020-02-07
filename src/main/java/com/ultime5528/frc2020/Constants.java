@@ -47,9 +47,14 @@ public final class Constants {
         public static final int SHOOTER_MOTEUR2 = 8;
 
         // DIGITAL
-        public static final int PHOTOCELL_BAS = 1;
-        public static final int PHOTOCELL_HAUT = 2;
+        public static final int INTAKE_PHOTOCELL_BAS = 1;
+        public static final int INTAKE_PHOTOCELL_HAUT = 2;
         
-
     }
+
+    public static class PDP{
+
+        public static final int INTAKE_MOTEUR_TRANSPORTEUR = 2;
+    }
+
 }
