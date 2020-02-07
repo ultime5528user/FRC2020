@@ -10,11 +10,11 @@ package com.ultime5528.frc2020.commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import com.ultime5528.frc2020.subsystems.Intake;
 
-public class EnvoyerAvaler extends SequentialCommandGroup {
+public class PrendreTransporterBallon extends SequentialCommandGroup {
   private Intake intake;
 
-  public EnvoyerAvaler(Intake intake) {
-    super(new Avaler(intake), new Transporter(intake));
+  public PrendreTransporterBallon(Intake intake) {
+    super(new PrendreBallon(intake), new TransporterBallon(intake));
   }
 
   @Override

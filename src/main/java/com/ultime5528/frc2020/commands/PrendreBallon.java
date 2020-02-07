@@ -10,14 +10,13 @@ package com.ultime5528.frc2020.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import com.ultime5528.frc2020.subsystems.Intake;
 
-public class Transporter extends CommandBase {
+public class PrendreBallon extends CommandBase {
 
   private Intake intake;
 
-  public Transporter(Intake intake) {
+  public PrendreBallon(Intake intake) {
     this.intake = intake;
     addRequirements(intake);
-
   }
 
   // Called when the command is initially scheduled.
@@ -25,23 +24,19 @@ public class Transporter extends CommandBase {
   public void initialize() {
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.transporter();
     intake.avaler();
-
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.stopTransporteur();
+    intake.stopIntake();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !intake.hasBallonBas() || intake.hasBallonHaut();
+    return intake.hasBallonBas();
   }
 }
