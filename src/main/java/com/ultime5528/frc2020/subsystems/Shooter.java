@@ -15,6 +15,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ultime5528.frc2020.Constants;
+import com.ultime5528.frc2020.Ports;
 import com.ultime5528.util.LinearInterpolator;
 import com.ultime5528.util.Point;
 
@@ -69,8 +70,8 @@ public class Shooter extends SubsystemBase implements Loggable {
     kMinOutput = -1;
 
     if (Constants.ENABLE_CAN_SHOOTER) {
-      moteur = new CANSparkMax(Constants.Ports.SHOOTER_MOTEUR, MotorType.kBrushless);
-      moteur2 = new CANSparkMax(Constants.Ports.SHOOTER_MOTEUR2, MotorType.kBrushless);
+      moteur = new CANSparkMax(Ports.SHOOTER_MOTEUR, MotorType.kBrushless);
+      moteur2 = new CANSparkMax(Ports.SHOOTER_MOTEUR2, MotorType.kBrushless);
 
       pidController = moteur.getPIDController();
       pidController.setFeedbackDevice(encoder);

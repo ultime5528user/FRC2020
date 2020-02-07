@@ -12,6 +12,8 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ultime5528.frc2020.Constants;
+import com.ultime5528.frc2020.Ports;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.controller.PIDController;
@@ -84,13 +86,13 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   public BasePilotable() {
 
     if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
-      moteurDroit = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_DROIT1, MotorType.kBrushless);
-      moteurDroit2 = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_DROIT2, MotorType.kBrushless);
-      moteurDroit3 = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_DROIT3, MotorType.kBrushless);
+      moteurDroit = new CANSparkMax(Ports.BASE_PILOTABLE_MOTEUR_DROIT1, MotorType.kBrushless);
+      moteurDroit2 = new CANSparkMax(Ports.BASE_PILOTABLE_MOTEUR_DROIT2, MotorType.kBrushless);
+      moteurDroit3 = new CANSparkMax(Ports.BASE_PILOTABLE_MOTEUR_DROIT3, MotorType.kBrushless);
 
-      moteurGauche = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_GAUCHE1, MotorType.kBrushless);
-      moteurGauche2 = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_GAUCHE2, MotorType.kBrushless);
-      moteurGauche3 = new CANSparkMax(Constants.Ports.BASE_PILOTABLE_MOTEUR_GAUCHE3, MotorType.kBrushless);
+      moteurGauche = new CANSparkMax(Ports.BASE_PILOTABLE_MOTEUR_GAUCHE1, MotorType.kBrushless);
+      moteurGauche2 = new CANSparkMax(Ports.BASE_PILOTABLE_MOTEUR_GAUCHE2, MotorType.kBrushless);
+      moteurGauche3 = new CANSparkMax(Ports.BASE_PILOTABLE_MOTEUR_GAUCHE3, MotorType.kBrushless);
 
       configureMotor(moteurDroit);
       configureMotor(moteurDroit2);

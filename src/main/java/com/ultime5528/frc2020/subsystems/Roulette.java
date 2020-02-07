@@ -7,6 +7,7 @@
 
 package com.ultime5528.frc2020.subsystems;
 
+import com.ultime5528.frc2020.Ports;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
@@ -14,7 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.ColorSensorV3;
-import com.ultime5528.frc2020.Constants;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
 
@@ -31,7 +31,7 @@ public class Roulette extends SubsystemBase implements Loggable {
   private final I2C.Port kCapteurCouleurPort = I2C.Port.kOnboard;
 
   public Roulette() {
-    moteurRoulette = new VictorSP(Constants.Ports.ROULETTE_MOTEUR);
+    moteurRoulette = new VictorSP(Ports.ROULETTE_MOTEUR);
     capteurCouleur = new ColorSensorV3(kCapteurCouleurPort);
     SendableRegistry.addLW(moteurRoulette, getSubsystem(), "Moteur Roulette");
   }

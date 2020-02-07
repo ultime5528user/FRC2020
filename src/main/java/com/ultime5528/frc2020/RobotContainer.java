@@ -44,10 +44,10 @@ public class RobotContainer {
     basePilotable = new BasePilotable();
     basePilotable.setDefaultCommand(new Piloter(joystick, basePilotable));
 
-    grimpeurDroit = new Grimpeur(Constants.Ports.GRIMPEUR_SERVO_DROIT, Constants.Ports.GRIMPEUR_MOTEUR_DROIT,
+    grimpeurDroit = new Grimpeur(Ports.GRIMPEUR_SERVO_DROIT, Ports.GRIMPEUR_MOTEUR_DROIT,
         "Grimpeur Droit");
 
-    grimpeurGauche = new Grimpeur(Constants.Ports.GRIMPEUR_SERVO_GAUCHE, Constants.Ports.GRIMPEUR_MOTEUR_GAUCHE,
+    grimpeurGauche = new Grimpeur(Ports.GRIMPEUR_SERVO_GAUCHE, Ports.GRIMPEUR_MOTEUR_GAUCHE,
         "Grimpeur Gauche");
 
     shooter = new Shooter();
