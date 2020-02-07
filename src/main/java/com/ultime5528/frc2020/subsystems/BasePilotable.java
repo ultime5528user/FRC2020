@@ -31,7 +31,7 @@ import io.github.oblarg.oblog.annotations.Log;
 public class BasePilotable extends SubsystemBase implements Loggable {
 
   public static final double kWheelDiameter = 8 * 0.0254;
-  public static final double kGearboxRatio = (1.0 / 7.0) * (18.0/42.0);
+  public static final double kGearboxRatio = (1.0 / 7.0) * (18.0 / 42.0);
   public static final double kPositionConversionFactor = kGearboxRatio * kWheelDiameter * Math.PI;
   public static final double kVelocityConversionFactor = kPositionConversionFactor / 60;
   public static final double kRampRate = 0.5;
@@ -47,9 +47,10 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   public static final double kMaxSpeedMetersPerSecond = 0;
   public static final double kMaxAccelerationMetersPerSecondSquared = 0;
 
-  public static final double kMaxSpeedRadianPerSecond = kMaxSpeedMetersPerSecond/(kTrackWidth/2);
-  public static final double kMaxAccelerationRadianPerSecondSquared = kMaxAccelerationMetersPerSecondSquared/(kTrackWidth/2);
-  
+  public static final double kMaxSpeedRadianPerSecond = kMaxSpeedMetersPerSecond / (kTrackWidth / 2);
+  public static final double kMaxAccelerationRadianPerSecondSquared = kMaxAccelerationMetersPerSecondSquared
+      / (kTrackWidth / 2);
+
   public static final double kRamseteB = 0;
   public static final double kRamseteZeta = 0;
   public static final double kPDriveVel = 0;
@@ -232,6 +233,12 @@ public class BasePilotable extends SubsystemBase implements Loggable {
     return gyro.getRate() * (GYRO_REVERSED ? -1.0 : 1.0);
   }
 
+  public void resetPID() {
+    pidGauche.reset();
+    pidDroit.reset();
+
+  }
+
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
       moteurGauche.setVoltage(leftVolts);
@@ -239,29 +246,25 @@ public class BasePilotable extends SubsystemBase implements Loggable {
     }
   }
 
-  public void tankDriveSpeeds(DifferentialDriveWheelSpeeds speeds, DifferentialDriveWheelSpeeds prevSpeeds){
+  public void tankDriveSpeeds(DifferentialDriveWheelSpeeds speeds, DifferentialDriveWheelSpeeds prevSpeeds) {
     if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
-      double leftFeedforward =
-        kFeedForward.calculate(speeds.leftMetersPerSecond,
-              (speeds.leftMetersPerSecond - prevSpeeds.leftMetersPerSecond) / TimedRobot.kDefaultPeriod);
+      double leftFeedforward = kFeedForward.calculate(speeds.leftMetersPerSecond,
+          (speeds.leftMetersPerSecond - prevSpeeds.leftMetersPerSecond) / TimedRobot.kDefaultPeriod);
 
-      double rightFeedforward =
-        kFeedForward.calculate(speeds.rightMetersPerSecond,
-              (speeds.rightMetersPerSecond - prevSpeeds.rightMetersPerSecond) / TimedRobot.kDefaultPeriod);
+      double rightFeedforward = kFeedForward.calculate(speeds.rightMetersPerSecond,
+          (speeds.rightMetersPerSecond - prevSpeeds.rightMetersPerSecond) / TimedRobot.kDefaultPeriod);
 
       double leftOutput = leftFeedforward
-          + pidGauche.calculate(encoderGauche.getVelocity(),
-          speeds.leftMetersPerSecond);
+          + pidGauche.calculate(encoderGauche.getVelocity(), speeds.leftMetersPerSecond);
 
       double rightOutput = rightFeedforward
-          + pidDroit.calculate(encoderDroit.getVelocity(),
-          speeds.rightMetersPerSecond);
-        
+          + pidDroit.calculate(encoderDroit.getVelocity(), speeds.rightMetersPerSecond);
+
       tankDriveVolts(leftOutput, rightOutput);
     }
   }
 
-  public static PIDController createPIDController(){
+  public static PIDController createPIDController() {
     return new PIDController(kPDriveVel, 0, 0);
   }
 }

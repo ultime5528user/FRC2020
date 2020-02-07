@@ -21,8 +21,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class Viser extends CommandBase {
 
   private BasePilotable basePilotable;
+  public static double kTolerance = 0.1;
 
-  private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(BasePilotable.kMaxSpeedRadianPerSecond, BasePilotable.kMaxAccelerationRadianPerSecondSquared);
+  private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(
+      BasePilotable.kMaxSpeedRadianPerSecond, BasePilotable.kMaxAccelerationRadianPerSecondSquared);
   private TrapezoidProfile.State goal = new TrapezoidProfile.State();
   private TrapezoidProfile.State current = new TrapezoidProfile.State();
 
@@ -38,6 +40,7 @@ public class Viser extends CommandBase {
 
   @Override
   public void initialize() {
+    basePilotable.resetPID();
   }
 
   @Override
@@ -52,7 +55,8 @@ public class Viser extends CommandBase {
 
     current = profile.calculate(TimedRobot.kDefaultPeriod);
 
-    var speeds = BasePilotable.kDriveKinematics.toWheelSpeeds(new ChassisSpeeds(0, 0, Math.toRadians(current.velocity)));
+    var speeds = BasePilotable.kDriveKinematics
+        .toWheelSpeeds(new ChassisSpeeds(0, 0, Math.toRadians(current.velocity)));
 
     basePilotable.tankDriveSpeeds(speeds, prevSpeeds);
 
@@ -61,10 +65,16 @@ public class Viser extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
+    basePilotable.drive(0, 0);
   }
 
   @Override
   public boolean isFinished() {
-    return false;
+    if (angle.isPresent()) {
+
+      return Math.abs(angle.getAsDouble()) < kTolerance;
+    } else {
+      return false;
+    }
   }
 }
