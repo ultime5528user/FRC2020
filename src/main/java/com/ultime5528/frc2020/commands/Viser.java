@@ -10,7 +10,7 @@ package com.ultime5528.frc2020.commands;
 import java.util.OptionalDouble;
 
 import com.ultime5528.frc2020.subsystems.BasePilotable;
-import com.ultime5528.frc2020.subsystems.Vision;
+import com.ultime5528.frc2020.subsystems.VisionController;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
@@ -20,8 +20,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class Viser extends CommandBase {
 
-  private BasePilotable basePilotable;
   public static double kTolerance = 0.1;
+
+
+  private BasePilotable basePilotable;
+  private VisionController vision;
 
   private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(
       BasePilotable.kMaxSpeedRadianPerSecond, BasePilotable.kMaxAccelerationRadianPerSecondSquared);
@@ -32,10 +35,10 @@ public class Viser extends CommandBase {
 
   private DifferentialDriveWheelSpeeds prevSpeeds = new DifferentialDriveWheelSpeeds();
 
-  public Viser(BasePilotable basePilotable) {
-    addRequirements(basePilotable);
-
+  public Viser(BasePilotable basePilotable, VisionController vision) {
     this.basePilotable = basePilotable;
+    this.vision = vision;
+    addRequirements(basePilotable, vision);
   }
 
   @Override
@@ -48,7 +51,7 @@ public class Viser extends CommandBase {
     // current.position = basePilotable.getHeading();
     // current.velocity = basePilotable.getTurnRate();
 
-    angle = Vision.getAngleCible();
+    angle = vision.getAngleCible();
     goal = new TrapezoidProfile.State(angle.orElse(0), 0);
 
     TrapezoidProfile profile = new TrapezoidProfile(constraints, goal, current);

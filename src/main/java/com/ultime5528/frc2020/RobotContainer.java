@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import com.ultime5528.frc2020.commands.DescendreGrimpeur;
-import com.ultime5528.frc2020.commands.EnvoyerAvaler;
+import com.ultime5528.frc2020.commands.PrendreTransporterBallon;
 import com.ultime5528.frc2020.commands.Grimper;
 import com.ultime5528.frc2020.commands.MonterGrimpeur;
 import com.ultime5528.frc2020.commands.Piloter;
@@ -23,6 +23,8 @@ import com.ultime5528.frc2020.subsystems.Grimpeur;
 import com.ultime5528.frc2020.subsystems.Intake;
 import com.ultime5528.frc2020.subsystems.Roulette;
 import com.ultime5528.frc2020.subsystems.Shooter;
+import com.ultime5528.frc2020.subsystems.VisionController;
+
 import io.github.oblarg.oblog.Logger;
 
 public class RobotContainer {
@@ -35,6 +37,7 @@ public class RobotContainer {
   private final Shooter shooter;
   private final Roulette roulette;
   private final Intake intake;
+  private final VisionController vision;
 
   private final PowerDistributionPanel pdp;
 
@@ -58,6 +61,8 @@ public class RobotContainer {
 
     intake = new Intake(pdp);
 
+    vision = new VisionController();
+
     configureButtonBindings();
 
     Logger.configureLoggingAndConfig(this, true);
@@ -65,12 +70,19 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    new JoystickButton(joystick, 1).whenHeld(new MonterGrimpeur(grimpeurDroit));
-    new JoystickButton(joystick, 2).whenHeld(new DescendreGrimpeur(grimpeurDroit));
-    new JoystickButton(joystick, 3).whenHeld(new Grimper(grimpeurDroit));
+
+    new JoystickButton(joystick, 7).whenHeld(new MonterGrimpeur(grimpeurDroit));
+    new JoystickButton(joystick, 8).whenHeld(new DescendreGrimpeur(grimpeurDroit));
+    new JoystickButton(joystick, 9).whenHeld(new Grimper(grimpeurDroit));
+    
+    new JoystickButton(joystick, 10).whenHeld(new MonterGrimpeur(grimpeurGauche));
+    new JoystickButton(joystick, 11).whenHeld(new DescendreGrimpeur(grimpeurGauche));
+    new JoystickButton(joystick, 12).whenHeld(new Grimper(grimpeurGauche));
+    
     new JoystickButton(joystick, 4).whenPressed(new TournerRoulette(roulette));
-    new JoystickButton(joystick, 9).whenPressed(new Tirer(shooter, intake));
-    new JoystickButton(joystick, 5).toggleWhenPressed(new EnvoyerAvaler(intake));
+    new JoystickButton(joystick, 9).whenPressed(new Tirer(shooter, intake, vision));
+    new JoystickButton(joystick, 5).toggleWhenPressed(new PrendreTransporterBallon(intake));
+    
   }
 
   public Command getAutonomousCommand() {

@@ -7,6 +7,8 @@
 
 package com.ultime5528.frc2020.subsystems;
 
+import java.util.OptionalDouble;
+
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
@@ -14,6 +16,7 @@ import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import com.ultime5528.frc2020.Constants;
 import com.ultime5528.frc2020.Ports;
 import com.ultime5528.util.LinearInterpolator;
@@ -93,14 +96,14 @@ public class Shooter extends SubsystemBase implements Loggable {
 
   }
 
-  public void tirer() {
+  public void tirer(OptionalDouble optHauteur) {
     if (Constants.ENABLE_CAN_SHOOTER) {
       if (Constants.ENABLE_VISION) {
 
-        Vision.getLargeurCible().ifPresentOrElse(
+        optHauteur.ifPresentOrElse(
           
-          largeur -> {
-            double vitesse = interpolator.interpolate(largeur);
+          hauteur -> {
+            double vitesse = interpolator.interpolate(hauteur);
             pidController.setReference(vitesse, ControlType.kVelocity);
           },
           
