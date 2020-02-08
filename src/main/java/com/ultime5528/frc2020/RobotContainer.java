@@ -10,6 +10,7 @@ package com.ultime5528.frc2020;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import com.ultime5528.frc2020.commands.DescendreGrimpeur;
 import com.ultime5528.frc2020.commands.PrendreTransporterBallon;
@@ -48,15 +49,15 @@ public class RobotContainer {
     basePilotable.setDefaultCommand(new Piloter(joystick, basePilotable));
 
     grimpeurDroit = new Grimpeur(Ports.GRIMPEUR_SERVO_DROIT, Ports.GRIMPEUR_MOTEUR_DROIT,
-        "Grimpeur Droit");
+        Ports.GRIMPEUR_DROIT_LIMIT_SWITCH_HAUT, Ports.GRIMPEUR_DROIT_LIMIT_SWITCH_BAS, "Grimpeur Droit");
 
     grimpeurGauche = new Grimpeur(Ports.GRIMPEUR_SERVO_GAUCHE, Ports.GRIMPEUR_MOTEUR_GAUCHE,
-        "Grimpeur Gauche");
+        Ports.GRIMPEUR_GAUCHE_LIMIT_SWITCH_HAUT, Ports.GRIMPEUR_GAUCHE_LIMIT_SWITCH_BAS, "Grimpeur Gauche");
 
     shooter = new Shooter();
 
     roulette = new Roulette();
-    
+
     pdp = new PowerDistributionPanel();
 
     intake = new Intake(pdp);
@@ -66,7 +67,18 @@ public class RobotContainer {
     configureButtonBindings();
 
     Logger.configureLoggingAndConfig(this, true);
+    if (Constants.ENABLE_COMMAND_TROUBLESHOOTING_PRINTS) {
 
+      CommandScheduler.getInstance().onCommandInitialize(
+          command -> System.out.println(command.getName() + " initialized"));
+
+      CommandScheduler.getInstance().onCommandFinish(
+          command -> System.out.println(command.getName() + " finished"));
+
+      CommandScheduler.getInstance().onCommandInterrupt(
+          command -> System.out.println(command.getName() + " interrupted"));
+          
+    }
   }
 
   private void configureButtonBindings() {
@@ -74,15 +86,15 @@ public class RobotContainer {
     new JoystickButton(joystick, 7).whenHeld(new MonterGrimpeur(grimpeurDroit));
     new JoystickButton(joystick, 8).whenHeld(new DescendreGrimpeur(grimpeurDroit));
     new JoystickButton(joystick, 9).whenHeld(new Grimper(grimpeurDroit));
-    
+
     new JoystickButton(joystick, 10).whenHeld(new MonterGrimpeur(grimpeurGauche));
     new JoystickButton(joystick, 11).whenHeld(new DescendreGrimpeur(grimpeurGauche));
     new JoystickButton(joystick, 12).whenHeld(new Grimper(grimpeurGauche));
-    
-    new JoystickButton(joystick, 3).whenPressed(new TournerRoulette(roulette));
+
+    new JoystickButton(joystick, 3).toggleWhenPressed(new TournerRoulette(roulette));
     new JoystickButton(joystick, 4).whenPressed(new Tirer(shooter, intake, vision));
     new JoystickButton(joystick, 5).toggleWhenPressed(new PrendreTransporterBallon(intake));
-    
+
   }
 
   public Command getAutonomousCommand() {

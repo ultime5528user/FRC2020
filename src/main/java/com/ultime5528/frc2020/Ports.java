@@ -27,8 +27,12 @@ public class Ports {
     public static final int SHOOTER_MOTEUR2                 = 8;
 
     // DIGITAL
-    public static final int INTAKE_PHOTOCELL_BAS    = 1;
-    public static final int INTAKE_PHOTOCELL_HAUT   = 2;
+    public static final int INTAKE_PHOTOCELL_BAS                = 1;
+    public static final int INTAKE_PHOTOCELL_HAUT               = 2;
+    public static final int GRIMPEUR_DROIT_LIMIT_SWITCH_HAUT    = 3;
+    public static final int GRIMPEUR_DROIT_LIMIT_SWITCH_BAS     = 4;
+    public static final int GRIMPEUR_GAUCHE_LIMIT_SWITCH_HAUT   = 5;
+    public static final int GRIMPEUR_GAUCHE_LIMIT_SWITCH_BAS    = 6;
 
     public static class PDP {
         public static final int INTAKE_MOTEUR_TRANSPORTEUR = 2;

@@ -22,5 +22,6 @@ public final class Constants {
     public static final boolean ENABLE_CAN_BASE_PILOTABLE = false;
     public static final boolean ENABLE_CAN_SHOOTER = false;
     public static final boolean ENABLE_VISION = false;
+    public static final boolean ENABLE_COMMAND_TROUBLESHOOTING_PRINTS = true;
 
 }
