@@ -30,12 +30,9 @@ public class Ports {
     public static final int INTAKE_PHOTOCELL_BAS    = 1;
     public static final int INTAKE_PHOTOCELL_HAUT   = 2;
 
-
-
     public static class PDP {
-
         public static final int INTAKE_MOTEUR_TRANSPORTEUR = 2;
-        
+    
     }
     
 }

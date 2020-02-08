@@ -29,7 +29,7 @@ public class TransporterBallon extends CommandBase {
   @Override
   public void execute() {
     intake.transporter();
-    intake.avaler();
+    intake.prendreBallon();
 
   }
 
@@ -37,6 +37,7 @@ public class TransporterBallon extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     intake.stopTransporteur();
+    intake.stopIntake();
   }
 
   // Returns true when the command should end.

@@ -101,13 +101,14 @@ public class Shooter extends SubsystemBase implements Loggable {
       if (Constants.ENABLE_VISION) {
 
         optHauteur.ifPresentOrElse(
-          
-          hauteur -> {
-            double vitesse = interpolator.interpolate(hauteur);
-            pidController.setReference(vitesse, ControlType.kVelocity);
-          },
-          
-          () -> pidController.setReference(kRPM, ControlType.kVelocity) //TODO est-ce qu'on veut vraiment kRPM si on voit pas la cible?
+
+            hauteur -> {
+              double vitesse = interpolator.interpolate(hauteur);
+              pidController.setReference(vitesse, ControlType.kVelocity);
+            },
+
+            () -> pidController.setReference(kRPM, ControlType.kVelocity) // TODO est-ce qu'on veut vraiment kRPM si on
+                                                                          // voit pas la cible?
 
         );
 
@@ -125,6 +126,10 @@ public class Shooter extends SubsystemBase implements Loggable {
   }
 
   public double getVitesse() {
-    return encoder.getVelocity();
+    if (Constants.ENABLE_CAN_SHOOTER) {
+      return encoder.getVelocity();
+    } else {
+      return 0.0;
+    }
   }
 }

@@ -15,12 +15,13 @@ public class PrendreTransporterBallon extends SequentialCommandGroup {
 
   public PrendreTransporterBallon(Intake intake) {
     super(new PrendreBallon(intake), new TransporterBallon(intake));
+    this.intake = intake;
   }
 
   @Override
   public void end(boolean interrupted) {
     super.end(interrupted);
-    if (!interrupted && intake.hasBallonBas()) {
+    if (!interrupted && !intake.hasBallonBas()) {
       schedule();
     }
   }

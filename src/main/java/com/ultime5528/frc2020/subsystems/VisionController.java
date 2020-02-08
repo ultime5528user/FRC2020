@@ -11,6 +11,7 @@ import java.util.OptionalDouble;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionController extends SubsystemBase {
@@ -26,6 +27,7 @@ public class VisionController extends SubsystemBase {
 
   public VisionController() {
     snapshotEntry = NetworkTableInstance.getDefault().getTable("Vision").getEntry("Snapshot");
+    readSnapshot();
   }
 
   @Override
@@ -44,7 +46,7 @@ public class VisionController extends SubsystemBase {
   }
 
   public void readSnapshot(){
-    String data = snapshotEntry.getString("0;0;false;0");
+    String data = snapshotEntry.getString("0;false;0;0");
     currentSnapshot = VisionSnapshot.fromRasperryPiData(data);
   }
 
@@ -74,9 +76,12 @@ public class VisionController extends SubsystemBase {
     public final double centreX;
     public final double hauteur;
 
+    public VisionSnapshot() {
+      this(0L, false, 0.0, 0.0);
+    }
+
     public VisionSnapshot(long timestamp, boolean found, double centreX, double hauteur) {
       this.timestamp = timestamp;
-
       this.found = found;
       this.centreX = centreX;
       this.hauteur = hauteur;
@@ -87,13 +92,24 @@ public class VisionController extends SubsystemBase {
      * le format "timestamp<long>;found<boolean>;centreX<double>;hauteur<double>"
      */
     public static VisionSnapshot fromRasperryPiData(String data) {
-      String[] splitted = data.split(";");
 
-      return new VisionSnapshot(
-        Long.parseLong(splitted[0]),
-        Boolean.parseBoolean(splitted[1]),
-        Double.parseDouble(splitted[2]),
-        Double.parseDouble(splitted[3]));
+      VisionSnapshot snapshot = null;
+
+      try {
+        String[] splitted = data.split(";");
+
+        snapshot = new VisionSnapshot(
+            Long.parseLong(splitted[0]),
+            Boolean.parseBoolean(splitted[1]),
+            Double.parseDouble(splitted[2]),
+            Double.parseDouble(splitted[3]));
+
+      } catch (Exception e) {
+        DriverStation.reportError("Erreur de formatage dans fromRasperryPiData() : " + data, false);
+        snapshot = new VisionSnapshot();
+      }
+
+      return snapshot;
     }
 
   }

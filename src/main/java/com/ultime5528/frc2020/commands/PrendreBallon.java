@@ -26,12 +26,14 @@ public class PrendreBallon extends CommandBase {
 
   @Override
   public void execute() {
-    intake.avaler();
+    intake.prendreBallon();
+    intake.actionnerBras();
   }
 
   @Override
   public void end(boolean interrupted) {
     intake.stopIntake();
+    intake.stopBras();
   }
 
   // Returns true when the command should end.

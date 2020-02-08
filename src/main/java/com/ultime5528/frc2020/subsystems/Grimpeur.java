@@ -18,6 +18,8 @@ public class Grimpeur extends SubsystemBase implements Loggable {
   private Servo ratchet;
   private VictorSP moteur;
 
+  private String name;
+
   @Config
   public static double kRatchetLocked = 0;
   @Config
@@ -36,13 +38,18 @@ public class Grimpeur extends SubsystemBase implements Loggable {
   public Grimpeur(int portServo, int portMoteur, String name) {
     ratchet = new Servo(portServo);
     moteur = new VictorSP(portMoteur);
+    this.name = name;
     addChild("Servo Grimpeur", ratchet);
     addChild("Moteur Grimpeur", moteur);
-
   }
 
   @Override
   public void periodic() {
+  }
+
+  @Override
+  public String configureLogName() {
+    return name;
   }
 
   public void stop() {

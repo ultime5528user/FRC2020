@@ -44,11 +44,12 @@ public class Tirer extends CommandBase {
 
     if (shooter.getVitesse() >= Shooter.kRPM * Shooter.kPrecision) {
       intake.transporter();
-      intake.avaler();
+      intake.prendreBallon();
     }
-    if (!intake.hasBallonHaut()) {
+
+    if (!intake.hasBallonHaut() && !timer.isRunning()) {
       timer.start();
-    } else if (timer.isRunning()) {
+    } else if (timer.isRunning() && intake.hasBallonHaut()) {
       timer.stop();
       timer.reset();
     }
@@ -58,7 +59,10 @@ public class Tirer extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     shooter.stop();
+    intake.stopTransporteur();
+    intake.stopIntake();
     timer.stop();
+
   }
 
   // Returns true when the command should end.

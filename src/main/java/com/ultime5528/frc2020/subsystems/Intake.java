@@ -73,7 +73,7 @@ public class Intake extends SubsystemBase {
     }
   }
 
-  public void avaler() {
+  public void prendreBallon() {
     moteurIntake.set(kVitesseAvaler);
   }
 

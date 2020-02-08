@@ -79,8 +79,8 @@ public class RobotContainer {
     new JoystickButton(joystick, 11).whenHeld(new DescendreGrimpeur(grimpeurGauche));
     new JoystickButton(joystick, 12).whenHeld(new Grimper(grimpeurGauche));
     
-    new JoystickButton(joystick, 4).whenPressed(new TournerRoulette(roulette));
-    new JoystickButton(joystick, 9).whenPressed(new Tirer(shooter, intake, vision));
+    new JoystickButton(joystick, 3).whenPressed(new TournerRoulette(roulette));
+    new JoystickButton(joystick, 4).whenPressed(new Tirer(shooter, intake, vision));
     new JoystickButton(joystick, 5).toggleWhenPressed(new PrendreTransporterBallon(intake));
     
   }
