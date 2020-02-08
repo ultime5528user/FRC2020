@@ -33,7 +33,7 @@ public class Tirer extends CommandBase {
   @Override
   public void initialize() {
     timer.reset();
-    vision.enable();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -59,7 +59,6 @@ public class Tirer extends CommandBase {
   public void end(boolean interrupted) {
     shooter.stop();
     timer.stop();
-    vision.disable();
   }
 
   // Returns true when the command should end.

@@ -12,59 +12,39 @@ import java.util.OptionalDouble;
 import com.ultime5528.frc2020.subsystems.BasePilotable;
 import com.ultime5528.frc2020.subsystems.VisionController;
 
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class Viser extends CommandBase {
-
-  public static double kTolerance = 0.1;
-
-
+public class ViserBasique extends CommandBase {
   private BasePilotable basePilotable;
   private VisionController vision;
 
-  private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(
-      BasePilotable.kMaxSpeedRadianPerSecond, BasePilotable.kMaxAccelerationRadianPerSecondSquared);
-  private TrapezoidProfile.State goal = new TrapezoidProfile.State();
-  private TrapezoidProfile.State current = new TrapezoidProfile.State();
-
   private OptionalDouble angle;
 
-  private DifferentialDriveWheelSpeeds prevSpeeds = new DifferentialDriveWheelSpeeds();
+  public static double kTolerance = 0.1;
+  public static double kS = 0.3;
+  public static double kP = 0.3;
 
-  public Viser(BasePilotable basePilotable, VisionController vision) {
+  public ViserBasique(BasePilotable basePilotable, VisionController vision) {
     this.basePilotable = basePilotable;
     this.vision = vision;
     addRequirements(basePilotable, vision);
+
   }
 
   @Override
   public void initialize() {
-    basePilotable.resetPID();
     vision.enable();
   }
 
   @Override
   public void execute() {
-    // current.position = basePilotable.getHeading();
-    // current.velocity = basePilotable.getTurnRate();
-
     angle = vision.getAngleCible();
-    goal = new TrapezoidProfile.State(angle.orElse(0), 0);
-
-    TrapezoidProfile profile = new TrapezoidProfile(constraints, goal, current);
-
-    current = profile.calculate(TimedRobot.kDefaultPeriod);
-
-    var speeds = BasePilotable.kDriveKinematics
-        .toWheelSpeeds(new ChassisSpeeds(0, 0, Math.toRadians(current.velocity)));
-
-    basePilotable.tankDriveSpeeds(speeds, prevSpeeds);
-
-    prevSpeeds = speeds;
+    if (angle.isPresent()) {
+      double vitesseRotation = Math.signum(angle.getAsDouble()) * kS + kP * angle.getAsDouble();
+      basePilotable.drive(0, (vitesseRotation));
+    } else {
+      basePilotable.drive(0, 0);
+    }
   }
 
   @Override
