@@ -61,7 +61,7 @@ public class VisionController extends SubsystemBase {
   public OptionalDouble getAngleCible() {
     if (currentSnapshot.found) {
       double x = currentSnapshot.centreX;
-      double angle = Math.atan(kFocale / x);
+      double angle = Math.atan(x / kFocale);
 
       return OptionalDouble.of(angle);
     } else {
