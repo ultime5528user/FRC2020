@@ -25,16 +25,16 @@ public class Grimpeur extends SubsystemBase implements Loggable {
 
   private String name;
 
-  @Config
+  @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 2)
   public static double kRatchetLocked = 0;
-  @Config
+  @Config(rowIndex = 2, columnIndex = 0, width = 2, height = 2)
   public static double kRatchetUnlocked = 90;
 
-  @Config
+  @Config(rowIndex = 4, columnIndex = 0, width = 2, height = 2)
   public static double kVitesseDescendre = -1;
-  @Config
+  @Config(rowIndex = 0, columnIndex = 2, width = 2, height = 2)
   public static double kVitesseMonter = 1;
-  @Config
+  @Config(rowIndex = 0, columnIndex = 2, width = 2, height = 2)
   public static double kVitesseGrimper = 0.5;
 
   /**
