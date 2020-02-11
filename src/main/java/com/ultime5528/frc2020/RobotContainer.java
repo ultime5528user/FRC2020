@@ -42,11 +42,14 @@ public class RobotContainer {
 
   private final PowerDistributionPanel pdp;
 
+  private final Piloter piloter;
+
   public RobotContainer() {
     joystick = new Joystick(0);
 
     basePilotable = new BasePilotable();
-    basePilotable.setDefaultCommand(new Piloter(joystick, basePilotable));
+    piloter = new Piloter(joystick, basePilotable);
+    basePilotable.setDefaultCommand(piloter);
 
     grimpeurDroit = new Grimpeur(Ports.GRIMPEUR_SERVO_DROIT, Ports.GRIMPEUR_MOTEUR_DROIT,
         Ports.GRIMPEUR_DROIT_LIMIT_SWITCH_HAUT, Ports.GRIMPEUR_DROIT_LIMIT_SWITCH_BAS, "Grimpeur Droit");
@@ -66,7 +69,7 @@ public class RobotContainer {
 
     configureButtonBindings();
 
-    Logger.configureLoggingAndConfig(this, true);
+    Logger.configureLoggingAndConfig(this, false);
     if (Constants.ENABLE_COMMAND_TROUBLESHOOTING_PRINTS) {
 
       CommandScheduler.getInstance().onCommandInitialize(
