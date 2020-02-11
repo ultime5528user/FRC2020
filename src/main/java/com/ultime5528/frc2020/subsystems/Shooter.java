@@ -30,33 +30,33 @@ public class Shooter extends SubsystemBase implements Loggable {
 
   public static double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
 
-  @Config(rowIndex = 1, columnIndex = 3, width = 1, height = 1)
+  @Config(rowIndex = 1, columnIndex = 2, width = 2, height = 1)
   public static double kRPM = 2500;
 
-  @Config(rowIndex = 1, columnIndex = 3, width = 1, height = 1)
+  @Config(rowIndex = 2, columnIndex = 2, width = 2, height = 1)
   public static double kPrecision = 0.95;
 
-  @Config.NumberSlider(min = 0, max = 60, rowIndex = 0, columnIndex = 3, width = 2, height = 1)
+  @Config.NumberSlider(min = 0, max = 60, rowIndex = 0, columnIndex = 2, width = 2, height = 1)
   public static double kTempsTir = 5;
 
-  @Config(rowIndex = 1, columnIndex = 3, width = 1, height = 1)
+  @Config(rowIndex = 3, columnIndex = 2, width = 2, height = 1)
   public static double kCourbure = 0;
 
-  @Config(rowIndex = 1, columnIndex = 3, width = 1, height = 1)
+  @Config(rowIndex = 4, columnIndex = 2, width = 2, height = 1)
   public static double kDeadzoneY = 0;
 
-  @Config(rowIndex = 1, columnIndex = 3, width = 1, height = 1)
+  @Config(rowIndex = 5, columnIndex = 2, width = 2, height = 1)
   public static double kDeadzoneX = 0;
 
   private CANSparkMax moteur;
   private CANSparkMax moteur2;
-  @Log.Graph(name = "Vitesse Encoder Shooter", methodName = "getVelocity", rowIndex = 0, columnIndex = 0, width = 3, height = 2)
+  @Log.Graph(name = "Vitesse Encoder Shooter", methodName = "getVelocity", rowIndex = 4, columnIndex = 0, width = 3, height = 2)
   private CANEncoder encoder;
 
-  @Config(rowIndex = 2, columnIndex = 0, width = 1, height = 1, methodName = "setP")
-  @Config(rowIndex = 2, columnIndex = 1, width = 1, height = 1, methodName = "setI")
-  @Config(rowIndex = 3, columnIndex = 0, width = 1, height = 1, methodName = "setD")
-  @Config(rowIndex = 3, columnIndex = 1, width = 1, height = 1, methodName = "setFF")
+  @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 2, methodName = "setP", methodTypes = { double.class })
+  @Config(rowIndex = 2, columnIndex = 0, width = 2, height = 2, methodName = "setI", methodTypes = { double.class })
+  @Config(rowIndex = 0, columnIndex = 2, width = 2, height = 2, methodName = "setD", methodTypes = { double.class })
+  @Config(rowIndex = 2, columnIndex = 2, width = 2, height = 2, methodName = "setFF", methodTypes = { double.class })
   private CANPIDController pidController;
 
   private LinearInterpolator interpolator = new LinearInterpolator(

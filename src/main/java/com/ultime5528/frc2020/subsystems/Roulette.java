@@ -19,14 +19,14 @@ import io.github.oblarg.oblog.annotations.Config;
 
 public class Roulette extends SubsystemBase implements Loggable {
 
-  @Config
+  @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1)
   public static double kVitesseTourner = 0.75;
-  @Config
+  @Config(rowIndex = 1, columnIndex = 0, width = 2, height = 1)
   public static double kTempsTourner = 10;
   private VictorSP moteurRoulette;
 
   private ColorSensorV3 capteurCouleur;
-  @Config
+  @Config(rowIndex = 2, columnIndex = 0, width = 2, height = 1)
   private final I2C.Port kCapteurCouleurPort = I2C.Port.kOnboard;
 
   public Roulette() {
