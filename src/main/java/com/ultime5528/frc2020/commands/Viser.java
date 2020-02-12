@@ -52,8 +52,9 @@ public class Viser extends CommandBase {
     // current.position = basePilotable.getHeading();
     // current.velocity = basePilotable.getTurnRate();
 
-    angle = vision.getAngleCible();
-    goal = new TrapezoidProfile.State(angle.orElse(0), 0);
+    angle = vision.getAngleCible(); 
+    double goalAngle = angle.orElse(0) + basePilotable.getGyroAngle();
+    goal = new TrapezoidProfile.State(goalAngle, 0);
 
     TrapezoidProfile profile = new TrapezoidProfile(constraints, goal, current);
 
@@ -76,7 +77,6 @@ public class Viser extends CommandBase {
   @Override
   public boolean isFinished() {
     if (angle.isPresent()) {
-
       return Math.abs(angle.getAsDouble()) < kTolerance;
     } else {
       return false;
