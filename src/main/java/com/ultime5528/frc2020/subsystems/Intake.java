@@ -31,7 +31,7 @@ public class Intake extends SubsystemBase {
   private PowerDistributionPanel pdp;
 
   public static final double kVitesseAvaler = 0.5;
-  public static final double kVitesseTransporter = 0.5;
+  public static final double kVitesseTransporter = -0.5;
   public static final double kCurrentFilterTime = 2;
   public static final double kMaxCurrent = 20;
   public static final double kVitesseBrasGauche = 0.5;
