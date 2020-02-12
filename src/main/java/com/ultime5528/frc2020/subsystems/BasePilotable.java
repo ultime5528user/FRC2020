@@ -16,6 +16,7 @@ import com.ultime5528.frc2020.Constants;
 import com.ultime5528.frc2020.Ports;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -36,9 +37,9 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   public static final double kVelocityConversionFactor = kPositionConversionFactor / 60;
   public static final double kRampRate = 0.5;
 
-  public static final double kS = 0;
-  public static final double kV = 0;
-  public static final double kA = 0;
+  public static final double kS = 0.151;
+  public static final double kV = 3.15;
+  public static final double kA = 0.404;
   public static final SimpleMotorFeedforward kFeedForward = new SimpleMotorFeedforward(kS, kV, kA);
 
   public static final double kTrackWidth = 0.541;
@@ -53,7 +54,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
 
   public static final double kRamseteB = 0;
   public static final double kRamseteZeta = 0;
-  public static final double kPDriveVel = 0;
+  public static final double kPDriveVel = 2.0; // 1.41
 
   public static final boolean GYRO_REVERSED = false;
 
@@ -109,7 +110,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
       drive = new DifferentialDrive(moteurGauche, moteurDroit);
     }
 
-    gyro = new AHRS();
+    gyro = new AHRS(Port.kUSB);
     addChild("navX", gyro);
 
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
@@ -214,13 +215,17 @@ public class BasePilotable extends SubsystemBase implements Loggable {
     gyro.reset();
   }
 
+  public double getGyroAngle() {
+    return gyro.getAngle();
+  }
+
   /**
    * Returns the heading of the robot.
    *
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return Math.IEEEremainder(gyro.getAngle(), 360) * (GYRO_REVERSED ? -1.0 : 1.0); // TODO Vraiment nécessaire
+    return Math.IEEEremainder(getGyroAngle(), 360) * (GYRO_REVERSED ? -1.0 : 1.0); // TODO Vraiment nécessaire
                                                                                     // IEEEremainer?
   }
 
