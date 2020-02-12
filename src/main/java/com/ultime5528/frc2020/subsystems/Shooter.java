@@ -13,6 +13,7 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -76,8 +77,16 @@ public class Shooter extends SubsystemBase implements Loggable {
       moteur = new CANSparkMax(Ports.SHOOTER_MOTEUR, MotorType.kBrushless);
       moteur2 = new CANSparkMax(Ports.SHOOTER_MOTEUR2, MotorType.kBrushless);
 
+      moteur.restoreFactoryDefaults();
+      moteur2.restoreFactoryDefaults();
+
+      moteur.enableVoltageCompensation(12.0);
+      moteur.setIdleMode(IdleMode.kCoast);
+      moteur.setOpenLoopRampRate(0.5);
+      moteur.setOpenLoopRampRate(1.0);
+
+      encoder = moteur.getEncoder();
       pidController = moteur.getPIDController();
-      pidController.setFeedbackDevice(encoder);
       pidController.setP(kP);
       pidController.setI(kI);
       pidController.setD(kD);
@@ -85,8 +94,7 @@ public class Shooter extends SubsystemBase implements Loggable {
       pidController.setFF(kFF);
       pidController.setOutputRange(kMinOutput, kMaxOutput);
 
-      moteur2.follow(moteur);
-      moteur2.setInverted(true);
+      moteur2.follow(moteur, true);
 
     }
   }
@@ -121,7 +129,7 @@ public class Shooter extends SubsystemBase implements Loggable {
 
   public void stop() {
     if (Constants.ENABLE_CAN_SHOOTER) {
-      pidController.setReference(0, ControlType.kVelocity);
+      pidController.setReference(0, ControlType.kVoltage);
     }
   }
 
