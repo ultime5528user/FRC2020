@@ -31,15 +31,15 @@ public class Piloter extends CommandBase implements Loggable {
   public static double kDeadzoneJoystickY = 0.5;
   public static double kDeadzoneVitesseY = 0.5;
 
-  @Config.NumberSlider(name = "Courbure X", min = 0, max = 1, methodName = "setCourbure")
-  @Config.NumberSlider(name = "Deadzone Joystick X", min = 0, max = 1, methodName = "setDeadzoneX")
-  @Config.NumberSlider(name = "Deadzone Vitesse X", min = 0, max = 1, methodName = "setDeadzoneY")
+  @Config.NumberSlider(name = "Courbure X", min = 0, max = 1, methodName = "setCourbure", methodTypes = {double.class}, rowIndex = 0, columnIndex = 0, width = 2, height = 2)
+  @Config.NumberSlider(name = "Deadzone Joystick X", min = 0, max = 1, methodName = "setDeadzoneX", methodTypes = {double.class}, rowIndex = 2, columnIndex = 0, width = 2, height = 2)
+  @Config.NumberSlider(name = "Deadzone Vitesse X", min = 0, max = 1, methodName = "setDeadzoneY", methodTypes = {double.class}, rowIndex = 4, columnIndex = 0, width = 2, height = 2)
   private CubicInterpolator cubicInterpolatorX = new CubicInterpolator(kCourbureX, kDeadzoneJoystickX,
       kDeadzoneVitesseX);
 
-  @Config.NumberSlider(name = "Courbure Y", min = 0, max = 1, methodName = "setCourbure")
-  @Config.NumberSlider(name = "Deadzone Joystick Y", min = 0, max = 1, methodName = "setDeadzoneX")
-  @Config.NumberSlider(name = "Deadzone Vitesse Y", min = 0, max = 1, methodName = "setDeadzoneY")
+  @Config.NumberSlider(name = "Courbure Y", min = 0, max = 1, methodName = "setCourbure", methodTypes = {double.class}, rowIndex = 0, columnIndex = 2, width = 2, height = 2)
+  @Config.NumberSlider(name = "Deadzone Joystick Y", min = 0, max = 1, methodName = "setDeadzoneX", methodTypes = {double.class}, rowIndex = 2, columnIndex = 2, width = 2, height = 2)
+  @Config.NumberSlider(name = "Deadzone Vitesse Y", min = 0, max = 1, methodName = "setDeadzoneY", methodTypes = {double.class}, rowIndex = 4, columnIndex = 2, width = 2, height = 2)
   private CubicInterpolator cubicInterpolatorY = new CubicInterpolator(kCourbureY, kDeadzoneJoystickY,
       kDeadzoneVitesseY);
 
