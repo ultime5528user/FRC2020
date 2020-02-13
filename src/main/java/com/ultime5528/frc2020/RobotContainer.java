@@ -9,6 +9,7 @@ package com.ultime5528.frc2020;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -62,7 +63,11 @@ public class RobotContainer {
 
     roulette = new Roulette();
 
-    pdp = new PowerDistributionPanel();
+    if (Constants.ENABLE_PDP) {
+      pdp = new PowerDistributionPanel();
+    } else {
+      pdp = null;
+    }
 
     intake = new Intake(pdp);
 

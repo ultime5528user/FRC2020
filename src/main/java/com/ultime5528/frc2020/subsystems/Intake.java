@@ -7,6 +7,7 @@
 
 package com.ultime5528.frc2020.subsystems;
 
+import com.ultime5528.frc2020.Constants;
 import com.ultime5528.frc2020.Ports;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -66,7 +67,8 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (linearFilter.calculate(pdp.getCurrent(Ports.PDP.INTAKE_MOTEUR_TRANSPORTEUR)) >= kMaxCurrent) {
+    if (Constants.ENABLE_PDP
+        && linearFilter.calculate(pdp.getCurrent(Ports.PDP.INTAKE_MOTEUR_TRANSPORTEUR)) >= kMaxCurrent) {
       stopTransporteur = true;
     } else {
       stopTransporteur = false;
