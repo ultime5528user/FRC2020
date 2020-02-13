@@ -39,16 +39,6 @@ public class Shooter extends SubsystemBase implements Loggable {
 
   @Config.NumberSlider(min = 0, max = 60, rowIndex = 0, columnIndex = 2, width = 2, height = 1)
   public static double kTempsTir = 5;
-
-  @Config(rowIndex = 3, columnIndex = 2, width = 2, height = 1)
-  public static double kCourbure = 0;
-
-  @Config(rowIndex = 4, columnIndex = 2, width = 2, height = 1)
-  public static double kDeadzoneY = 0;
-
-  @Config(rowIndex = 5, columnIndex = 2, width = 2, height = 1)
-  public static double kDeadzoneX = 0;
-
   private CANSparkMax moteur;
   private CANSparkMax moteur2;
   @Log.Graph(name = "Vitesse Encoder Shooter", methodName = "getVelocity", rowIndex = 4, columnIndex = 0, width = 3, height = 2)
