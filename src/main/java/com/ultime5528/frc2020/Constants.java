@@ -7,6 +7,8 @@
 
 package com.ultime5528.frc2020;
 
+import edu.wpi.first.wpilibj.RobotBase;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants. This class should not be used for any other
@@ -19,8 +21,9 @@ package com.ultime5528.frc2020;
  */
 public final class Constants {
 
-    public static final boolean ENABLE_CAN_BASE_PILOTABLE = true;
-    public static final boolean ENABLE_CAN_SHOOTER = true;
+    public static final boolean ENABLE_CAN_BASE_PILOTABLE = RobotBase.isReal() && true;
+    public static final boolean ENABLE_CAN_SHOOTER = RobotBase.isReal() && true;
+    public static final boolean ENABLE_PDP = true;
     public static final boolean ENABLE_VISION = false;
     public static final boolean ENABLE_COMMAND_TROUBLESHOOTING_PRINTS = true;
 
