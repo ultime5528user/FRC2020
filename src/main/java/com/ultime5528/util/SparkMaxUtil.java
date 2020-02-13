@@ -35,7 +35,7 @@ public final class SparkMaxUtil {
         handleCANError(slave.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 1000), "set status0 rate", slave);
         handleCANError(slave.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 1000), "set status1 rate", slave);
         handleCANError(slave.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 1000), "set status2 rate", slave);
-        handleCANError(slave.follow(leader), "follow", slave);
+        handleCANError(slave.follow(leader, inversed), "follow", slave);
         configureMotor(slave);
     }
 
