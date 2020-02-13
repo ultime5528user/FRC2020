@@ -22,6 +22,7 @@ import com.ultime5528.frc2020.Constants;
 import com.ultime5528.frc2020.Ports;
 import com.ultime5528.util.LinearInterpolator;
 import com.ultime5528.util.Point;
+import com.ultime5528.util.SparkMaxUtil;
 
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
@@ -67,13 +68,17 @@ public class Shooter extends SubsystemBase implements Loggable {
       moteur = new CANSparkMax(Ports.SHOOTER_MOTEUR, MotorType.kBrushless);
       moteur2 = new CANSparkMax(Ports.SHOOTER_MOTEUR2, MotorType.kBrushless);
 
-      moteur.restoreFactoryDefaults();
-      moteur2.restoreFactoryDefaults();
+      SparkMaxUtil.configureMasterMotor(moteur);
+      SparkMaxUtil.configureSlaveMotor(moteur2, moteur, true);
 
-      moteur.enableVoltageCompensation(12.0);
-      moteur.setIdleMode(IdleMode.kCoast);
-      moteur.setOpenLoopRampRate(0.5);
-      moteur.setOpenLoopRampRate(1.0);
+      // TODO Clear
+      // moteur.restoreFactoryDefaults();
+      // moteur2.restoreFactoryDefaults();
+
+      // moteur.enableVoltageCompensation(12.0);
+      // moteur.setIdleMode(IdleMode.kCoast);
+      // moteur.setOpenLoopRampRate(0.5);
+      // moteur.setOpenLoopRampRate(1.0);
 
       encoder = moteur.getEncoder();
       pidController = moteur.getPIDController();
@@ -84,7 +89,7 @@ public class Shooter extends SubsystemBase implements Loggable {
       pidController.setFF(kFF);
       pidController.setOutputRange(kMinOutput, kMaxOutput);
 
-      moteur2.follow(moteur, true);
+      // moteur2.follow(moteur, true);
 
     }
   }

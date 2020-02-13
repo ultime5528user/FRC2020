@@ -7,16 +7,22 @@
 
 package com.ultime5528.frc2020.subsystems;
 
+import static com.ultime5528.util.SparkMaxUtil.handleCANError;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
+import com.revrobotics.ControlType;
 import com.ultime5528.frc2020.Constants;
 import com.ultime5528.frc2020.Ports;
+import com.ultime5528.util.LogUtil;
 
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.SerialPort.Port;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -28,14 +34,14 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
+import static com.ultime5528.util.SparkMaxUtil.*;
 
 public class BasePilotable extends SubsystemBase implements Loggable {
 
-  public static final double kWheelDiameter = 8 * 0.0254;
-  public static final double kGearboxRatio = (1.0 / 7.0) * (18.0 / 42.0);
+  public static final double kWheelDiameter = 8 * 0.0254; // 8 pouces en mètres
+  public static final double kGearboxRatio = (1.0 / 7.0) * (18.0 / 42.0); // gearbox et poulies
   public static final double kPositionConversionFactor = kGearboxRatio * kWheelDiameter * Math.PI;
   public static final double kVelocityConversionFactor = kPositionConversionFactor / 60;
-  public static final double kRampRate = 0.5;
 
   public static final double kS = 0.151;
   public static final double kV = 3.15;
@@ -73,6 +79,9 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   @Log.Graph(name = "Position Encoder Gauche", methodName = "getPosition", rowIndex = 0, columnIndex = 2, width = 3, height = 2)
   private CANEncoder encoderGauche;
 
+  private CANPIDController controllerGauche;
+  private CANPIDController controllerDroit;
+
   private PIDController pidDroit = BasePilotable.createPIDController();
   private PIDController pidGauche = BasePilotable.createPIDController();
 
@@ -85,6 +94,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   public BasePilotable() {
 
     if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
+
       moteurDroit = new CANSparkMax(Ports.BASE_PILOTABLE_MOTEUR_DROIT1, MotorType.kBrushless);
       moteurDroit2 = new CANSparkMax(Ports.BASE_PILOTABLE_MOTEUR_DROIT2, MotorType.kBrushless);
       moteurDroit3 = new CANSparkMax(Ports.BASE_PILOTABLE_MOTEUR_DROIT3, MotorType.kBrushless);
@@ -93,21 +103,24 @@ public class BasePilotable extends SubsystemBase implements Loggable {
       moteurGauche2 = new CANSparkMax(Ports.BASE_PILOTABLE_MOTEUR_GAUCHE2, MotorType.kBrushless);
       moteurGauche3 = new CANSparkMax(Ports.BASE_PILOTABLE_MOTEUR_GAUCHE3, MotorType.kBrushless);
 
-      configureMotor(moteurDroit);
-      configureMotor(moteurDroit2);
-      configureMotor(moteurDroit3);
-      configureMotor(moteurGauche);
-      configureMotor(moteurGauche2);
-      configureMotor(moteurGauche3);
+      configureMasterMotor(moteurDroit);
+      configureSlaveMotor(moteurDroit2, moteurDroit);
+      configureSlaveMotor(moteurDroit3, moteurDroit);
+      controllerDroit = moteurDroit.getPIDController();
+
+      configureMasterMotor(moteurGauche);
+      configureSlaveMotor(moteurGauche2, moteurGauche);
+      configureSlaveMotor(moteurGauche3, moteurGauche);
+      controllerGauche = moteurGauche.getPIDController();
 
       encoderDroit = moteurDroit.getEncoder();
+      configureEncoder(encoderDroit);
+      
       encoderGauche = moteurGauche.getEncoder();
-      moteurDroit2.follow(moteurDroit);
-      moteurDroit3.follow(moteurDroit);
-      moteurGauche2.follow(moteurGauche);
-      moteurGauche3.follow(moteurGauche);
+      configureEncoder(encoderGauche);
 
       drive = new DifferentialDrive(moteurGauche, moteurDroit);
+      
     }
 
     gyro = new AHRS(Port.kUSB);
@@ -116,14 +129,9 @@ public class BasePilotable extends SubsystemBase implements Loggable {
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
   }
 
-  public void configureMotor(CANSparkMax motor) {
-    motor.restoreFactoryDefaults();
-    motor.clearFaults();
-    motor.setIdleMode(IdleMode.kCoast);
-    motor.enableVoltageCompensation(12.0);
-    motor.setClosedLoopRampRate(kRampRate);
-    motor.getEncoder().setPositionConversionFactor(kPositionConversionFactor);
-    motor.getEncoder().setVelocityConversionFactor(kVelocityConversionFactor);
+  private void configureEncoder(CANEncoder encoder) {
+    handleCANError(encoder.setPositionConversionFactor(kPositionConversionFactor), "setPositionConversionFactor");
+    handleCANError(encoder.setVelocityConversionFactor(kVelocityConversionFactor), "setVelocityConversionFactor");
   }
 
   @Override
@@ -131,6 +139,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
     // Update the odometry in the periodic block
     if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
       odometry.update(Rotation2d.fromDegrees(getHeading()), encoderGauche.getPosition(), encoderDroit.getPosition());
+      handleFaults();
     }
   }
 
@@ -146,7 +155,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
     }
   }
 
-  public void resetOdometry(Pose2d pose) {
+  public void resetOdometry(Pose2d pose) { // TODO Méthode vraiment nécessaire? C'est quelque chose que l'on veut éviter
     resetEncoders();
     odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
   }
@@ -241,13 +250,28 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   public void resetPID() {
     pidGauche.reset();
     pidDroit.reset();
+  }
 
+  private void handleFaults() {
+    handleSlaveFault(moteurDroit2, moteurDroit, "Moteur Droit 2");
+    handleSlaveFault(moteurDroit3, moteurDroit, "Moteur Droit 3");
+    handleSlaveFault(moteurGauche2, moteurGauche, "Moteur Gauche 2");
+    handleSlaveFault(moteurGauche3, moteurGauche, "Moteur Gauche 3");
+  } 
+
+  private void handleSlaveFault(CANSparkMax slave, CANSparkMax master, String name) {
+    if (slave.getStickyFault(CANSparkMax.FaultID.kHasReset)) {
+      LogUtil.reportWarning("CAN", name + " reset!");
+      handleCANError(slave.follow(master), "follow master", slave);
+      handleCANError(slave.clearFaults(), "slave clearFaults", slave);
+    }
   }
 
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
-      moteurGauche.setVoltage(leftVolts);
-      moteurDroit.setVoltage(-rightVolts); // TODO Vérifier si négatif est nécessaire
+      handleCANError(controllerGauche.setReference(leftVolts, ControlType.kVoltage), "tankDriveVolts setReference", moteurGauche);
+      // TODO Vérifier si négatif est nécessaire
+      handleCANError(controllerDroit.setReference(-rightVolts, ControlType.kVoltage), "tankDriveVolts setReference", moteurDroit);
     }
   }
 
@@ -272,4 +296,5 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   public static PIDController createPIDController() {
     return new PIDController(kPDriveVel, 0, 0);
   }
+
 }
