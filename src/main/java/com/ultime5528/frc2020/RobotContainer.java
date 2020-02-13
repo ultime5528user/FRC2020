@@ -19,6 +19,7 @@ import com.ultime5528.frc2020.commands.MonterGrimpeur;
 import com.ultime5528.frc2020.commands.Piloter;
 import com.ultime5528.frc2020.commands.Tirer;
 import com.ultime5528.frc2020.commands.TournerRoulette;
+import com.ultime5528.frc2020.commands.ViderIntake;
 import com.ultime5528.frc2020.subsystems.BasePilotable;
 import com.ultime5528.frc2020.subsystems.Grimpeur;
 import com.ultime5528.frc2020.subsystems.Intake;
@@ -70,6 +71,9 @@ public class RobotContainer {
     configureButtonBindings();
 
     Logger.configureLoggingAndConfig(this, false);
+
+    SmartDashboard.putData(CommandScheduler.getInstance());
+
     if (Constants.ENABLE_COMMAND_TROUBLESHOOTING_PRINTS) {
 
       CommandScheduler.getInstance().onCommandInitialize(
@@ -82,6 +86,7 @@ public class RobotContainer {
           command -> System.out.println(command.getName() + " interrupted"));
           
     }
+    SmartDashboard.putData(new ViderIntake(intake).withTimeout(5.0));
   }
 
   private void configureButtonBindings() {

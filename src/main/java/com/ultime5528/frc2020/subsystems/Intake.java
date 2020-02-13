@@ -43,7 +43,7 @@ public class Intake extends SubsystemBase {
 
     moteurIntake = new VictorSP(Ports.INTAKE_MOTEUR_INTAKE);
     addChild("Moteur Intake", moteurIntake);
-    
+
     moteurTransporteur = new VictorSP(Ports.INTAKE_MOTEUR_TRANSPORTEUR);
     addChild("Moteur Transporteur", moteurTransporteur);
 
@@ -55,7 +55,7 @@ public class Intake extends SubsystemBase {
 
     photocellBas = new DigitalInput(Ports.INTAKE_PHOTOCELL_BAS);
     addChild("Photocell Bas", photocellBas);
-    
+
     photocellHaut = new DigitalInput(Ports.INTAKE_PHOTOCELL_HAUT);
     addChild("Photocell Haut", photocellHaut);
 
@@ -109,6 +109,14 @@ public class Intake extends SubsystemBase {
 
   public boolean hasBallonHaut() {
     return photocellHaut.get();
+  }
+
+  public void transporterInverse() {
+    moteurTransporteur.set(-kVitesseTransporter);
+  }
+
+  public void prendreBallonInverse() {
+    moteurIntake.set(-kVitesseAvaler);
   }
 
 }
