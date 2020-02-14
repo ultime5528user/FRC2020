@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class VisionController extends SubsystemBase {
 
   private NetworkTableEntry snapshotEntry;
+  private NetworkTableEntry angleEntry;
 
   private static double kFOV = 49.8; // Degrés
   private static double kFocale = 1 / Math.tan(Math.toRadians(kFOV) / 2);
@@ -25,8 +26,14 @@ public class VisionController extends SubsystemBase {
 
   private boolean isEnabled = false;
 
-  public VisionController() {
+  private BasePilotable basePilotable;
+
+  public VisionController(BasePilotable basePilotable) {
+    this.basePilotable = basePilotable;
+
     snapshotEntry = NetworkTableInstance.getDefault().getTable("Vision").getEntry("Snapshot");
+    angleEntry = NetworkTableInstance.getDefault().getTable("Vision").getEntry("RobotAngle");
+
     readSnapshot();
   }
 
@@ -35,6 +42,9 @@ public class VisionController extends SubsystemBase {
     if (isEnabled) {
       readSnapshot();
     }
+
+    //Send angle to RPi
+    angleEntry.setValue(basePilotable.getGyroAngle());
   }
 
   public void enable() {
@@ -62,6 +72,9 @@ public class VisionController extends SubsystemBase {
     if (currentSnapshot.found) {
       double x = currentSnapshot.centreX;
       double angle = Math.atan(x / kFocale);
+      
+      //correction de l'angle
+      angle -= (basePilotable.getGyroAngle() - currentSnapshot.angle);
 
       return OptionalDouble.of(angle);
     } else {
@@ -71,7 +84,7 @@ public class VisionController extends SubsystemBase {
 
   public static class VisionSnapshot {
 
-    public final long timestamp;
+    public final double angle;
     public final boolean found;
     public final double centreX;
     public final double hauteur;
@@ -80,8 +93,8 @@ public class VisionController extends SubsystemBase {
       this(0L, false, 0.0, 0.0);
     }
 
-    public VisionSnapshot(long timestamp, boolean found, double centreX, double hauteur) {
-      this.timestamp = timestamp;
+    public VisionSnapshot(double angle, boolean found, double centreX, double hauteur) {
+      this.angle = angle;
       this.found = found;
       this.centreX = centreX;
       this.hauteur = hauteur;
@@ -99,7 +112,7 @@ public class VisionController extends SubsystemBase {
         String[] splitted = data.split(";");
 
         snapshot = new VisionSnapshot(
-            Long.parseLong(splitted[0]),
+            Double.parseDouble(splitted[0]),
             Boolean.parseBoolean(splitted[1]),
             Double.parseDouble(splitted[2]),
             Double.parseDouble(splitted[3]));
