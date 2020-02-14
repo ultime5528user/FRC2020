@@ -74,7 +74,7 @@ public class RobotContainer {
 
     intake = new Intake(pdp);
 
-    vision = new VisionController();
+    vision = new VisionController(basePilotable);
 
     configureButtonBindings();
 
