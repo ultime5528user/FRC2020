@@ -48,19 +48,18 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   public static final double kA = 0.404;
   public static final SimpleMotorFeedforward kFeedForward = new SimpleMotorFeedforward(kS, kV, kA);
 
-  public static final double kTrackWidth = 0.541;
+  public static final double kTrackWidth = 0.641; // TODO Valider FRC Characterization, refaire depuis la correction gearbox gauche
   public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidth);
 
-  public static final double kMaxSpeedMetersPerSecond = 0;
-  public static final double kMaxAccelerationMetersPerSecondSquared = 0;
+  public static final double kMaxSpeedMetersPerSecond = 4.0;
+  public static final double kMaxAccelerationMetersPerSecondSquared = 30.0;
 
-  public static final double kMaxSpeedRadianPerSecond = kMaxSpeedMetersPerSecond / (kTrackWidth / 2);
-  public static final double kMaxAccelerationRadianPerSecondSquared = kMaxAccelerationMetersPerSecondSquared
-      / (kTrackWidth / 2);
+  public static final double kMaxSpeedRadianPerSecond = toRadial(kMaxSpeedMetersPerSecond);
+  public static final double kMaxAccelerationRadianPerSecondSquared = toRadial(kMaxAccelerationMetersPerSecondSquared);
 
-  public static final double kRamseteB = 0;
-  public static final double kRamseteZeta = 0;
-  public static final double kPDriveVel = 2.0; // 1.41
+  public static final double kRamseteB = 2.0;
+  public static final double kRamseteZeta = 0.7;
+  public static final double kPDriveVel = 0.0; // 2.0; // 1.41
 
   public static final boolean GYRO_REVERSED = false;
 
@@ -295,6 +294,14 @@ public class BasePilotable extends SubsystemBase implements Loggable {
 
   public static PIDController createPIDController() {
     return new PIDController(kPDriveVel, 0, 0);
+  }
+
+  public static double toRadial(double lin) {
+    return lin / (kTrackWidth / 2.0);
+  }
+
+  public static double toLinear(double a) {
+    return a * (kTrackWidth / 2.0);
   }
 
 }

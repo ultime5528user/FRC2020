@@ -13,12 +13,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
+import com.ultime5528.frc2020.commands.DescendreEnleverRatchet;
 import com.ultime5528.frc2020.commands.DescendreGrimpeur;
 import com.ultime5528.frc2020.commands.PrendreTransporterBallon;
 import com.ultime5528.frc2020.commands.Grimper;
 import com.ultime5528.frc2020.commands.MonterGrimpeur;
 import com.ultime5528.frc2020.commands.Piloter;
 import com.ultime5528.frc2020.commands.Tirer;
+import com.ultime5528.frc2020.commands.Tourner;
 import com.ultime5528.frc2020.commands.TournerRoulette;
 import com.ultime5528.frc2020.commands.ViderIntake;
 import com.ultime5528.frc2020.subsystems.BasePilotable;
@@ -91,12 +94,13 @@ public class RobotContainer {
           command -> System.out.println(command.getName() + " interrupted"));
           
     }
-    SmartDashboard.putData(new ViderIntake(intake).withTimeout(5.0));
+    SmartDashboard.putData("Vider intake", new ViderIntake(intake).withTimeout(5.0));
+    SmartDashboard.putData("Tourner 90", new Tourner(basePilotable, 180.0));
   }
 
   private void configureButtonBindings() {
 
-    new JoystickButton(joystick, 7).whenHeld(new MonterGrimpeur(grimpeurDroit));
+    new JoystickButton(joystick, 7).whenHeld(new DescendreEnleverRatchet(grimpeurDroit));
     new JoystickButton(joystick, 8).whenHeld(new DescendreGrimpeur(grimpeurDroit));
     new JoystickButton(joystick, 9).whenHeld(new Grimper(grimpeurDroit));
 
