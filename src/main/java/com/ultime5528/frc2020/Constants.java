@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.RobotBase;
  */
 public final class Constants {
 
-    public static final boolean ENABLE_CAN_BASE_PILOTABLE = RobotBase.isReal() && true;
+    public static final boolean ENABLE_CAN_BASE_PILOTABLE = RobotBase.isReal() && false;
     public static final boolean ENABLE_CAN_SHOOTER = RobotBase.isReal() && true;
     public static final boolean ENABLE_PDP = true;
     public static final boolean ENABLE_VISION = false;

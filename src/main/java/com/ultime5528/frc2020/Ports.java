@@ -41,6 +41,8 @@ public class Ports {
     public static final int GRIMPEUR_GAUCHE_LIMIT_SWITCH_BAS    = 6;
     public static final int INTAKE_PHOTOCELL_HAUT               = 8;
     public static final int INTAKE_PHOTOCELL_BAS                = 9;
+    //RELAY
+    public static final int VISION_LED = 0;              
 
     public static class PDP {
         public static final int INTAKE_MOTEUR_TRANSPORTEUR = 2;

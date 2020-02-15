@@ -9,15 +9,20 @@ package com.ultime5528.frc2020.subsystems;
 
 import java.util.OptionalDouble;
 
+import com.ultime5528.frc2020.Ports;
+
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionController extends SubsystemBase {
 
   private NetworkTableEntry snapshotEntry;
   private NetworkTableEntry angleEntry;
+  private Relay led;
 
   private static double kFOV = 49.8; // Degrés
   private static double kFocale = 1 / Math.tan(Math.toRadians(kFOV) / 2);
@@ -33,6 +38,7 @@ public class VisionController extends SubsystemBase {
 
     snapshotEntry = NetworkTableInstance.getDefault().getTable("Vision").getEntry("Snapshot");
     angleEntry = NetworkTableInstance.getDefault().getTable("Vision").getEntry("RobotAngle");
+    led = new Relay(Ports.VISION_LED);
 
     readSnapshot();
   }
@@ -49,10 +55,13 @@ public class VisionController extends SubsystemBase {
 
   public void enable() {
     isEnabled = true;
+    
+    led.set(Value.kOn);
   }
 
   public void disable() {
     isEnabled = false;
+    led.set(Value.kOff);
   }
 
   public void readSnapshot(){

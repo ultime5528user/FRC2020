@@ -22,6 +22,7 @@ import com.ultime5528.frc2020.commands.grimpeur.Grimper;
 import com.ultime5528.frc2020.commands.grimpeur.MonterGrimpeur;
 import com.ultime5528.frc2020.commands.shooter.Tirer;
 import com.ultime5528.frc2020.commands.basepilotable.Tourner;
+import com.ultime5528.frc2020.commands.basepilotable.Viser;
 import com.ultime5528.frc2020.commands.basepilotable.Piloter;
 import com.ultime5528.frc2020.commands.roulette.TournerRoulette;
 
@@ -100,6 +101,7 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
+    new JoystickButton(joystick, 2).toggleWhenPressed(new Viser(basePilotable, vision));
 
     new JoystickButton(joystick, 7).whenHeld(new DescendreEnleverRatchet(grimpeurDroit));
     new JoystickButton(joystick, 8).whenHeld(new DescendreGrimpeur(grimpeurDroit));
