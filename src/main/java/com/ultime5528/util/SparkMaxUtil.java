@@ -10,7 +10,7 @@ import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
  */
 public final class SparkMaxUtil {
 
-    public static final double kRampRate = 0.5;
+    public static final double kRampRate = 1.0;
     public static final double kVoltageCompensation = 12.0;
 
     public static void handleCANError(CANError error, String message, CANSparkMax sparkMax) {
@@ -47,7 +47,7 @@ public final class SparkMaxUtil {
     public static void configureMotor(CANSparkMax motor) {
         handleCANError(motor.setIdleMode(IdleMode.kCoast), "setIdleMode", motor);
         handleCANError(motor.enableVoltageCompensation(kVoltageCompensation), "enableVoltageCompensation", motor);
-        handleCANError(motor.setClosedLoopRampRate(kRampRate), "setClosedLoopRampRate", motor);
+        handleCANError(motor.setOpenLoopRampRate(kRampRate), "setClosedLoopRampRate", motor);
         handleCANError(motor.burnFlash(), "burnFlash", motor);
         handleCANError(motor.clearFaults(), "clearFaults", motor);
     }

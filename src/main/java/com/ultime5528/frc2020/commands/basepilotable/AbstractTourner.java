@@ -1,4 +1,4 @@
-package com.ultime5528.frc2020.commands;
+package com.ultime5528.frc2020.commands.basepilotable;
 
 import com.ultime5528.frc2020.subsystems.BasePilotable;
 
@@ -35,6 +35,7 @@ public abstract class AbstractTourner extends CommandBase {
     basePilotable.resetPID();
     current = new TrapezoidProfile.State();
     prevSpeeds = new DifferentialDriveWheelSpeeds();
+    TrapezoidProfile prof = new TrapezoidProfile(constraints, goal, current);
   }
 
   @Override
@@ -43,17 +44,21 @@ public abstract class AbstractTourner extends CommandBase {
     // current.velocity = basePilotable.getTurnRate();
 
     double goalAngle = calculateGoalAngle();
+    goalAngle = Math.toRadians(goalAngle);
     goal = new TrapezoidProfile.State(goalAngle, 0);
 
     TrapezoidProfile profile = new TrapezoidProfile(constraints, goal, current);
 
     current = profile.calculate(TimedRobot.kDefaultPeriod);
+    
+    SmartDashboard.putNumber("position goal", current.position);
+    SmartDashboard.putNumber("velocity goal", current.velocity);
 
     var speeds = BasePilotable.kDriveKinematics
-        .toWheelSpeeds(new ChassisSpeeds(0, 0, Math.toRadians(current.velocity)));
+        .toWheelSpeeds(new ChassisSpeeds(0, 0, current.velocity));
 
     SmartDashboard.putNumber("goal", speeds.leftMetersPerSecond);
-    SmartDashboard.putNumber("current", basePilotable.getLeftEncoder().getVelocity());
+    // SmartDashboard.putNumber("current", basePilotable.getLeftEncoder().getVelocity());
 
     basePilotable.tankDriveSpeeds(speeds, prevSpeeds);
 

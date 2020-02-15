@@ -5,40 +5,57 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package com.ultime5528.frc2020.commands;
+package com.ultime5528.frc2020.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import com.ultime5528.frc2020.subsystems.Grimpeur;
+import com.ultime5528.frc2020.subsystems.Intake;
+import com.ultime5528.util.Timer;
 
-public class DescendreGrimpeur extends CommandBase {
-  
-  private Grimpeur grimpeur;
+public class TransporterBallon extends CommandBase {
 
-  public DescendreGrimpeur(Grimpeur grimpeur) {
-    addRequirements(grimpeur);
-    this.grimpeur = grimpeur;
+  private Intake intake;
+  private Timer timer;
+
+  public TransporterBallon(Intake intake) {
+    this.intake = intake;
+    addRequirements(intake);
+    this.timer = new Timer();
+
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timer.reset();
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    grimpeur.descendre();
+    intake.transporter();
+
+    if (timer.get() >= Intake.kTempsStopIntake) {
+      intake.stopIntake();
+    } else {
+      intake.prendreBallon();
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    grimpeur.stop();
+    intake.stopTransporteur();
+    intake.stopIntake();
+    timer.stop();
+    if (!interrupted) {
+      intake.ballonDePlus();
+    }
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return grimpeur.estEnBas();
+    return !intake.hasBallonBas() || intake.hasBallonHaut();
   }
 }

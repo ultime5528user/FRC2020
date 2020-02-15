@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package com.ultime5528.frc2020.commands;
+package com.ultime5528.frc2020.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import com.ultime5528.frc2020.subsystems.Intake;
@@ -14,6 +14,7 @@ public class PrendreTransporterBallon extends SequentialCommandGroup {
   private Intake intake;
 
   public PrendreTransporterBallon(Intake intake) {
+
     super(new PrendreBallon(intake), new TransporterBallon(intake));
     this.intake = intake;
   }
@@ -23,7 +24,8 @@ public class PrendreTransporterBallon extends SequentialCommandGroup {
     super.end(interrupted);
     if (!interrupted && !intake.hasBallonBas()) {
       schedule();
-    }
+
+    } 
   }
 
 }

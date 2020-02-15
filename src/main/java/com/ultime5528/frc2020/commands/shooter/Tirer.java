@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package com.ultime5528.frc2020.commands;
+package com.ultime5528.frc2020.commands.shooter;
 
 import com.ultime5528.frc2020.subsystems.Intake;
 import com.ultime5528.frc2020.subsystems.Shooter;
@@ -62,6 +62,7 @@ public class Tirer extends CommandBase {
     intake.stopTransporteur();
     intake.stopIntake();
     timer.stop();
+    intake.resetBallonDansIntake();;
 
   }
 

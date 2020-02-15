@@ -14,16 +14,17 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
-import com.ultime5528.frc2020.commands.DescendreEnleverRatchet;
-import com.ultime5528.frc2020.commands.DescendreGrimpeur;
-import com.ultime5528.frc2020.commands.PrendreTransporterBallon;
-import com.ultime5528.frc2020.commands.Grimper;
-import com.ultime5528.frc2020.commands.MonterGrimpeur;
-import com.ultime5528.frc2020.commands.Piloter;
-import com.ultime5528.frc2020.commands.Tirer;
-import com.ultime5528.frc2020.commands.Tourner;
-import com.ultime5528.frc2020.commands.TournerRoulette;
-import com.ultime5528.frc2020.commands.ViderIntake;
+import com.ultime5528.frc2020.commands.grimpeur.DescendreEnleverRatchet;
+import com.ultime5528.frc2020.commands.grimpeur.DescendreGrimpeur;
+import com.ultime5528.frc2020.commands.intake.PrendreTransporterBallon;
+import com.ultime5528.frc2020.commands.intake.ViderIntake;
+import com.ultime5528.frc2020.commands.grimpeur.Grimper;
+import com.ultime5528.frc2020.commands.grimpeur.MonterGrimpeur;
+import com.ultime5528.frc2020.commands.shooter.Tirer;
+import com.ultime5528.frc2020.commands.basepilotable.Tourner;
+import com.ultime5528.frc2020.commands.basepilotable.Piloter;
+import com.ultime5528.frc2020.commands.roulette.TournerRoulette;
+
 import com.ultime5528.frc2020.subsystems.BasePilotable;
 import com.ultime5528.frc2020.subsystems.Grimpeur;
 import com.ultime5528.frc2020.subsystems.Intake;

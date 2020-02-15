@@ -5,19 +5,22 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package com.ultime5528.frc2020.commands;
+package com.ultime5528.frc2020.commands.intake;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import com.ultime5528.frc2020.subsystems.Intake;
 
-public class TransporterBallon extends CommandBase {
+import edu.wpi.first.wpilibj2.command.CommandBase;
+
+public class ViderIntake extends CommandBase {
 
   private Intake intake;
-
-  public TransporterBallon(Intake intake) {
+  /**
+   * Creates a new ViderIntake.
+   */
+  public ViderIntake(Intake intake) {
     this.intake = intake;
     addRequirements(intake);
-
+    setName("Vider Intake");
   }
 
   // Called when the command is initially scheduled.
@@ -28,21 +31,20 @@ public class TransporterBallon extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.transporter();
-    intake.prendreBallon();
-
+    intake.transporterInverse();
+    intake.prendreBallonInverse();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.stopTransporteur();
     intake.stopIntake();
+    intake.stopTransporteur();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !intake.hasBallonBas() || intake.hasBallonHaut();
+    return false;
   }
 }

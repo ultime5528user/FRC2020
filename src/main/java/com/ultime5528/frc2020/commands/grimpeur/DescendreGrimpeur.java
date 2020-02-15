@@ -5,21 +5,18 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package com.ultime5528.frc2020.commands;
-
-import com.ultime5528.frc2020.subsystems.Intake;
+package com.ultime5528.frc2020.commands.grimpeur;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import com.ultime5528.frc2020.subsystems.Grimpeur;
 
-public class ViderIntake extends CommandBase {
+public class DescendreGrimpeur extends CommandBase {
+  
+  private Grimpeur grimpeur;
 
-  private Intake intake;
-  /**
-   * Creates a new ViderIntake.
-   */
-  public ViderIntake(Intake intake) {
-    this.intake = intake;
-    addRequirements(intake);
+  public DescendreGrimpeur(Grimpeur grimpeur) {
+    addRequirements(grimpeur);
+    this.grimpeur = grimpeur;
   }
 
   // Called when the command is initially scheduled.
@@ -30,20 +27,18 @@ public class ViderIntake extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.transporterInverse();
-    intake.prendreBallonInverse();
+    grimpeur.descendre();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.stopIntake();
-    intake.stopTransporteur();
+    grimpeur.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return grimpeur.estEnBas();
   }
 }

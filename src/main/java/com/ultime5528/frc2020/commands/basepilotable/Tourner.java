@@ -1,4 +1,4 @@
-package com.ultime5528.frc2020.commands;
+package com.ultime5528.frc2020.commands.basepilotable;
 
 import com.ultime5528.frc2020.subsystems.BasePilotable;
 

@@ -5,16 +5,16 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package com.ultime5528.frc2020.commands;
+package com.ultime5528.frc2020.commands.grimpeur;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import com.ultime5528.frc2020.subsystems.Grimpeur;
 
-public class GrimperSansRatchet extends CommandBase {
-  
+public class Grimper extends CommandBase {
+
   private Grimpeur grimpeur;
 
-  public GrimperSansRatchet(Grimpeur grimpeur) {
+  public Grimper(Grimpeur grimpeur) {
     addRequirements(grimpeur);
     this.grimpeur = grimpeur;
   }
@@ -27,7 +27,7 @@ public class GrimperSansRatchet extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    grimpeur.grimperSansRatchet();
+    grimpeur.grimper();
   }
 
   // Called once the command ends or is interrupted.

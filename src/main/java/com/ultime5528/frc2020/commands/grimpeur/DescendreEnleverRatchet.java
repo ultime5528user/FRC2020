@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package com.ultime5528.frc2020.commands;
+package com.ultime5528.frc2020.commands.grimpeur;
 
 import com.ultime5528.frc2020.subsystems.Grimpeur;
 
@@ -16,6 +16,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
 public class DescendreEnleverRatchet extends SequentialCommandGroup {
   public DescendreEnleverRatchet(Grimpeur grimpeur) {
-    super(new GrimperSansRatchet(grimpeur).withTimeout(0.5), new MonterGrimpeur(grimpeur));
+    super(new GrimperSansRatchet(grimpeur).withTimeout(0.25), new MonterGrimpeur(grimpeur));
   }
 }

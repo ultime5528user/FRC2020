@@ -51,8 +51,8 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   public static final double kTrackWidth = 0.641; // TODO Valider FRC Characterization, refaire depuis la correction gearbox gauche
   public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidth);
 
-  public static final double kMaxSpeedMetersPerSecond = 4.0;
-  public static final double kMaxAccelerationMetersPerSecondSquared = 30.0;
+  public static final double kMaxSpeedMetersPerSecond = 3.0;
+  public static final double kMaxAccelerationMetersPerSecondSquared = 5.0;
 
   public static final double kMaxSpeedRadianPerSecond = toRadial(kMaxSpeedMetersPerSecond);
   public static final double kMaxAccelerationRadianPerSecondSquared = toRadial(kMaxAccelerationMetersPerSecondSquared);

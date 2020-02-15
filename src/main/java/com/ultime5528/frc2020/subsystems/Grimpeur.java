@@ -7,8 +7,6 @@
 
 package com.ultime5528.frc2020.subsystems;
 
-import com.revrobotics.CANDigitalInput.LimitSwitch;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.VictorSP;
@@ -26,16 +24,16 @@ public class Grimpeur extends SubsystemBase implements Loggable {
   private String name;
 
   @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 2)
-  public static double kRatchetLocked = 0;
+  public static double kRatchetLocked = 60;
   @Config(rowIndex = 2, columnIndex = 0, width = 2, height = 2)
   public static double kRatchetUnlocked = 90;
 
   @Config(rowIndex = 4, columnIndex = 0, width = 2, height = 2)
-  public static double kVitesseDescendre = -1;
+  public static double kVitesseDescendre = -0.5;
   @Config(rowIndex = 0, columnIndex = 2, width = 2, height = 2)
   public static double kVitesseMonter = 1;
   @Config(rowIndex = 0, columnIndex = 2, width = 2, height = 2)
-  public static double kVitesseGrimper = 0.5;
+  public static double kVitesseGrimper = -1;
 
   /**
    * Creates a new Grimpeur.
@@ -46,8 +44,9 @@ public class Grimpeur extends SubsystemBase implements Loggable {
     limitSwitchBas = new DigitalInput(portLimitSwitchBas);
     limitSwitchHaut = new DigitalInput(portLimitSwitchHaut);
 
-
     this.name = name;
+    setName(name);
+
     addChild("Servo Grimpeur", ratchet);
     addChild("Moteur Grimpeur", moteur);
     addChild("Limit Switch Haut", limitSwitchHaut);
@@ -87,10 +86,12 @@ public class Grimpeur extends SubsystemBase implements Loggable {
     ratchet.setAngle(kRatchetUnlocked);
     moteur.set(kVitesseGrimper);
   }
+  
   public boolean estEnBas(){
-    return limitSwitchBas.get();
+    return false; // !limitSwitchBas.get();
   }
+
   public boolean estEnHaut(){
-    return limitSwitchHaut.get();
+    return false; // !limitSwitchHaut.get();
   }
 }

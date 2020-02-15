@@ -5,18 +5,18 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package com.ultime5528.frc2020.commands;
+package com.ultime5528.frc2020.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import com.ultime5528.frc2020.subsystems.Grimpeur;
+import com.ultime5528.frc2020.subsystems.Intake;
 
-public class MonterGrimpeur extends CommandBase {
-  
-  private Grimpeur grimpeur;
+public class PrendreBallon extends CommandBase {
 
-  public MonterGrimpeur(Grimpeur grimpeur) {
-    addRequirements(grimpeur);
-    this.grimpeur = grimpeur;
+  private Intake intake;
+
+  public PrendreBallon(Intake intake) {
+    this.intake = intake;
+    addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.
@@ -24,21 +24,21 @@ public class MonterGrimpeur extends CommandBase {
   public void initialize() {
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    grimpeur.monter();
+    intake.prendreBallon();
+    intake.actionnerBras();
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    grimpeur.stop();
+    intake.stopIntake();
+    intake.stopBras();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return grimpeur.estEnHaut();
+    return intake.hasBallonBas();
   }
 }

@@ -16,8 +16,10 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
 
-public class Intake extends SubsystemBase {
+public class Intake extends SubsystemBase implements Loggable {
 
   private VictorSP moteurIntake;
   private VictorSP moteurTransporteur;
@@ -31,12 +33,16 @@ public class Intake extends SubsystemBase {
 
   private PowerDistributionPanel pdp;
 
+  @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1)
+  private int ballonDansIntake;
+
   public static final double kVitesseAvaler = 0.5;
-  public static final double kVitesseTransporter = -0.5;
+  public static final double kVitesseTransporter = -0.6;
   public static final double kCurrentFilterTime = 2;
   public static final double kMaxCurrent = 20;
-  public static final double kVitesseBrasGauche = 0.5;
-  public static final double kVitesseBrasDroit = -kVitesseBrasGauche;
+  public static final double kVitesseBrasGauche = -0.5;
+  public static final double kVitesseBrasDroit = 0.5;
+  public static final double kTempsStopIntake = 0.3;
 
   private boolean stopTransporteur = false;
 
@@ -113,12 +119,20 @@ public class Intake extends SubsystemBase {
     return photocellHaut.get();
   }
 
+  public void ballonDePlus() {
+    ballonDansIntake += 1;
+  }
+
+  public void resetBallonDansIntake() {
+    ballonDansIntake = 0;
+  }
+
   public void transporterInverse() {
     moteurTransporteur.set(-kVitesseTransporter);
   }
 
   public void prendreBallonInverse() {
-    moteurIntake.set(-kVitesseAvaler);
+    moteurIntake.set(-kVitesseAvaler - 0.4);
   }
 
 }

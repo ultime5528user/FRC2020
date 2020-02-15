@@ -33,7 +33,7 @@ public class Shooter extends SubsystemBase implements Loggable {
   public static double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
 
   @Config(rowIndex = 1, columnIndex = 2, width = 2, height = 1)
-  public static double kRPM = 2500;
+  public static double kRPM = 2000;
 
   @Config(rowIndex = 2, columnIndex = 2, width = 2, height = 1)
   public static double kPrecision = 0.95;
@@ -42,7 +42,7 @@ public class Shooter extends SubsystemBase implements Loggable {
   public static double kTempsTir = 5;
   private CANSparkMax moteur;
   private CANSparkMax moteur2;
-  @Log.Graph(name = "Vitesse Encoder Shooter", methodName = "getVelocity", rowIndex = 4, columnIndex = 0, width = 3, height = 2)
+  @Log.Graph(name = "Vitesse Encoder Shooter", methodName = "getVelocity", rowIndex = 0, columnIndex = 4, width = 5, height = 5)
   private CANEncoder encoder;
 
   @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 2, methodName = "setP", methodTypes = { double.class })
@@ -68,17 +68,17 @@ public class Shooter extends SubsystemBase implements Loggable {
       moteur = new CANSparkMax(Ports.SHOOTER_MOTEUR, MotorType.kBrushless);
       moteur2 = new CANSparkMax(Ports.SHOOTER_MOTEUR2, MotorType.kBrushless);
 
-      SparkMaxUtil.configureMasterMotor(moteur);
-      SparkMaxUtil.configureSlaveMotor(moteur2, moteur, true);
+      // SparkMaxUtil.configureMasterMotor(moteur);
+      // SparkMaxUtil.configureSlaveMotor(moteur2, moteur, true);
 
       // TODO Clear
-      // moteur.restoreFactoryDefaults();
-      // moteur2.restoreFactoryDefaults();
+      moteur.restoreFactoryDefaults();
+      moteur2.restoreFactoryDefaults();
 
-      // moteur.enableVoltageCompensation(12.0);
-      // moteur.setIdleMode(IdleMode.kCoast);
-      // moteur.setOpenLoopRampRate(0.5);
-      // moteur.setOpenLoopRampRate(1.0);
+      moteur.enableVoltageCompensation(12.0);
+      moteur.setIdleMode(IdleMode.kCoast);
+      moteur.setOpenLoopRampRate(0.5);
+      moteur.setOpenLoopRampRate(1.0);
 
       encoder = moteur.getEncoder();
       pidController = moteur.getPIDController();
@@ -89,7 +89,7 @@ public class Shooter extends SubsystemBase implements Loggable {
       pidController.setFF(kFF);
       pidController.setOutputRange(kMinOutput, kMaxOutput);
 
-      // moteur2.follow(moteur, true);
+      moteur2.follow(moteur, true);
 
     }
   }
@@ -116,6 +116,7 @@ public class Shooter extends SubsystemBase implements Loggable {
         );
 
       } else {
+        System.out.println("Set reference " + kRPM);
         pidController.setReference(kRPM, ControlType.kVelocity);
       }
 

@@ -25,6 +25,6 @@ public final class Constants {
     public static final boolean ENABLE_CAN_SHOOTER = RobotBase.isReal() && true;
     public static final boolean ENABLE_PDP = true;
     public static final boolean ENABLE_VISION = false;
-    public static final boolean ENABLE_COMMAND_TROUBLESHOOTING_PRINTS = true;
+    public static final boolean ENABLE_COMMAND_TROUBLESHOOTING_PRINTS = false;
 
 }
