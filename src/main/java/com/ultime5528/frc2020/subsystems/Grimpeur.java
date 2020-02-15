@@ -10,9 +10,11 @@ package com.ultime5528.frc2020.subsystems;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
+import io.github.oblarg.oblog.annotations.Log;
 
 public class Grimpeur extends SubsystemBase implements Loggable {
 
@@ -38,7 +40,7 @@ public class Grimpeur extends SubsystemBase implements Loggable {
   /**
    * Creates a new Grimpeur.
    */
-  public Grimpeur(int portServo, int portMoteur,int portLimitSwitchHaut,int portLimitSwitchBas, String name) {
+  public Grimpeur(int portServo, int portMoteur, int portLimitSwitchHaut, int portLimitSwitchBas, String name) {
     ratchet = new Servo(portServo);
     moteur = new VictorSP(portMoteur);
     limitSwitchBas = new DigitalInput(portLimitSwitchBas);
@@ -55,6 +57,7 @@ public class Grimpeur extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
+
   }
 
   @Override
@@ -86,12 +89,13 @@ public class Grimpeur extends SubsystemBase implements Loggable {
     ratchet.setAngle(kRatchetUnlocked);
     moteur.set(kVitesseGrimper);
   }
-  
-  public boolean estEnBas(){
-    return false; // !limitSwitchBas.get();
-  }
 
-  public boolean estEnHaut(){
-    return false; // !limitSwitchHaut.get();
+  @Log.BooleanBox(rowIndex = 0, columnIndex = 4)
+  public boolean estEnBas() {
+    return false; //!limitSwitchBas.get();
+  }
+  @Log.BooleanBox(rowIndex = 3, columnIndex = 4)
+  public boolean estEnHaut() {
+    return false; //!limitSwitchHaut.get();
   }
 }
