@@ -92,10 +92,10 @@ public class Grimpeur extends SubsystemBase implements Loggable {
 
   @Log.BooleanBox(rowIndex = 0, columnIndex = 4)
   public boolean estEnBas() {
-    return false; //!limitSwitchBas.get();
+    return !limitSwitchBas.get();
   }
   @Log.BooleanBox(rowIndex = 3, columnIndex = 4)
   public boolean estEnHaut() {
-    return false; //!limitSwitchHaut.get();
+    return !limitSwitchHaut.get();
   }
 }

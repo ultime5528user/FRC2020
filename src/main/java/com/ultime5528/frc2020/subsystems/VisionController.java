@@ -11,8 +11,17 @@ import java.util.OptionalDouble;
 
 import com.ultime5528.frc2020.Ports;
 
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+
+import edu.wpi.cscore.CvSink;
+import edu.wpi.cscore.CvSource;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.vision.VisionPipeline;
+import edu.wpi.first.vision.VisionThread;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Relay.Value;
@@ -41,6 +50,33 @@ public class VisionController extends SubsystemBase {
     led = new Relay(Ports.VISION_LED);
 
     readSnapshot();
+  }
+
+  public void initTestCamera() {
+    UsbCamera cam = new UsbCamera("cam", 0);
+    cam.setResolution(480, 360);
+
+    CvSource inverseSrc = CameraServer.getInstance().putVideo("Inverse", 480, 360);
+
+    Thread visionThread = new Thread(() -> {  
+      Mat frame = new Mat();
+      CvSink sink = new CvSink("cam_sink");
+      sink.setSource(cam);
+      while (!Thread.interrupted()) {
+        try {
+          long ret = sink.grabFrame(frame);
+          if (ret != 0) {
+            Core.flip(frame, frame, -1);
+            inverseSrc.putFrame(frame);
+          }
+        } catch (Exception e) { }
+      }
+      sink.close();
+    });
+
+    visionThread.setDaemon(true);
+    visionThread.start();
+
   }
 
   @Override
