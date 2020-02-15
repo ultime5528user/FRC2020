@@ -31,7 +31,7 @@ public class CubicInterpolator {
 
 		} else {
 
-			return interpolate(deadzoneX) / deadzoneX * valeur;
+			return 0.0; // interpolate(deadzoneX) / deadzoneX * valeur;
 
 		}
 	}
