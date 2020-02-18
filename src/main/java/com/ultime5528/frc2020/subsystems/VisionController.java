@@ -18,19 +18,24 @@ import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.EntryListenerFlags;
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.vision.VisionPipeline;
-import edu.wpi.first.vision.VisionThread;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionController extends SubsystemBase {
 
   private NetworkTableEntry snapshotEntry;
-  private NetworkTableEntry angleEntry;
+  private NetworkTableEntry timestampEntry;
+  private NetworkTableEntry startVisionEntry;
+  private NetworkTableEntry raspberryPiStartedEntry;
+  private NetworkTableEntry doSynchronizeEntry;
+  private NetworkTableEntry gotSynchronizeEntry;
   private Relay led;
 
   private static double kFOV = 49.8; // Degrés
@@ -39,14 +44,29 @@ public class VisionController extends SubsystemBase {
   private VisionSnapshot currentSnapshot;
 
   private boolean isEnabled = false;
+  private boolean hasSynchronized = false;
+  private long doSynchronizeTime, lag;
 
-  private BasePilotable basePilotable;
+  public VisionController() {
 
-  public VisionController(BasePilotable basePilotable) {
-    this.basePilotable = basePilotable;
+    var visionTable = NetworkTableInstance.getDefault().getTable("Vision");
 
-    snapshotEntry = NetworkTableInstance.getDefault().getTable("Vision").getEntry("Snapshot");
-    angleEntry = NetworkTableInstance.getDefault().getTable("Vision").getEntry("RobotAngle");
+    startVisionEntry = visionTable.getEntry("START_VISION");
+    
+    snapshotEntry = visionTable.getEntry("snapshot");
+    timestampEntry = visionTable.getEntry("timestamp");
+    doSynchronizeEntry = visionTable.getEntry("do_synchronize");
+    gotSynchronizeEntry = visionTable.getEntry("got_synchronize");
+    
+    raspberryPiStartedEntry = visionTable.getEntry("pi_started");
+    raspberryPiStartedEntry.addListener(notif -> {
+      if (notif.value.getBoolean()) {
+        synchronize();
+      }
+    }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+    
+    startVisionEntry.setBoolean(true);
+
     led = new Relay(Ports.VISION_LED);
 
     readSnapshot();
@@ -85,13 +105,27 @@ public class VisionController extends SubsystemBase {
       readSnapshot();
     }
 
-    //Send angle to RPi
-    angleEntry.setValue(basePilotable.getGyroAngle());
+    if (hasSynchronized) {
+      timestampEntry.setNumber(RobotController.getFPGATime());
+    }
+
+  }
+
+  private void synchronize() {
+    gotSynchronizeEntry.addListener(notif -> {
+      long newTime = RobotController.getFPGATime();
+      lag = (newTime - doSynchronizeTime) / 2;
+      hasSynchronized = true;
+    }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+
+    doSynchronizeTime = RobotController.getFPGATime();
+    doSynchronizeEntry.setDouble(doSynchronizeEntry.getDouble(0.0) + 1.0);
+    NetworkTableInstance.getDefault().flush();
+
   }
 
   public void enable() {
     isEnabled = true;
-    
     led.set(Value.kOn);
   }
 
@@ -117,10 +151,6 @@ public class VisionController extends SubsystemBase {
     if (currentSnapshot.found) {
       double x = currentSnapshot.centreX;
       double angle = Math.atan(x / kFocale);
-      
-      //correction de l'angle
-      angle -= (basePilotable.getGyroAngle() - currentSnapshot.angle);
-
       return OptionalDouble.of(angle);
     } else {
       return OptionalDouble.empty();
@@ -129,7 +159,7 @@ public class VisionController extends SubsystemBase {
 
   public static class VisionSnapshot {
 
-    public final double angle;
+    public final long timestamp;
     public final boolean found;
     public final double centreX;
     public final double hauteur;
@@ -138,8 +168,8 @@ public class VisionController extends SubsystemBase {
       this(0L, false, 0.0, 0.0);
     }
 
-    public VisionSnapshot(double angle, boolean found, double centreX, double hauteur) {
-      this.angle = angle;
+    public VisionSnapshot(long timestamp, boolean found, double centreX, double hauteur) {
+      this.timestamp = timestamp;
       this.found = found;
       this.centreX = centreX;
       this.hauteur = hauteur;
@@ -157,7 +187,7 @@ public class VisionController extends SubsystemBase {
         String[] splitted = data.split(";");
 
         snapshot = new VisionSnapshot(
-            Double.parseDouble(splitted[0]),
+            Long.parseLong(splitted[0]),
             Boolean.parseBoolean(splitted[1]),
             Double.parseDouble(splitted[2]),
             Double.parseDouble(splitted[3]));
