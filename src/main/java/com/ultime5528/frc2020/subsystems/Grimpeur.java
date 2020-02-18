@@ -10,6 +10,7 @@ package com.ultime5528.frc2020.subsystems;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.Loggable;
@@ -41,6 +42,7 @@ public class Grimpeur extends SubsystemBase implements Loggable {
    * Creates a new Grimpeur.
    */
   public Grimpeur(int portServo, int portMoteur, int portLimitSwitchHaut, int portLimitSwitchBas, String name) {
+    SendableRegistry.addLW(this, name, name);
     ratchet = new Servo(portServo);
     moteur = new VictorSP(portMoteur);
     limitSwitchBas = new DigitalInput(portLimitSwitchBas);
@@ -96,6 +98,6 @@ public class Grimpeur extends SubsystemBase implements Loggable {
   }
   @Log.BooleanBox(rowIndex = 3, columnIndex = 4)
   public boolean estEnHaut() {
-    return !limitSwitchHaut.get();
+    return limitSwitchHaut.get();
   }
 }
