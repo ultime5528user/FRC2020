@@ -50,6 +50,7 @@ public final class SparkMaxUtil {
         handleCANError(motor.setOpenLoopRampRate(kRampRate), "setClosedLoopRampRate", motor);
         handleCANError(motor.burnFlash(), "burnFlash", motor);
         handleCANError(motor.clearFaults(), "clearFaults", motor);
+        Timer.delay(.250); //TODO Tester voir si shooter marche
     }
 
 }
