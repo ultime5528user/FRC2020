@@ -5,6 +5,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
+import edu.wpi.first.wpilibj.Timer;
+
 /**
  * SparkMaxUtil
  */
@@ -47,10 +49,10 @@ public final class SparkMaxUtil {
     public static void configureMotor(CANSparkMax motor) {
         handleCANError(motor.setIdleMode(IdleMode.kCoast), "setIdleMode", motor);
         handleCANError(motor.enableVoltageCompensation(kVoltageCompensation), "enableVoltageCompensation", motor);
-        handleCANError(motor.setOpenLoopRampRate(kRampRate), "setClosedLoopRampRate", motor);
+        handleCANError(motor.setOpenLoopRampRate(kRampRate), "setOpenLoopRampRate", motor);
         handleCANError(motor.burnFlash(), "burnFlash", motor);
         handleCANError(motor.clearFaults(), "clearFaults", motor);
-        Timer.delay(.250); //TODO Tester voir si shooter marche
+        Timer.delay(0.250);
     }
 
 }
