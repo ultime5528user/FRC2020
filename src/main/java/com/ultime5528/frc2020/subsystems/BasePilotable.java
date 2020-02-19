@@ -10,6 +10,11 @@ package com.ultime5528.frc2020.subsystems;
 import static com.ultime5528.util.SparkMaxUtil.handleCANError;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.kauailabs.sf2.frc.navXSensor;
+import com.kauailabs.sf2.orientation.OrientationHistory;
+import com.kauailabs.sf2.orientation.Quaternion;
+import com.kauailabs.sf2.time.TimestampedValue;
+
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
@@ -85,6 +90,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   private PIDController pidGauche = BasePilotable.createPIDController();
 
   private AHRS gyro;
+  private OrientationHistory orientation_history;
 
   private DifferentialDrive drive;
 
@@ -124,6 +130,9 @@ public class BasePilotable extends SubsystemBase implements Loggable {
 
     gyro = new AHRS(Port.kUSB);
     addChild("navX", gyro);
+
+    navXSensor navx_sensor = new navXSensor(gyro, "Drivetrain Orientation");
+    orientation_history = new OrientationHistory(navx_sensor, gyro.getRequestedUpdateRate() * 10);
 
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
   }
