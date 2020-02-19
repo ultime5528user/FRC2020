@@ -68,18 +68,8 @@ public class Shooter extends SubsystemBase implements Loggable {
       moteur = new CANSparkMax(Ports.SHOOTER_MOTEUR, MotorType.kBrushless);
       moteur2 = new CANSparkMax(Ports.SHOOTER_MOTEUR2, MotorType.kBrushless);
 
-      //TODO Tester voir si shooter marche
       SparkMaxUtil.configureMasterMotor(moteur);
       SparkMaxUtil.configureSlaveMotor(moteur2, moteur, true);
-      
-      // TODO Clear
-      // moteur.restoreFactoryDefaults();
-      // moteur2.restoreFactoryDefaults();
-
-      // moteur.enableVoltageCompensation(12.0);
-      // moteur.setIdleMode(IdleMode.kCoast);
-      // moteur.setOpenLoopRampRate(0.5);
-      // moteur.setOpenLoopRampRate(1.0);
 
       encoder = moteur.getEncoder();
       pidController = moteur.getPIDController();
@@ -89,8 +79,6 @@ public class Shooter extends SubsystemBase implements Loggable {
       pidController.setIZone(kIz);
       pidController.setFF(kFF);
       pidController.setOutputRange(kMinOutput, kMaxOutput);
-
-      moteur2.follow(moteur, true);
 
     }
   }
@@ -117,7 +105,6 @@ public class Shooter extends SubsystemBase implements Loggable {
         );
 
       } else {
-        System.out.println("Set reference " + kRPM);
         pidController.setReference(kRPM, ControlType.kVelocity);
       }
 
