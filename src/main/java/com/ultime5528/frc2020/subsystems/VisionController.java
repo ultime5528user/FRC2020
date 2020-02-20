@@ -8,18 +8,18 @@
 package com.ultime5528.frc2020.subsystems;
 
 import java.util.OptionalDouble;
+import java.util.function.Supplier;
 
 import com.ultime5528.frc2020.Ports;
 
 import org.opencv.core.Core;
-import org.opencv.core.Mat;
+import org.opencv.core.Mat;  
 
 import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.EntryListenerFlags;
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -46,8 +46,10 @@ public class VisionController extends SubsystemBase {
   private boolean isEnabled = false;
   private boolean hasSynchronized = false;
   private long doSynchronizeTime, lag;
+ 
+  private Supplier<Long> timestampSupplier;
 
-  public VisionController() {
+  public VisionController(Supplier<Long> timestampSupplier) {
 
     var visionTable = NetworkTableInstance.getDefault().getTable("Vision");
 
@@ -57,6 +59,8 @@ public class VisionController extends SubsystemBase {
     timestampEntry = visionTable.getEntry("timestamp");
     doSynchronizeEntry = visionTable.getEntry("do_synchronize");
     gotSynchronizeEntry = visionTable.getEntry("got_synchronize");
+
+    this.timestampSupplier = timestampSupplier;
     
     raspberryPiStartedEntry = visionTable.getEntry("pi_started");
     raspberryPiStartedEntry.addListener(notif -> {
@@ -106,7 +110,7 @@ public class VisionController extends SubsystemBase {
     }
 
     if (hasSynchronized) {
-      timestampEntry.setNumber(RobotController.getFPGATime());
+      timestampEntry.setNumber(timestampSupplier.get());
     }
 
   }
@@ -145,6 +149,10 @@ public class VisionController extends SubsystemBase {
     } else {
       return OptionalDouble.empty();
     }
+  }
+
+  public long getLastTimestamp(){
+    return currentSnapshot.timestamp;
   }
 
   public OptionalDouble getAngleCible() {

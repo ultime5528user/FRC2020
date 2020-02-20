@@ -125,7 +125,6 @@ public class BasePilotable extends SubsystemBase implements Loggable {
       configureEncoder(encoderGauche);
 
       drive = new DifferentialDrive(moteurGauche, moteurDroit);
-      
     }
 
     gyro = new AHRS(Port.kUSB);
@@ -223,6 +222,14 @@ public class BasePilotable extends SubsystemBase implements Loggable {
    */
   public void setMaxOutput(double maxOutput) {
     drive.setMaxOutput(maxOutput);
+  }
+
+  public long getGyroTimestamp(){
+    return gyro.getLastSensorTimestamp();
+  }
+
+  public double getAngleAtGyroTimestamp(long timestamp){
+    return orientation_history.getYawDegreesAtTime(timestamp);
   }
 
   /**
