@@ -43,8 +43,8 @@ public class Tirer extends CommandBase {
     shooter.tirer(vision.getHauteurCible());
 
     if (shooter.getVitesse() >= Shooter.kRPM * Shooter.kPrecision) {
-      intake.transporter();
-      intake.prendreBallon();
+      // intake.transporter();
+      // intake.prendreBallon();
     }
 
     if (!intake.hasBallonHaut() && !timer.isRunning()) {

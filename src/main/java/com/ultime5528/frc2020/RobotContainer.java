@@ -9,6 +9,8 @@ package com.ultime5528.frc2020;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -50,6 +52,7 @@ public class RobotContainer {
   private final PowerDistributionPanel pdp;
 
   private final Piloter piloter;
+  private final Tourner tourner;
 
   public RobotContainer() {
     joystick = new Joystick(0);
@@ -81,7 +84,8 @@ public class RobotContainer {
 
     configureButtonBindings();
 
-    Logger.configureLoggingAndConfig(this, false);
+    // Logger.configureLoggingAndConfig(this, false);
+    LiveWindow.disableAllTelemetry();
 
     SmartDashboard.putData(CommandScheduler.getInstance());
 
@@ -97,8 +101,9 @@ public class RobotContainer {
           command -> System.out.println(command.getName() + " interrupted"));
           
     }
+    tourner = new Tourner(basePilotable, 100.0, 0.75, 0.5);
     SmartDashboard.putData("Vider intake", new ViderIntake(intake).withTimeout(5.0));
-    SmartDashboard.putData("Tourner 90", new Tourner(basePilotable, 180.0));
+    SmartDashboard.putData("Tourner 90", tourner);
   }
 
   private void configureButtonBindings() {

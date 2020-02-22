@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
@@ -44,12 +45,12 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   public static final double kPositionConversionFactor = kGearboxRatio * kWheelDiameter * Math.PI;
   public static final double kVelocityConversionFactor = kPositionConversionFactor / 60;
 
-  public static final double kS = 0.151;
-  public static final double kV = 3.15;
-  public static final double kA = 0.404;
+  public static final double kS = 0.251; // 0.151
+  public static final double kV = 4.16; // 3.16
+  public static final double kA = 0.419; // .419
   public static final SimpleMotorFeedforward kFeedForward = new SimpleMotorFeedforward(kS, kV, kA);
 
-  public static final double kTrackWidth = 0.641; // TODO Valider FRC Characterization, refaire depuis la correction gearbox gauche
+  public static final double kTrackWidth = 0.686; // TODO Valider FRC Characterization, refaire depuis la correction gearbox gauche
   public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidth);
 
   public static final double kMaxSpeedMetersPerSecond = 3.0;
@@ -60,11 +61,11 @@ public class BasePilotable extends SubsystemBase implements Loggable {
 
   public static final double kRamseteB = 2.0;
   public static final double kRamseteZeta = 0.7;
-  public static final double kPDriveVel = 0.0; // 2.0; // 1.41
+  public static final double kPDriveVel = 0.15; // 2.0; // 1.41
 
   public static final SparkMaxConfig kMotorConfig = new SparkMaxConfig(1.0, 40, 50);
 
-  public static final boolean GYRO_REVERSED = false;
+  public static final boolean GYRO_REVERSED = true;
 
   private CANSparkMax moteurDroit;
   private CANSparkMax moteurDroit2;
@@ -131,7 +132,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
     navXSensor navx_sensor = new navXSensor(gyro, "Drivetrain Orientation");
     orientation_history = new OrientationHistory(navx_sensor, gyro.getRequestedUpdateRate() * 10);
 
-    odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
+    odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getClampedHeading()));
   }
 
   private void configureEncoder(CANEncoder encoder) {
@@ -143,9 +144,10 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   public void periodic() {
     // Update the odometry in the periodic block
     if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
-      odometry.update(Rotation2d.fromDegrees(getHeading()), encoderGauche.getPosition(), encoderDroit.getPosition());
+      odometry.update(Rotation2d.fromDegrees(getClampedHeading()), encoderGauche.getPosition(), encoderDroit.getPosition());
       handleFaults();
     }
+    SmartDashboard.putNumber("angle", getClampedHeading());
   }
 
   public Pose2d getPose() {
@@ -162,7 +164,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
 
   public void resetOdometry(Pose2d pose) { // TODO Méthode vraiment nécessaire? C'est quelque chose que l'on veut éviter
     resetEncoders();
-    odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
+    odometry.resetPosition(pose, Rotation2d.fromDegrees(getClampedHeading()));
   }
 
   public void drive(double xSpeed, double zRotation) {
@@ -237,8 +239,18 @@ public class BasePilotable extends SubsystemBase implements Loggable {
     gyro.reset();
   }
 
-  public double getGyroAngle() {
-    return gyro.getAngle();
+  /**
+   * @return la valeur du gyro, en valeur continue, en degrés.
+   */
+  public double getAngleDegrees() {
+    return (GYRO_REVERSED ? -1.0 : 1.0) * gyro.getAngle();
+  }
+
+  /**
+   * @return la valeur du gyro, en valeur continue, en degrés.
+   */
+  public double getAngleRadians() {
+    return Math.toRadians(getAngleDegrees());
   }
 
   /**
@@ -246,9 +258,8 @@ public class BasePilotable extends SubsystemBase implements Loggable {
    *
    * @return the robot's heading in degrees, from -180 to 180
    */
-  public double getHeading() {
-    return Math.IEEEremainder(getGyroAngle(), 360) * (GYRO_REVERSED ? -1.0 : 1.0); // TODO Vraiment nécessaire
-                                                                                    // IEEEremainer?
+  public double getClampedHeading() {
+    return Math.IEEEremainder(getAngleDegrees(), 360);
   }
 
   /**
@@ -282,27 +293,40 @@ public class BasePilotable extends SubsystemBase implements Loggable {
 
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
-      handleCANError(controllerGauche.setReference(leftVolts, ControlType.kVoltage), "tankDriveVolts setReference", moteurGauche);
-      // TODO Vérifier si négatif est nécessaire
-      handleCANError(controllerDroit.setReference(-rightVolts, ControlType.kVoltage), "tankDriveVolts setReference", moteurDroit);
+      handleCANError(controllerGauche.setReference(-leftVolts, ControlType.kVoltage), "tankDriveVolts setReference", moteurGauche);
+      handleCANError(controllerDroit.setReference(rightVolts, ControlType.kVoltage), "tankDriveVolts setReference", moteurDroit);
+      drive.feed();
     }
   }
 
-  public void tankDriveSpeeds(DifferentialDriveWheelSpeeds speeds, DifferentialDriveWheelSpeeds prevSpeeds) {
+  /**
+   * Fais tourner le robot jusqu'à un angle absolu, à l'aide d'un PIDSVA.
+   * @param angleDegrees l'objectif absolu à atteindre, en degrés.
+   * @param speeds les vitesses souhaitées, en m/s.
+   * @param prevSpeeds les vitesses souhaitées à l'itération précédente (pour calculer l'accélération), en m/s.
+   */
+  public void turnToAngle(double angleDegrees, DifferentialDriveWheelSpeeds speeds, DifferentialDriveWheelSpeeds prevSpeeds) {
     if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
+
       double leftFeedforward = kFeedForward.calculate(speeds.leftMetersPerSecond,
           (speeds.leftMetersPerSecond - prevSpeeds.leftMetersPerSecond) / TimedRobot.kDefaultPeriod);
 
       double rightFeedforward = kFeedForward.calculate(speeds.rightMetersPerSecond,
           (speeds.rightMetersPerSecond - prevSpeeds.rightMetersPerSecond) / TimedRobot.kDefaultPeriod);
 
-      double leftOutput = leftFeedforward
-          + pidGauche.calculate(encoderGauche.getVelocity(), speeds.leftMetersPerSecond);
+      double pidCorrection = pidGauche.calculate(getAngleDegrees(), angleDegrees);
+      SmartDashboard.putNumber("pid correction", pidCorrection);
 
-      double rightOutput = rightFeedforward
-          + pidDroit.calculate(encoderDroit.getVelocity(), speeds.rightMetersPerSecond);
+      /*
+       * Si le PID donne une correction positive, il faut tourner plus vite dans les angles positifs. 
+       * Une vitesse angulaire positive fait tourner le robot dans le sens anti-horaire, 
+       * donc il faut additionner la correction au côté droit et la soustraire du côté gauche.
+       */
+      double leftOutput = leftFeedforward - pidCorrection;
+      double rightOutput = rightFeedforward + pidCorrection;
 
       tankDriveVolts(leftOutput, rightOutput);
+
     }
   }
 

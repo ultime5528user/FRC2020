@@ -14,7 +14,6 @@ public class PrendreTransporterBallon extends SequentialCommandGroup {
   private Intake intake;
 
   public PrendreTransporterBallon(Intake intake) {
-
     super(new PrendreBallon(intake), new TransporterBallon(intake));
     this.intake = intake;
   }
@@ -24,7 +23,6 @@ public class PrendreTransporterBallon extends SequentialCommandGroup {
     super.end(interrupted);
     if (!interrupted && !intake.hasBallonBas()) {
       schedule();
-
     } 
   }
 

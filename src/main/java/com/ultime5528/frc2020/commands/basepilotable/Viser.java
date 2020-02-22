@@ -21,7 +21,7 @@ public class Viser extends AbstractTourner {
   private OptionalDouble angle;
 
   public Viser(BasePilotable basePilotable, VisionController vision) {
-    super(basePilotable);
+    super(basePilotable, 3.14, 3.14); // TODO Vraies valeurs
     this.vision = vision;
     addRequirements(vision);
   }
@@ -33,7 +33,7 @@ public class Viser extends AbstractTourner {
   }
 
   @Override
-  public double calculateGoalAngle() {
+  public double calculateGoalAngleDegrees() {
     angle = vision.getAngleCible();
     return angle.orElse(0.0) - basePilotable.getAngleAtGyroTimestamp(vision.getLastTimestamp());
   }
