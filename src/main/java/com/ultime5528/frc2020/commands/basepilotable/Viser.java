@@ -35,7 +35,7 @@ public class Viser extends AbstractTourner {
   @Override
   public double calculateGoalAngleDegrees() {
     angle = vision.getAngleCible();
-    return angle.orElse(0.0) - basePilotable.getAngleAtGyroTimestamp(vision.getLastTimestamp());
+    return basePilotable.getAngleAtGyroTimestamp(vision.getLastTimestamp()) + angle.orElse(0.0);
   }
 
   @Override
