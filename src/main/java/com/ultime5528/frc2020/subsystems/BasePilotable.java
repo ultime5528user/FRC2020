@@ -61,7 +61,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
 
   public static final double kRamseteB = 2.0;
   public static final double kRamseteZeta = 0.7;
-  public static final double kPDriveVel = 0.15; // 2.0; // 1.41
+  public static final double kPDriveVel = 0.2; // 2.0; // 1.41
 
   public static final SparkMaxConfig kMotorConfig = new SparkMaxConfig(1.0, 40, 50);
 
@@ -147,7 +147,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
       odometry.update(Rotation2d.fromDegrees(getClampedHeading()), encoderGauche.getPosition(), encoderDroit.getPosition());
       handleFaults();
     }
-    SmartDashboard.putNumber("angle", getClampedHeading());
+    SmartDashboard.putNumber("angle", getAngleDegrees());
   }
 
   public Pose2d getPose() {

@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  */
 public abstract class AbstractTourner extends CommandBase {
 
-  public static double kTolerance = 0.1;
+  public static double kTolerance = 3.0;
 
   protected BasePilotable basePilotable;
 
@@ -23,8 +23,6 @@ public abstract class AbstractTourner extends CommandBase {
   private TrapezoidProfile.State current = new TrapezoidProfile.State();
 
   private DifferentialDriveWheelSpeeds prevSpeeds = new DifferentialDriveWheelSpeeds();
-
-  private double startAngle = 0.0;
 
   /**
    * 
@@ -43,7 +41,6 @@ public abstract class AbstractTourner extends CommandBase {
     basePilotable.resetPID();
     current = new TrapezoidProfile.State(basePilotable.getAngleRadians(), 0.0);
     prevSpeeds = new DifferentialDriveWheelSpeeds();
-    startAngle = basePilotable.getClampedHeading();
   }
 
   @Override
@@ -63,7 +60,7 @@ public abstract class AbstractTourner extends CommandBase {
     SmartDashboard.putNumber("goal", speeds.leftMetersPerSecond);
     SmartDashboard.putNumber("current", basePilotable.getLeftEncoder().getVelocity());
 
-    basePilotable.turnToAngle(goalAngleDegrees, speeds, prevSpeeds);
+    basePilotable.turnToAngle(Math.toDegrees(current.position), speeds, prevSpeeds);
 
     prevSpeeds = speeds;
   }
@@ -74,7 +71,7 @@ public abstract class AbstractTourner extends CommandBase {
   }
 
   public boolean isFinished() {
-    return current.position >= goal.position;
+    return current.position >= goal.position && Math.abs(basePilotable.getAngleDegrees() - current.position) < kTolerance;
   }
 
   /**
