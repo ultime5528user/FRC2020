@@ -43,7 +43,7 @@ public class VisionController extends SubsystemBase {
 
   private VisionSnapshot currentSnapshot;
 
-  private boolean isEnabled = false;
+  private boolean isEnabled = true; // TODO remettre à false ?
   private boolean hasSynchronized = false;
   private long doSynchronizeTime, lag;
  
@@ -51,9 +51,9 @@ public class VisionController extends SubsystemBase {
 
   public VisionController(Supplier<Long> timestampSupplier) {
 
-    var visionTable = NetworkTableInstance.getDefault().getTable("Vision");
+    var visionTable = NetworkTableInstance.getDefault().getTable("vision");
 
-    startVisionEntry = visionTable.getEntry("START_VISION");
+    startVisionEntry = visionTable.getEntry("start_vision");
     
     snapshotEntry = visionTable.getEntry("snapshot");
     timestampEntry = visionTable.getEntry("timestamp");
@@ -72,6 +72,7 @@ public class VisionController extends SubsystemBase {
     startVisionEntry.setBoolean(true);
 
     led = new Relay(Ports.VISION_LED);
+    led.set(Value.kOn);
 
     readSnapshot();
   }
@@ -119,6 +120,7 @@ public class VisionController extends SubsystemBase {
     gotSynchronizeEntry.addListener(notif -> {
       long newTime = RobotController.getFPGATime();
       lag = (newTime - doSynchronizeTime) / 2;
+      NetworkTableInstance.getDefault().getTable("vision").getEntry("lag").setNumber(lag);
       hasSynchronized = true;
     }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 
