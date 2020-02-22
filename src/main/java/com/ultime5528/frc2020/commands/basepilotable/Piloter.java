@@ -24,12 +24,12 @@ public class Piloter extends CommandBase implements Loggable {
   private Joystick joystick;
 
   public static double kCourbureX = 0;
-  public static double kDeadzoneJoystickX = 0.5;
-  public static double kDeadzoneVitesseX = 0.5;
+  public static double kDeadzoneJoystickX = 0.05;
+  public static double kDeadzoneVitesseX = 0.05;
 
   public static double kCourbureY = 0;
-  public static double kDeadzoneJoystickY = 0.5;
-  public static double kDeadzoneVitesseY = 0.5;
+  public static double kDeadzoneJoystickY = 0.05;
+  public static double kDeadzoneVitesseY = 0.05;
 
   @Config.NumberSlider(name = "Courbure X", min = 0, max = 1, methodName = "setCourbure", methodTypes = {double.class}, rowIndex = 0, columnIndex = 0, width = 2, height = 2)
   @Config.NumberSlider(name = "Deadzone Joystick X", min = 0, max = 1, methodName = "setDeadzoneX", methodTypes = {double.class}, rowIndex = 2, columnIndex = 0, width = 2, height = 2)

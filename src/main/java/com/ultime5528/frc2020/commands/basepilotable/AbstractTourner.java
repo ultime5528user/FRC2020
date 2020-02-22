@@ -14,53 +14,53 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  */
 public abstract class AbstractTourner extends CommandBase {
 
-  public static double kTolerance = 0.1;
+  public static double kTolerance = 3.0;
 
   protected BasePilotable basePilotable;
 
-  private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(
-      BasePilotable.kMaxSpeedRadianPerSecond, BasePilotable.kMaxAccelerationRadianPerSecondSquared);
+  private final TrapezoidProfile.Constraints constraints;
   private TrapezoidProfile.State goal = new TrapezoidProfile.State();
   private TrapezoidProfile.State current = new TrapezoidProfile.State();
 
   private DifferentialDriveWheelSpeeds prevSpeeds = new DifferentialDriveWheelSpeeds();
 
-  public AbstractTourner(BasePilotable basePilotable) {
+  /**
+   * 
+   * @param basePilotable
+   * @param vitesse vitesse maximale, en rad/s
+   * @param accel accélération maximale, en rad/s^2
+   */
+  public AbstractTourner(BasePilotable basePilotable, double vitesse, double accel) {
     this.basePilotable = basePilotable;
+    this.constraints = new TrapezoidProfile.Constraints(vitesse, accel);
     addRequirements(basePilotable);
   }
 
   @Override
   public void initialize() {
     basePilotable.resetPID();
-    current = new TrapezoidProfile.State();
+    current = new TrapezoidProfile.State(basePilotable.getAngleRadians(), 0.0);
     prevSpeeds = new DifferentialDriveWheelSpeeds();
-    TrapezoidProfile prof = new TrapezoidProfile(constraints, goal, current);
   }
 
   @Override
   public void execute() {
-    // current.position = basePilotable.getHeading();
-    // current.velocity = basePilotable.getTurnRate();
 
-    double goalAngle = calculateGoalAngle();
-    goalAngle = Math.toRadians(goalAngle);
-    goal = new TrapezoidProfile.State(goalAngle, 0);
+    double goalAngleDegrees = calculateGoalAngleDegrees();
+    double goalAngleRad = Math.toRadians(goalAngleDegrees);
+    goal = new TrapezoidProfile.State(goalAngleRad, 0);
 
     TrapezoidProfile profile = new TrapezoidProfile(constraints, goal, current);
 
     current = profile.calculate(TimedRobot.kDefaultPeriod);
     
-    SmartDashboard.putNumber("position goal", current.position);
-    SmartDashboard.putNumber("velocity goal", current.velocity);
-
     var speeds = BasePilotable.kDriveKinematics
         .toWheelSpeeds(new ChassisSpeeds(0, 0, current.velocity));
 
     SmartDashboard.putNumber("goal", speeds.leftMetersPerSecond);
-    // SmartDashboard.putNumber("current", basePilotable.getLeftEncoder().getVelocity());
+    SmartDashboard.putNumber("current", basePilotable.getLeftEncoder().getVelocity());
 
-    basePilotable.tankDriveSpeeds(speeds, prevSpeeds);
+    basePilotable.turnToAngle(Math.toDegrees(current.position), speeds, prevSpeeds);
 
     prevSpeeds = speeds;
   }
@@ -70,8 +70,13 @@ public abstract class AbstractTourner extends CommandBase {
     basePilotable.drive(0, 0);
   }
 
-  public abstract boolean isFinished();
+  public boolean isFinished() {
+    return current.position >= goal.position && Math.abs(basePilotable.getAngleDegrees() - current.position) < kTolerance;
+  }
 
-  public abstract double calculateGoalAngle();
+  /**
+   * Retourne l'angle absolu que l'on veut atteindre, en degrés.
+   */
+  public abstract double calculateGoalAngleDegrees();
     
 }

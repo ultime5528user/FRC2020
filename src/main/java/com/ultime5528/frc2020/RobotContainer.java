@@ -9,6 +9,8 @@ package com.ultime5528.frc2020;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -50,6 +52,7 @@ public class RobotContainer {
   private final PowerDistributionPanel pdp;
 
   private final Piloter piloter;
+  private final Tourner tourner;
 
   public RobotContainer() {
     joystick = new Joystick(0);
@@ -59,10 +62,10 @@ public class RobotContainer {
     basePilotable.setDefaultCommand(piloter);
 
     grimpeurDroit = new Grimpeur(Ports.GRIMPEUR_SERVO_DROIT, Ports.GRIMPEUR_MOTEUR_DROIT,
-        Ports.GRIMPEUR_DROIT_LIMIT_SWITCH_HAUT, Ports.GRIMPEUR_DROIT_LIMIT_SWITCH_BAS, "Grimpeur Droit");
+        Ports.GRIMPEUR_DROIT_LIMIT_SWITCH_HAUT, Ports.GRIMPEUR_DROIT_LIMIT_SWITCH_BAS, 0.2, 0.55, "Grimpeur Droit");
 
     grimpeurGauche = new Grimpeur(Ports.GRIMPEUR_SERVO_GAUCHE, Ports.GRIMPEUR_MOTEUR_GAUCHE,
-        Ports.GRIMPEUR_GAUCHE_LIMIT_SWITCH_HAUT, Ports.GRIMPEUR_GAUCHE_LIMIT_SWITCH_BAS, "Grimpeur Gauche");
+        Ports.GRIMPEUR_GAUCHE_LIMIT_SWITCH_HAUT, Ports.GRIMPEUR_GAUCHE_LIMIT_SWITCH_BAS, 0.8, 0.5, "Grimpeur Gauche");
 
     shooter = new Shooter();
 
@@ -77,28 +80,29 @@ public class RobotContainer {
     intake = new Intake(pdp);
 
     vision = new VisionController(basePilotable::getGyroTimestamp);
-    vision.initTestCamera();
+    // vision.initTestCamera();
 
     configureButtonBindings();
 
-    Logger.configureLoggingAndConfig(this, false);
+    // Logger.configureLoggingAndConfig(this, false);
+    // LiveWindow.disableAllTelemetry();
 
     SmartDashboard.putData(CommandScheduler.getInstance());
 
     if (Constants.ENABLE_COMMAND_TROUBLESHOOTING_PRINTS) {
 
-      CommandScheduler.getInstance().onCommandInitialize(
-          command -> System.out.println(command.getName() + " initialized"));
+      CommandScheduler.getInstance()
+          .onCommandInitialize(command -> System.out.println(command.getName() + " initialized"));
 
-      CommandScheduler.getInstance().onCommandFinish(
-          command -> System.out.println(command.getName() + " finished"));
+      CommandScheduler.getInstance().onCommandFinish(command -> System.out.println(command.getName() + " finished"));
 
-      CommandScheduler.getInstance().onCommandInterrupt(
-          command -> System.out.println(command.getName() + " interrupted"));
-          
+      CommandScheduler.getInstance()
+          .onCommandInterrupt(command -> System.out.println(command.getName() + " interrupted"));
+
     }
+    tourner = new Tourner(basePilotable, 100.0, 0.75, 0.5);
     SmartDashboard.putData("Vider intake", new ViderIntake(intake).withTimeout(5.0));
-    SmartDashboard.putData("Tourner 90", new Tourner(basePilotable, 180.0));
+    SmartDashboard.putData("Tourner 100", tourner);
   }
 
   private void configureButtonBindings() {
@@ -108,7 +112,7 @@ public class RobotContainer {
     new JoystickButton(joystick, 8).whenHeld(new DescendreGrimpeur(grimpeurDroit));
     new JoystickButton(joystick, 9).whenHeld(new Grimper(grimpeurDroit));
 
-    new JoystickButton(joystick, 10).whenHeld(new MonterGrimpeur(grimpeurGauche));
+    new JoystickButton(joystick, 10).whenHeld(new DescendreEnleverRatchet(grimpeurGauche));
     new JoystickButton(joystick, 11).whenHeld(new DescendreGrimpeur(grimpeurGauche));
     new JoystickButton(joystick, 12).whenHeld(new Grimper(grimpeurGauche));
 
