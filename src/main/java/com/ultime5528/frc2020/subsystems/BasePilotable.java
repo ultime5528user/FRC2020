@@ -12,15 +12,11 @@ import static com.ultime5528.util.SparkMaxUtil.handleCANError;
 import com.kauailabs.navx.frc.AHRS;
 import com.kauailabs.sf2.frc.navXSensor;
 import com.kauailabs.sf2.orientation.OrientationHistory;
-import com.kauailabs.sf2.orientation.Quaternion;
-import com.kauailabs.sf2.time.TimestampedValue;
 
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.ControlType;
 import com.ultime5528.frc2020.Constants;
 import com.ultime5528.frc2020.Ports;

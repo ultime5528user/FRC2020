@@ -207,7 +207,5 @@ public class VisionController extends SubsystemBase {
 
       return snapshot;
     }
-
   }
-
 }
