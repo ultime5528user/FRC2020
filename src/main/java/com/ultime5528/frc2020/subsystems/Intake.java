@@ -37,7 +37,7 @@ public class Intake extends SubsystemBase implements Loggable {
   private int ballonDansIntake;
 
   public static final double kVitesseAvaler = 6;
-  public static final double kVitesseTransporter = -0.6;
+  public static final double kVitesseTransporter = -7.2;
   public static final double kCurrentFilterTime = 2;
   public static final double kMaxCurrent = 20;
   public static final double kVitesseBrasGauche = -6;

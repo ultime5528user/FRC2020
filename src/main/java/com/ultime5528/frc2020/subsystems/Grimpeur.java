@@ -33,7 +33,7 @@ public class Grimpeur extends SubsystemBase implements Loggable {
   @Config(rowIndex = 4, columnIndex = 0, width = 2, height = 2)
   public static double kVitesseDescendre = -6;
   @Config(rowIndex = 0, columnIndex = 2, width = 2, height = 2)
-  public static double kVitesseMonter = 1;
+  public static double kVitesseMonter = 12;
   @Config(rowIndex = 0, columnIndex = 2, width = 2, height = 2)
   public static double kVitesseGrimper = -12;
 
