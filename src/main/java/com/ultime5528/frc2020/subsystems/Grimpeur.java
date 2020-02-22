@@ -26,9 +26,9 @@ public class Grimpeur extends SubsystemBase implements Loggable {
   private String name;
 
   @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 2)
-  public static double kRatchetLocked = 60;
+  private double ratchetLocked;
   @Config(rowIndex = 2, columnIndex = 0, width = 2, height = 2)
-  public static double kRatchetUnlocked = 90;
+  private double ratchetUnlocked;
 
   @Config(rowIndex = 4, columnIndex = 0, width = 2, height = 2)
   public static double kVitesseDescendre = -0.5;
@@ -40,12 +40,16 @@ public class Grimpeur extends SubsystemBase implements Loggable {
   /**
    * Creates a new Grimpeur.
    */
-  public Grimpeur(int portServo, int portMoteur, int portLimitSwitchHaut, int portLimitSwitchBas, String name) {
+  public Grimpeur(int portServo, int portMoteur, int portLimitSwitchHaut, int portLimitSwitchBas, double ratchetLocked,
+      double ratchetUnlocked, String name) {
     SendableRegistry.addLW(this, name, name);
     ratchet = new Servo(portServo);
     moteur = new VictorSP(portMoteur);
     limitSwitchBas = new DigitalInput(portLimitSwitchBas);
     limitSwitchHaut = new DigitalInput(portLimitSwitchHaut);
+
+    this.ratchetLocked = ratchetLocked;
+    this.ratchetUnlocked = ratchetUnlocked;
 
     this.name = name;
     setName(name);
@@ -67,27 +71,27 @@ public class Grimpeur extends SubsystemBase implements Loggable {
   }
 
   public void stop() {
-    ratchet.setAngle(kRatchetLocked);
+    // ratchet.set(ratchetLocked);
     moteur.set(0);
   }
 
   public void monter() {
-    ratchet.setAngle(kRatchetUnlocked);
+    ratchet.set(ratchetUnlocked);
     moteur.set(kVitesseMonter);
   }
 
   public void descendre() {
-    ratchet.setAngle(kRatchetLocked);
+    ratchet.set(ratchetLocked);
     moteur.set(kVitesseDescendre);
   }
 
   public void grimper() {
-    ratchet.setAngle(kRatchetLocked);
+    ratchet.set(ratchetLocked);
     moteur.set(kVitesseGrimper);
   }
 
   public void grimperSansRatchet() {
-    ratchet.setAngle(kRatchetUnlocked);
+    ratchet.set(ratchetUnlocked);
     moteur.set(kVitesseGrimper);
   }
 
@@ -95,6 +99,7 @@ public class Grimpeur extends SubsystemBase implements Loggable {
   public boolean estEnBas() {
     return !limitSwitchBas.get();
   }
+
   @Log.BooleanBox(rowIndex = 3, columnIndex = 4)
   public boolean estEnHaut() {
     return limitSwitchHaut.get();
