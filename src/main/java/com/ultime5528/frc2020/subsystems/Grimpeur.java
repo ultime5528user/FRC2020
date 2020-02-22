@@ -31,11 +31,11 @@ public class Grimpeur extends SubsystemBase implements Loggable {
   public static double kRatchetUnlocked = 90;
 
   @Config(rowIndex = 4, columnIndex = 0, width = 2, height = 2)
-  public static double kVitesseDescendre = -0.5;
+  public static double kVitesseDescendre = -6;
   @Config(rowIndex = 0, columnIndex = 2, width = 2, height = 2)
   public static double kVitesseMonter = 1;
   @Config(rowIndex = 0, columnIndex = 2, width = 2, height = 2)
-  public static double kVitesseGrimper = -1;
+  public static double kVitesseGrimper = -12;
 
   /**
    * Creates a new Grimpeur.
@@ -68,27 +68,27 @@ public class Grimpeur extends SubsystemBase implements Loggable {
 
   public void stop() {
     ratchet.setAngle(kRatchetLocked);
-    moteur.set(0);
+    moteur.setVoltage(0);
   }
 
   public void monter() {
     ratchet.setAngle(kRatchetUnlocked);
-    moteur.set(kVitesseMonter);
+    moteur.setVoltage(kVitesseMonter);
   }
 
   public void descendre() {
     ratchet.setAngle(kRatchetLocked);
-    moteur.set(kVitesseDescendre);
+    moteur.setVoltage(kVitesseDescendre);
   }
 
   public void grimper() {
     ratchet.setAngle(kRatchetLocked);
-    moteur.set(kVitesseGrimper);
+    moteur.setVoltage(kVitesseGrimper);
   }
 
   public void grimperSansRatchet() {
     ratchet.setAngle(kRatchetUnlocked);
-    moteur.set(kVitesseGrimper);
+    moteur.setVoltage(kVitesseGrimper);
   }
 
   @Log.BooleanBox(rowIndex = 0, columnIndex = 4)

@@ -27,7 +27,7 @@ import io.github.oblarg.oblog.annotations.Config;
 public class Roulette extends SubsystemBase implements Loggable {
 
   @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1)
-  public static double kVitesseTourner = 0.75;
+  public static double kVitesseTourner = 9;
   @Config(rowIndex = 1, columnIndex = 0, width = 2, height = 1)
   public static double kTempsTourner = 10;
   private VictorSP moteurRoulette;
@@ -92,10 +92,10 @@ public class Roulette extends SubsystemBase implements Loggable {
   }
 
   public void tourner() {
-    moteurRoulette.set(kVitesseTourner);
+    moteurRoulette.setVoltage(kVitesseTourner);
   }
 
   public void stop() {
-    moteurRoulette.set(0.0);
+    moteurRoulette.setVoltage(0.0);
   }
 }

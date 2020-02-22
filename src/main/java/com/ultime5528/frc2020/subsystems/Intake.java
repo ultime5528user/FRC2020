@@ -36,12 +36,12 @@ public class Intake extends SubsystemBase implements Loggable {
   @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1)
   private int ballonDansIntake;
 
-  public static final double kVitesseAvaler = 0.5;
+  public static final double kVitesseAvaler = 6;
   public static final double kVitesseTransporter = -0.6;
   public static final double kCurrentFilterTime = 2;
   public static final double kMaxCurrent = 20;
-  public static final double kVitesseBrasGauche = -0.5;
-  public static final double kVitesseBrasDroit = 0.5;
+  public static final double kVitesseBrasGauche = -6;
+  public static final double kVitesseBrasDroit = 6;
   public static final double kTempsStopIntake = 0.3;
 
   private boolean stopTransporteur = false;
@@ -87,28 +87,28 @@ public class Intake extends SubsystemBase implements Loggable {
 
   public void transporter() {
     if (!stopTransporteur) {
-      moteurTransporteur.set(kVitesseTransporter);
+      moteurTransporteur.setVoltage(kVitesseTransporter);
     } else {
-      moteurTransporteur.set(0.0);
+      moteurTransporteur.setVoltage(0.0);
     }
   }
 
   public void actionnerBras() {
-    moteurBrasGauche.set(kVitesseBrasGauche);
-    moteurBrasDroit.set(kVitesseBrasDroit);
+    moteurBrasGauche.setVoltage(kVitesseBrasGauche);
+    moteurBrasDroit.setVoltage(kVitesseBrasDroit);
   }
 
   public void stopIntake() {
-    moteurIntake.set(0.0);
+    moteurIntake.setVoltage(0.0);
   }
 
   public void stopTransporteur() {
-    moteurTransporteur.set(0.0);
+    moteurTransporteur.setVoltage(0.0);
   }
 
   public void stopBras() {
-    moteurBrasGauche.set(0.0);
-    moteurBrasDroit.set(0.0);
+    moteurBrasGauche.setVoltage(0.0);
+    moteurBrasDroit.setVoltage(0.0);
   }
 
   public boolean hasBallonBas() {
@@ -128,11 +128,11 @@ public class Intake extends SubsystemBase implements Loggable {
   }
 
   public void transporterInverse() {
-    moteurTransporteur.set(-kVitesseTransporter);
+    moteurTransporteur.setVoltage(-kVitesseTransporter);
   }
 
   public void prendreBallonInverse() {
-    moteurIntake.set(-kVitesseAvaler - 0.4);
+    moteurIntake.setVoltage(-kVitesseAvaler - 0.4);
   }
 
 }
