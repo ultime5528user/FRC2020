@@ -12,15 +12,11 @@ import static com.ultime5528.util.SparkMaxUtil.handleCANError;
 import com.kauailabs.navx.frc.AHRS;
 import com.kauailabs.sf2.frc.navXSensor;
 import com.kauailabs.sf2.orientation.OrientationHistory;
-import com.kauailabs.sf2.orientation.Quaternion;
-import com.kauailabs.sf2.time.TimestampedValue;
 
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.ControlType;
 import com.ultime5528.frc2020.Constants;
 import com.ultime5528.frc2020.Ports;
@@ -66,6 +62,8 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   public static final double kRamseteZeta = 0.7;
   public static final double kPDriveVel = 0.0; // 2.0; // 1.41
 
+  public static final SparkMaxConfig kMotorConfig = new SparkMaxConfig(1.0, 40, 50);
+
   public static final boolean GYRO_REVERSED = false;
 
   private CANSparkMax moteurDroit;
@@ -108,14 +106,14 @@ public class BasePilotable extends SubsystemBase implements Loggable {
       moteurGauche2 = new CANSparkMax(Ports.BASE_PILOTABLE_MOTEUR_GAUCHE2, MotorType.kBrushless);
       moteurGauche3 = new CANSparkMax(Ports.BASE_PILOTABLE_MOTEUR_GAUCHE3, MotorType.kBrushless);
 
-      configureMasterMotor(moteurDroit);
-      configureSlaveMotor(moteurDroit2, moteurDroit);
-      configureSlaveMotor(moteurDroit3, moteurDroit);
+      configureMasterMotor(moteurDroit, kMotorConfig);
+      configureSlaveMotor(moteurDroit2, moteurDroit, kMotorConfig);
+      configureSlaveMotor(moteurDroit3, moteurDroit, kMotorConfig);
       controllerDroit = moteurDroit.getPIDController();
 
-      configureMasterMotor(moteurGauche);
-      configureSlaveMotor(moteurGauche2, moteurGauche);
-      configureSlaveMotor(moteurGauche3, moteurGauche);
+      configureMasterMotor(moteurGauche, kMotorConfig);
+      configureSlaveMotor(moteurGauche2, moteurGauche,kMotorConfig);
+      configureSlaveMotor(moteurGauche3, moteurGauche, kMotorConfig);
       controllerGauche = moteurGauche.getPIDController();
 
       encoderDroit = moteurDroit.getEncoder();

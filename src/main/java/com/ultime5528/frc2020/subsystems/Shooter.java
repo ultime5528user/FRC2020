@@ -13,7 +13,6 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
-import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,6 +22,7 @@ import com.ultime5528.frc2020.Ports;
 import com.ultime5528.util.LinearInterpolator;
 import com.ultime5528.util.Point;
 import com.ultime5528.util.SparkMaxUtil;
+import com.ultime5528.util.SparkMaxUtil.SparkMaxConfig;
 
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
@@ -42,6 +42,9 @@ public class Shooter extends SubsystemBase implements Loggable {
   public static double kTempsTir = 5;
   private CANSparkMax moteur;
   private CANSparkMax moteur2;
+
+  public static final SparkMaxConfig kMotorConfig = new SparkMaxConfig(0.1, 40, 50);
+
   @Log.Graph(name = "Vitesse Encoder Shooter", methodName = "getVelocity", rowIndex = 0, columnIndex = 4, width = 5, height = 5)
   private CANEncoder encoder;
 
@@ -68,8 +71,8 @@ public class Shooter extends SubsystemBase implements Loggable {
       moteur = new CANSparkMax(Ports.SHOOTER_MOTEUR, MotorType.kBrushless);
       moteur2 = new CANSparkMax(Ports.SHOOTER_MOTEUR2, MotorType.kBrushless);
 
-      SparkMaxUtil.configureMasterMotor(moteur);
-      SparkMaxUtil.configureSlaveMotor(moteur2, moteur, true);
+      SparkMaxUtil.configureMasterMotor(moteur, kMotorConfig);
+      SparkMaxUtil.configureSlaveMotor(moteur2, moteur, kMotorConfig, true);
 
       encoder = moteur.getEncoder();
       pidController = moteur.getPIDController();

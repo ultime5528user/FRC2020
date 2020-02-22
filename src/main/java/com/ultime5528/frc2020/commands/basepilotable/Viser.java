@@ -12,12 +12,6 @@ import java.util.OptionalDouble;
 import com.ultime5528.frc2020.subsystems.BasePilotable;
 import com.ultime5528.frc2020.subsystems.VisionController;
 
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-
 public class Viser extends AbstractTourner {
 
   public static double kTolerance = 0.1;
@@ -41,8 +35,7 @@ public class Viser extends AbstractTourner {
   @Override
   public double calculateGoalAngle() {
     angle = vision.getAngleCible();
-    return angle.orElse(0.0) - basePilotable.getAngleAtGyroTimestamp(vision.getLastTimestamp())
-        + basePilotable.getGyroAngle();
+    return angle.orElse(0.0) - basePilotable.getAngleAtGyroTimestamp(vision.getLastTimestamp());
   }
 
   @Override
