@@ -65,7 +65,7 @@ public class RobotContainer {
         Ports.GRIMPEUR_DROIT_LIMIT_SWITCH_HAUT, Ports.GRIMPEUR_DROIT_LIMIT_SWITCH_BAS, 0.2, 0.55, "Grimpeur Droit");
 
     grimpeurGauche = new Grimpeur(Ports.GRIMPEUR_SERVO_GAUCHE, Ports.GRIMPEUR_MOTEUR_GAUCHE,
-        Ports.GRIMPEUR_GAUCHE_LIMIT_SWITCH_HAUT, Ports.GRIMPEUR_GAUCHE_LIMIT_SWITCH_BAS, 0.8, 0.5, "Grimpeur Gauche");
+        Ports.GRIMPEUR_GAUCHE_LIMIT_SWITCH_HAUT, Ports.GRIMPEUR_GAUCHE_LIMIT_SWITCH_BAS, 0.9, 0.4, "Grimpeur Gauche");
 
     shooter = new Shooter();
 
@@ -108,11 +108,11 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(joystick, 2).toggleWhenPressed(new Viser(basePilotable, vision));
 
-    new JoystickButton(joystick, 7).whenHeld(new DescendreEnleverRatchet(grimpeurDroit));
+    new JoystickButton(joystick, 7).whenHeld(new MonterGrimpeur(grimpeurDroit));
     new JoystickButton(joystick, 8).whenHeld(new DescendreGrimpeur(grimpeurDroit));
     new JoystickButton(joystick, 9).whenHeld(new Grimper(grimpeurDroit));
 
-    new JoystickButton(joystick, 10).whenHeld(new DescendreEnleverRatchet(grimpeurGauche));
+    new JoystickButton(joystick, 10).whenHeld(new MonterGrimpeur(grimpeurGauche));
     new JoystickButton(joystick, 11).whenHeld(new DescendreGrimpeur(grimpeurGauche));
     new JoystickButton(joystick, 12).whenHeld(new Grimper(grimpeurGauche));
 
@@ -125,4 +125,10 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return null;
   }
+
+  public void unlockRatchets() {
+    grimpeurGauche.unlockRatchet();
+    grimpeurDroit.unlockRatchet();
+  }
+
 }

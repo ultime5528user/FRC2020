@@ -104,4 +104,9 @@ public class Grimpeur extends SubsystemBase implements Loggable {
   public boolean estEnHaut() {
     return limitSwitchHaut.get();
   }
+
+  public void unlockRatchet() {
+    ratchet.set(ratchetUnlocked);
+  }
+
 }
