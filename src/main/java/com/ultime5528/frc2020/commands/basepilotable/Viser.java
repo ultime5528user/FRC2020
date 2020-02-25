@@ -19,6 +19,8 @@ public class Viser extends AbstractTourner {
   private VisionController vision;
 
   private OptionalDouble angle;
+  private double goalAngle;
+  private long lastTimestamp = 0;
 
   public Viser(BasePilotable basePilotable, VisionController vision) {
     super(basePilotable, 3.14, 3.14); // TODO Vraies valeurs
@@ -30,12 +32,22 @@ public class Viser extends AbstractTourner {
   public void initialize() {
     super.initialize();
     vision.enable();
+    goalAngle = basePilotable.getAngleDegrees();
   }
 
   @Override
   public double calculateGoalAngleDegrees() {
+
+    long timestamp = vision.getLastTimestamp();
     angle = vision.getAngleCible();
-    return basePilotable.getAngleAtGyroTimestamp(vision.getLastTimestamp()) + angle.orElse(0.0);
+
+    if (angle.isPresent() && timestamp != lastTimestamp) {
+      lastTimestamp = timestamp;
+      goalAngle = basePilotable.getAngleAtGyroTimestamp(timestamp) + angle.orElse(0.0);
+    }
+
+    return goalAngle;
+
   }
 
   @Override
