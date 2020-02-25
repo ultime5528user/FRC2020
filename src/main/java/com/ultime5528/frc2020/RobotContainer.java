@@ -21,14 +21,18 @@ import com.ultime5528.frc2020.commands.grimpeur.DescendreGrimpeur;
 import com.ultime5528.frc2020.commands.intake.PrendreTransporterBallon;
 import com.ultime5528.frc2020.commands.intake.ViderIntake;
 import com.ultime5528.frc2020.commands.grimpeur.Grimper;
+import com.ultime5528.frc2020.commands.grimpeur.GrimperSansRatchet;
 import com.ultime5528.frc2020.commands.grimpeur.MonterGrimpeur;
 import com.ultime5528.frc2020.commands.shooter.Tirer;
 import com.ultime5528.frc2020.commands.basepilotable.Tourner;
 import com.ultime5528.frc2020.commands.basepilotable.Viser;
+import com.ultime5528.frc2020.commands.brasintake.DescendreBras;
+import com.ultime5528.frc2020.commands.brasintake.MonterBras;
 import com.ultime5528.frc2020.commands.basepilotable.Piloter;
 import com.ultime5528.frc2020.commands.roulette.TournerRoulette;
 
 import com.ultime5528.frc2020.subsystems.BasePilotable;
+import com.ultime5528.frc2020.subsystems.BrasIntake;
 import com.ultime5528.frc2020.subsystems.Grimpeur;
 import com.ultime5528.frc2020.subsystems.Intake;
 import com.ultime5528.frc2020.subsystems.Roulette;
@@ -45,8 +49,9 @@ public class RobotContainer {
   private final Grimpeur grimpeurDroit;
   private final Grimpeur grimpeurGauche;
   private final Shooter shooter;
-  private final Roulette roulette;
+  private final Roulette roulette = null;
   private final Intake intake;
+  private final BrasIntake brasDroit, brasGauche;
   private final VisionController vision;
 
   private final PowerDistributionPanel pdp;
@@ -112,19 +117,26 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
+
+    SmartDashboard.putData("Monter bras", new MonterBras(brasDroit));
+    SmartDashboard.putData("Descendre bras", new DescendreBras(brasDroit));
+
     new JoystickButton(joystick, 2).toggleWhenPressed(new Viser(basePilotable, vision));
 
     new JoystickButton(joystick, 7).whenHeld(new MonterGrimpeur(grimpeurDroit));
-    new JoystickButton(joystick, 8).whenHeld(new DescendreGrimpeur(grimpeurDroit));
+    new JoystickButton(joystick, 8).whenHeld(new GrimperSansRatchet(grimpeurDroit));
     new JoystickButton(joystick, 9).whenHeld(new Grimper(grimpeurDroit));
 
     new JoystickButton(joystick, 10).whenHeld(new MonterGrimpeur(grimpeurGauche));
-    new JoystickButton(joystick, 11).whenHeld(new DescendreGrimpeur(grimpeurGauche));
+    new JoystickButton(joystick, 11).whenHeld(new GrimperSansRatchet(grimpeurGauche));
     new JoystickButton(joystick, 12).whenHeld(new Grimper(grimpeurGauche));
 
-    new JoystickButton(joystick, 3).toggleWhenPressed(new TournerRoulette(roulette));
+    // new JoystickButton(joystick, 3).toggleWhenPressed(new
+    // TournerRoulette(roulette));
     new JoystickButton(joystick, 4).whenPressed(new Tirer(shooter, intake, vision));
     new JoystickButton(joystick, 5).toggleWhenPressed(new PrendreTransporterBallon(intake));
+    // new JoystickButton(joystick, 7)
+    // new JoystickButton(joystick, 7)
 
   }
 

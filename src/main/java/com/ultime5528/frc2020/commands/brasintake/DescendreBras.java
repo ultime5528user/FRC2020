@@ -13,11 +13,10 @@ import com.ultime5528.util.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class DescendreBras extends CommandBase {
-  private Timer timer;
   private BrasIntake brasIntake;
 
 
-  public DescendreBras(BrasIntake brasIntake, Timer timer) {
+  public DescendreBras(BrasIntake brasIntake) {
     this.brasIntake = brasIntake;
     addRequirements(brasIntake);
 
@@ -26,23 +25,23 @@ public class DescendreBras extends CommandBase {
 
   @Override
   public void initialize() {
-    timer.reset();
-    timer.start();
   }
 
 
   @Override
   public void execute() {
+    brasIntake.descendreBras();
   }
 
 
   @Override
   public void end(boolean interrupted) {
+  brasIntake.stopBras();
   }
 
 
   @Override
   public boolean isFinished() {
-    return false;
+    return brasIntake.getPosition() >= 0;
   }
 }
