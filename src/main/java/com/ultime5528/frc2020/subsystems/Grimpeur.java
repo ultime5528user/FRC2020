@@ -25,6 +25,8 @@ public class Grimpeur extends SubsystemBase implements Loggable {
 
   private String name;
 
+  private double inversed;
+
   @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 2)
   private double ratchetLocked;
   @Config(rowIndex = 2, columnIndex = 0, width = 2, height = 2)
@@ -41,7 +43,7 @@ public class Grimpeur extends SubsystemBase implements Loggable {
    * Creates a new Grimpeur.
    */
   public Grimpeur(int portServo, int portMoteur, int portLimitSwitchHaut, int portLimitSwitchBas, double ratchetLocked,
-      double ratchetUnlocked, String name) {
+      double ratchetUnlocked, boolean inversed, String name) {
     SendableRegistry.addLW(this, name, name);
     ratchet = new Servo(portServo);
     moteur = new VictorSP(portMoteur);
@@ -50,6 +52,7 @@ public class Grimpeur extends SubsystemBase implements Loggable {
 
     this.ratchetLocked = ratchetLocked;
     this.ratchetUnlocked = ratchetUnlocked;
+    this.inversed = (inversed ? -1.0 : 1.0);
 
     this.name = name;
     setName(name);
@@ -77,22 +80,22 @@ public class Grimpeur extends SubsystemBase implements Loggable {
 
   public void monter() {
     ratchet.set(ratchetUnlocked);
-    moteur.setVoltage(kVitesseMonter);
+    moteur.setVoltage(inversed * kVitesseMonter);
   }
 
   public void descendre() {
     ratchet.set(ratchetLocked);
-    moteur.setVoltage(kVitesseDescendre);
+    moteur.setVoltage(inversed * kVitesseDescendre);
   }
 
   public void grimper() {
     ratchet.set(ratchetLocked);
-    moteur.setVoltage(kVitesseGrimper);
+    moteur.setVoltage(inversed * kVitesseGrimper);
   }
 
   public void grimperSansRatchet() {
     ratchet.set(ratchetUnlocked);
-    moteur.setVoltage(kVitesseGrimper);
+    moteur.setVoltage(inversed * kVitesseGrimper);
   }
 
   @Log.BooleanBox(rowIndex = 0, columnIndex = 4)

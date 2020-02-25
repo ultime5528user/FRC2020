@@ -62,14 +62,20 @@ public class RobotContainer {
     basePilotable.setDefaultCommand(piloter);
 
     grimpeurDroit = new Grimpeur(Ports.GRIMPEUR_SERVO_DROIT, Ports.GRIMPEUR_MOTEUR_DROIT,
-        Ports.GRIMPEUR_DROIT_LIMIT_SWITCH_HAUT, Ports.GRIMPEUR_DROIT_LIMIT_SWITCH_BAS, 0.2, 0.55, "Grimpeur Droit");
+        Ports.GRIMPEUR_DROIT_LIMIT_SWITCH_HAUT, Ports.GRIMPEUR_DROIT_LIMIT_SWITCH_BAS, 0.2, 0.55, false,
+        "Grimpeur Droit");
 
     grimpeurGauche = new Grimpeur(Ports.GRIMPEUR_SERVO_GAUCHE, Ports.GRIMPEUR_MOTEUR_GAUCHE,
-        Ports.GRIMPEUR_GAUCHE_LIMIT_SWITCH_HAUT, Ports.GRIMPEUR_GAUCHE_LIMIT_SWITCH_BAS, 0.9, 0.4, "Grimpeur Gauche");
+        Ports.GRIMPEUR_GAUCHE_LIMIT_SWITCH_HAUT, Ports.GRIMPEUR_GAUCHE_LIMIT_SWITCH_BAS, 0.9, 0.4, true,
+        "Grimpeur Gauche");
 
+    brasDroit = new BrasIntake(Ports.BRAS_INTAKE_DROIT, Ports.BRAS_INTAKE_DROIT_ENCODER_A,
+        Ports.BRAS_INTAKE_DROIT_ENCODER_B, "bras droit");
+    brasGauche = new BrasIntake(Ports.BRAS_INTAKE_GAUCHE, Ports.BRAS_INTAKE_GAUCHE_ENCODER_A,
+        Ports.BRAS_INTAKE_GAUCHE_ENCODER_B, "bras gauche");
     shooter = new Shooter();
 
-    roulette = new Roulette();
+    // roulette = new Roulette();
 
     if (Constants.ENABLE_PDP) {
       pdp = new PowerDistributionPanel();
