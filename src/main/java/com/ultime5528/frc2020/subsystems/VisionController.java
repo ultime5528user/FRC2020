@@ -118,13 +118,13 @@ public class VisionController extends SubsystemBase {
 
   private void synchronize() {
     gotSynchronizeEntry.addListener(notif -> {
-      long newTime = RobotController.getFPGATime();
+      long newTime = timestampSupplier.get();
       lag = (newTime - doSynchronizeTime) / 2;
       NetworkTableInstance.getDefault().getTable("vision").getEntry("lag").setNumber(lag);
       hasSynchronized = true;
     }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 
-    doSynchronizeTime = RobotController.getFPGATime();
+    doSynchronizeTime = timestampSupplier.get();
     doSynchronizeEntry.setDouble(doSynchronizeEntry.getDouble(0.0) + 1.0);
     NetworkTableInstance.getDefault().flush();
 

@@ -45,10 +45,15 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   public static final double kPositionConversionFactor = kGearboxRatio * kWheelDiameter * Math.PI;
   public static final double kVelocityConversionFactor = kPositionConversionFactor / 60;
 
-  public static final double kS = 0.251; // 0.151
+  public static final double kS = 0.251; // 0.274, 0.151
   public static final double kV = 4.16; // 3.16
   public static final double kA = 0.419; // .419
   public static final SimpleMotorFeedforward kFeedForward = new SimpleMotorFeedforward(kS, kV, kA);
+  
+  public static final double kRS = 0.625;
+  public static final double kRV = 3.0;
+  public static final double kRA = 0.500;
+  public static final SimpleMotorFeedforward kRotationFeedForward = new SimpleMotorFeedforward(kRS, kRV, kRA);
 
   public static final double kTrackWidth = 0.686; // TODO Valider FRC Characterization, refaire depuis la correction gearbox gauche
   public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidth);
@@ -128,6 +133,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
 
     gyro = new AHRS(Port.kUSB);
     addChild("navX", gyro);
+    gyro.reset();
 
     navXSensor navx_sensor = new navXSensor(gyro, "Drivetrain Orientation");
     orientation_history = new OrientationHistory(navx_sensor, gyro.getRequestedUpdateRate() * 10);
@@ -308,10 +314,10 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   public void turnToAngle(double angleDegrees, DifferentialDriveWheelSpeeds speeds, DifferentialDriveWheelSpeeds prevSpeeds) {
     if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
 
-      double leftFeedforward = kFeedForward.calculate(speeds.leftMetersPerSecond,
+      double leftFeedforward = kRotationFeedForward.calculate(speeds.leftMetersPerSecond,
           (speeds.leftMetersPerSecond - prevSpeeds.leftMetersPerSecond) / TimedRobot.kDefaultPeriod);
 
-      double rightFeedforward = kFeedForward.calculate(speeds.rightMetersPerSecond,
+      double rightFeedforward = kRotationFeedForward.calculate(speeds.rightMetersPerSecond,
           (speeds.rightMetersPerSecond - prevSpeeds.rightMetersPerSecond) / TimedRobot.kDefaultPeriod);
 
       double pidCorrection = pidGauche.calculate(getAngleDegrees(), angleDegrees);
