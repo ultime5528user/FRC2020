@@ -27,6 +27,8 @@ public class Grimpeur extends SubsystemBase implements Loggable {
 
   private double inversed;
 
+  private boolean isLocked = false;
+
   @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 2)
   private double ratchetLocked;
   @Config(rowIndex = 2, columnIndex = 0, width = 2, height = 2)
@@ -79,23 +81,29 @@ public class Grimpeur extends SubsystemBase implements Loggable {
   }
 
   public void monter() {
+    if(!isLocked){
     ratchet.set(ratchetUnlocked);
     moteur.setVoltage(inversed * kVitesseMonter);
+
+  }
   }
 
   public void descendre() {
     ratchet.set(ratchetLocked);
     moteur.setVoltage(inversed * kVitesseDescendre);
+    isLocked = true;
   }
 
   public void grimper() {
     ratchet.set(ratchetLocked);
     moteur.setVoltage(inversed * kVitesseGrimper);
+    isLocked = true;
   }
 
   public void grimperSansRatchet() {
     ratchet.set(ratchetUnlocked);
     moteur.setVoltage(inversed * kVitesseGrimper);
+    isLocked = false;
   }
 
   @Log.BooleanBox(rowIndex = 0, columnIndex = 4)
@@ -110,6 +118,7 @@ public class Grimpeur extends SubsystemBase implements Loggable {
 
   public void unlockRatchet() {
     ratchet.set(ratchetUnlocked);
+    isLocked = false;
   }
 
 }
