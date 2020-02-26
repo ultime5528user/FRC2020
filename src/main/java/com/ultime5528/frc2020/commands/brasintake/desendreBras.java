@@ -9,39 +9,20 @@ package com.ultime5528.frc2020.commands.brasintake;
 
 import com.ultime5528.frc2020.subsystems.BrasIntake;
 
-
-import edu.wpi.first.wpilibj2.command.CommandBase;
-
-public class DescendreBras extends CommandBase {
-  private BrasIntake brasIntake;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 
-  public DescendreBras(BrasIntake brasIntake) {
-    this.brasIntake = brasIntake;
-    addRequirements(brasIntake);
+public class desendreBras extends SequentialCommandGroup {
 
+   private BrasIntake brasintake;
+  
+  public desendreBras(BrasIntake brasintake) {
+    
+    super(
+     new MonterBras(brasintake),
+     new DescendreBras(brasintake)
+    );
+    this.brasintake = brasintake;
   }
 
-
-  @Override
-  public void initialize() {
-  }
-
-
-  @Override
-  public void execute() {
-    brasIntake.descendreBras();
-  }
-
-
-  @Override
-  public void end(boolean interrupted) {
-  brasIntake.stopBras();
-  }
-
-
-  @Override
-  public boolean isFinished() {
-    return brasIntake.getPosition() >= 0;
-  }
 }
