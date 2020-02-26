@@ -114,6 +114,7 @@ public class RobotContainer {
     tourner = new Tourner(basePilotable, 100.0, 0.75, 0.5);
     SmartDashboard.putData("Vider intake", new ViderIntake(intake).withTimeout(5.0));
     SmartDashboard.putData("Tourner 100", tourner);
+    SmartDashboard.putData("Viser", new Viser(basePilotable, vision));
   }
 
   private void configureButtonBindings() {

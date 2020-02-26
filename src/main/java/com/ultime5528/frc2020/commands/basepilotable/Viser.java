@@ -12,6 +12,8 @@ import java.util.OptionalDouble;
 import com.ultime5528.frc2020.subsystems.BasePilotable;
 import com.ultime5528.frc2020.subsystems.VisionController;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Viser extends AbstractTourner {
 
   public static double kTolerance = 0.1;
@@ -23,7 +25,7 @@ public class Viser extends AbstractTourner {
   private long lastTimestamp = 0;
 
   public Viser(BasePilotable basePilotable, VisionController vision) {
-    super(basePilotable, 3.14, 3.14); // TODO Vraies valeurs
+    super(basePilotable, 0.75, 0.5); // TODO Vraies valeurs
     this.vision = vision;
     addRequirements(vision);
   }
@@ -45,6 +47,8 @@ public class Viser extends AbstractTourner {
       lastTimestamp = timestamp;
       goalAngle = basePilotable.getAngleAtGyroTimestamp(timestamp) + angle.orElse(0.0);
     }
+
+    SmartDashboard.putNumber("goal angle", angle.orElse(0.0));
 
     return goalAngle;
 

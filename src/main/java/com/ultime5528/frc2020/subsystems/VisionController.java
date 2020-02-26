@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Relay.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionController extends SubsystemBase {
@@ -67,7 +68,7 @@ public class VisionController extends SubsystemBase {
       if (notif.value.getBoolean()) {
         synchronize();
       }
-    }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+    }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate | EntryListenerFlags.kImmediate);
     
     startVisionEntry.setBoolean(true);
 
@@ -75,6 +76,8 @@ public class VisionController extends SubsystemBase {
     led.set(Value.kOn);
 
     readSnapshot();
+
+    SmartDashboard.putNumber("kFocale", kFocale);
   }
 
   public void initTestCamera() {
@@ -110,9 +113,7 @@ public class VisionController extends SubsystemBase {
       readSnapshot();
     }
 
-    if (hasSynchronized) {
-      timestampEntry.setNumber(timestampSupplier.get());
-    }
+    timestampEntry.setNumber(timestampSupplier.get());
 
   }
 
@@ -161,6 +162,7 @@ public class VisionController extends SubsystemBase {
     if (currentSnapshot.found) {
       double x = currentSnapshot.centreX;
       double angle = Math.atan(-x / kFocale); //TODO vérifier "-x / kFocale"
+      angle = Math.toDegrees(angle);
       return OptionalDouble.of(angle);
     } else {
       return OptionalDouble.empty();
