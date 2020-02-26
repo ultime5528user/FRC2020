@@ -51,7 +51,7 @@ public class RobotContainer {
   private final Shooter shooter;
   private final Roulette roulette = null;
   private final Intake intake;
-  private final BrasIntake brasDroit, brasGauche;
+  public final BrasIntake brasDroit, brasGauche;
   private final VisionController vision;
 
   private final PowerDistributionPanel pdp;
