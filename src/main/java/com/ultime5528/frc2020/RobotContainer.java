@@ -95,7 +95,7 @@ public class RobotContainer {
 
     configureButtonBindings();
 
-    // Logger.configureLoggingAndConfig(this, false);
+    Logger.configureLoggingAndConfig(this, false);
     // LiveWindow.disableAllTelemetry();
 
     SmartDashboard.putData(CommandScheduler.getInstance());
@@ -135,7 +135,7 @@ public class RobotContainer {
     // new JoystickButton(joystick, 3).toggleWhenPressed(new
     // TournerRoulette(roulette));
     new JoystickButton(joystick, 4).whenPressed(new Tirer(shooter, intake, vision));
-    new JoystickButton(joystick, 5).toggleWhenPressed(new PrendreTransporterBallon(intake));
+    new JoystickButton(joystick, 5).toggleWhenPressed(new PrendreTransporterBallon(intake,brasDroit,brasGauche));
     // new JoystickButton(joystick, 7)
     // new JoystickButton(joystick, 7)
 

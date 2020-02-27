@@ -109,6 +109,8 @@ public class VisionController extends SubsystemBase {
 
   @Override
   public void periodic() {
+    led.set(Value.kOn); //TODO ENLEVERRRRR!
+
     if (isEnabled) {
       readSnapshot();
     }

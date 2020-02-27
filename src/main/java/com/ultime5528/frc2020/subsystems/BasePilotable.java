@@ -235,7 +235,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   }
 
   public double getAngleAtGyroTimestamp(long timestamp){
-    return orientation_history.getYawDegreesAtTime(timestamp);
+    return (GYRO_REVERSED ? -1.0 : 1.0) * orientation_history.getYawDegreesAtTime(timestamp);
   }
 
   /**

@@ -36,13 +36,13 @@ public class Intake extends SubsystemBase implements Loggable {
   @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1)
   private int ballonDansIntake;
 
-  public static final double kVitesseAvaler = 6;
+  public static final double kVitesseAvaler = 4;
   public static final double kVitesseTransporter = -7.2;
   public static final double kCurrentFilterTime = 2;
   public static final double kMaxCurrent = 20;
   public static final double kVitesseBrasGauche = -6;
   public static final double kVitesseBrasDroit = 6;
-  public static final double kTempsStopIntake = 0.3;
+  public static final double kTempsStopIntake = 0.2;
 
   private boolean stopTransporteur = false;
 
@@ -82,7 +82,7 @@ public class Intake extends SubsystemBase implements Loggable {
   }
 
   public void prendreBallon() {
-    moteurIntake.set(kVitesseAvaler);
+    moteurIntake.setVoltage(kVitesseAvaler);
   }
 
   public void transporter() {

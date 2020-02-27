@@ -15,6 +15,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.LinearFilter;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ultime5528.frc2020.Constants;
@@ -33,7 +35,7 @@ public class Shooter extends SubsystemBase implements Loggable {
   public static double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
 
   @Config(rowIndex = 1, columnIndex = 2, width = 2, height = 1)
-  public static double kRPM = 2000;
+  public static double kRPM = 3500;
 
   @Config(rowIndex = 2, columnIndex = 2, width = 2, height = 1)
   public static double kPrecision = 0.95;
@@ -53,6 +55,7 @@ public class Shooter extends SubsystemBase implements Loggable {
   @Config(rowIndex = 0, columnIndex = 2, width = 2, height = 2, methodName = "setD", methodTypes = { double.class })
   @Config(rowIndex = 2, columnIndex = 2, width = 2, height = 2, methodName = "setFF", methodTypes = { double.class })
   private CANPIDController pidController;
+ LinearFilter filter = LinearFilter.singlePoleIIR(0.5, TimedRobot.kDefaultPeriod);
 
   private LinearInterpolator interpolator = new LinearInterpolator(
       new Point[] { new Point(0.0, 0.0), new Point(1.0, 1.0) });
@@ -122,9 +125,13 @@ public class Shooter extends SubsystemBase implements Loggable {
 
   public double getVitesse() {
     if (Constants.ENABLE_CAN_SHOOTER) {
-      return encoder.getVelocity();
+      return filter.calculate(encoder.getVelocity());
     } else {
       return 0.0;
     }
+  }
+
+  public void resetFilter() {
+    filter.reset();
   }
 }

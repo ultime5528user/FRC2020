@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Viser extends AbstractTourner {
 
-  public static double kTolerance = 0.1;
+  public static double kTolerance = 1;
 
   private VisionController vision;
 
@@ -44,6 +44,7 @@ public class Viser extends AbstractTourner {
     angle = vision.getAngleCible();
 
     if (angle.isPresent() && timestamp != lastTimestamp) {
+      SmartDashboard.putNumber("angle_history", basePilotable.getAngleAtGyroTimestamp(timestamp));
       lastTimestamp = timestamp;
       goalAngle = basePilotable.getAngleAtGyroTimestamp(timestamp) + angle.orElse(0.0);
     }

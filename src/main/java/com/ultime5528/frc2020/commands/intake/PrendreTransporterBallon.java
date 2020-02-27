@@ -20,7 +20,7 @@ public class PrendreTransporterBallon extends ParallelCommandGroup {
   private BrasIntake brasGauche;
 
   public PrendreTransporterBallon(Intake intake, BrasIntake brasDroit, BrasIntake brasGauche) {
-    super(new MonterLesBras(brasDroit, brasGauche), sequence(new PrendreBallon(intake), new TransporterBallon(intake)));
+    super(/*new MonterLesBras(brasDroit, brasGauche),*/ sequence(new PrendreBallon(intake), new TransporterBallon(intake)));
     this.intake = intake;
   }
 
@@ -30,7 +30,7 @@ public class PrendreTransporterBallon extends ParallelCommandGroup {
     if (!interrupted && !intake.hasBallonBas()) {
       schedule();
     } else {
-      new MonterLesBras(brasDroit, brasGauche);
+      //new MonterLesBras(brasDroit, brasGauche);
     }
   }
 
