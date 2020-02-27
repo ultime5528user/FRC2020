@@ -21,6 +21,8 @@ import com.revrobotics.ControlType;
 import com.ultime5528.frc2020.Constants;
 import com.ultime5528.frc2020.Ports;
 import com.ultime5528.util.LogUtil;
+import com.ultime5528.util.SimpleOrientationHistory;
+import com.ultime5528.util.SimpleOrientationHistory.TimestampedAngle;
 
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -94,14 +96,13 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   private PIDController pidGauche = BasePilotable.createPIDController();
 
   private AHRS gyro;
-  private OrientationHistory orientation_history;
+  private SimpleOrientationHistory orientation_history;
 
   private DifferentialDrive drive;
 
   private DifferentialDriveOdometry odometry;
 
   public BasePilotable() {
-
     if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
 
       moteurDroit = new CANSparkMax(Ports.BASE_PILOTABLE_MOTEUR_DROIT1, MotorType.kBrushless);
@@ -135,8 +136,13 @@ public class BasePilotable extends SubsystemBase implements Loggable {
     addChild("navX", gyro);
     gyro.reset();
 
-    navXSensor navx_sensor = new navXSensor(gyro, "Drivetrain Orientation");
-    orientation_history = new OrientationHistory(navx_sensor, gyro.getRequestedUpdateRate() * 10);
+    orientation_history = new SimpleOrientationHistory();
+
+    for (int i = 0; i <= 1500; i+=2) {
+      orientation_history.addAngle(new TimestampedAngle(i, i*15+30));
+    }
+
+    System.out.println(orientation_history.getAngleAtTimestamp(3));
 
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getClampedHeading()));
   }
@@ -148,6 +154,8 @@ public class BasePilotable extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
+    orientation_history.addAngle(new TimestampedAngle(getGyroTimestamp(), getAngleDegrees()));
+
     // Update the odometry in the periodic block
     if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
       odometry.update(Rotation2d.fromDegrees(getClampedHeading()), encoderGauche.getPosition(), encoderDroit.getPosition());
@@ -235,7 +243,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   }
 
   public double getAngleAtGyroTimestamp(long timestamp){
-    return (GYRO_REVERSED ? -1.0 : 1.0) * orientation_history.getYawDegreesAtTime(timestamp);
+    return (GYRO_REVERSED ? -1.0 : 1.0) * orientation_history.getAngleAtTimestamp(timestamp);
   }
 
   /**
