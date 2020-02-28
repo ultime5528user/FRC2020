@@ -106,7 +106,7 @@ public class RobotContainer {
           .onCommandInterrupt(command -> System.out.println(command.getName() + " interrupted"));
 
     }
-    tourner = new Tourner(basePilotable, 100.0, 0.75, 0.5);
+    tourner = new Tourner(basePilotable, 100.0, 1.25, 0.8);
     SmartDashboard.putData("Vider intake", new ViderIntake(intake).withTimeout(5.0));
     SmartDashboard.putData("Tourner 100", tourner);
     SmartDashboard.putData("Viser", new Viser(basePilotable, vision));

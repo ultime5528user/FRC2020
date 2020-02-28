@@ -2,24 +2,31 @@ package com.ultime5528.frc2020.commands.basepilotable;
 
 import com.ultime5528.frc2020.subsystems.BasePilotable;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import io.github.oblarg.oblog.annotations.Config;
+
 /**
  * Tourner
  */
 public class Tourner extends AbstractTourner {
 
     public static double kTolerance = 1;
+
+    @Config
     private double deltaAngleDegrees;
-    private double angleDegrees = 0;
+    // private double angleDegrees = 0;
+    private double initialAngleDegrees;
 
     public Tourner(BasePilotable basePilotable, double angleDegrees, double vitesse, double accel) {
         super(basePilotable, vitesse, accel);
         this.deltaAngleDegrees = angleDegrees;
+        // SmartDashboard.putNumber("delta_angle", deltaAngleDegrees);
     }
 
     @Override
     public void initialize() {
         super.initialize();
-        angleDegrees = basePilotable.getAngleDegrees() + deltaAngleDegrees;
+        initialAngleDegrees = basePilotable.getAngleDegrees();
     }
     
     /**
@@ -27,7 +34,8 @@ public class Tourner extends AbstractTourner {
      */
     @Override
     public double calculateGoalAngleDegrees() {
-        return angleDegrees;
+        // deltaAngleDegrees = SmartDashboard.getNumber("delta_angle", deltaAngleDegrees);
+        return initialAngleDegrees + deltaAngleDegrees;
     }
 
     // @Override
