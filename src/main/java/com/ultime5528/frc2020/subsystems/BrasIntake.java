@@ -17,8 +17,8 @@ public class BrasIntake extends SubsystemBase {
   private VictorSP moteur;
   private Encoder encoder;
 
-  public static double kVitesseMonter = -8;
-  public static double kVitesseDescendre = 8;
+  public static double kVitesseMonter = -7;
+  public static double kVitesseDescendre = 7;
   
   public BrasIntake(int portMoteur, int portEncoderA, int portEncoderB, String name) {
 

@@ -7,30 +7,18 @@
 
 package com.ultime5528.frc2020;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
-import com.ultime5528.frc2020.commands.grimpeur.DescendreEnleverRatchet;
-import com.ultime5528.frc2020.commands.grimpeur.DescendreGrimpeur;
-import com.ultime5528.frc2020.commands.intake.PrendreTransporterBallon;
-import com.ultime5528.frc2020.commands.intake.ViderIntake;
-import com.ultime5528.frc2020.commands.grimpeur.Grimper;
-import com.ultime5528.frc2020.commands.grimpeur.GrimperSansRatchet;
-import com.ultime5528.frc2020.commands.grimpeur.MonterGrimpeur;
-import com.ultime5528.frc2020.commands.shooter.Tirer;
+import com.ultime5528.frc2020.commands.basepilotable.Piloter;
 import com.ultime5528.frc2020.commands.basepilotable.Tourner;
 import com.ultime5528.frc2020.commands.basepilotable.Viser;
 import com.ultime5528.frc2020.commands.brasintake.DescendreBras;
+import com.ultime5528.frc2020.commands.brasintake.DescendreBrasInitial;
 import com.ultime5528.frc2020.commands.brasintake.MonterBras;
-import com.ultime5528.frc2020.commands.basepilotable.Piloter;
-import com.ultime5528.frc2020.commands.roulette.TournerRoulette;
-
+import com.ultime5528.frc2020.commands.grimpeur.Grimper;
+import com.ultime5528.frc2020.commands.grimpeur.GrimperSansRatchet;
+import com.ultime5528.frc2020.commands.grimpeur.MonterGrimpeur;
+import com.ultime5528.frc2020.commands.intake.PrendreTransporterBallon;
+import com.ultime5528.frc2020.commands.intake.ViderIntake;
+import com.ultime5528.frc2020.commands.shooter.Tirer;
 import com.ultime5528.frc2020.subsystems.BasePilotable;
 import com.ultime5528.frc2020.subsystems.BrasIntake;
 import com.ultime5528.frc2020.subsystems.Grimpeur;
@@ -39,6 +27,12 @@ import com.ultime5528.frc2020.subsystems.Roulette;
 import com.ultime5528.frc2020.subsystems.Shooter;
 import com.ultime5528.frc2020.subsystems.VisionController;
 
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import io.github.oblarg.oblog.Logger;
 
 public class RobotContainer {
@@ -76,6 +70,7 @@ public class RobotContainer {
 
     brasDroit = new BrasIntake(Ports.BRAS_INTAKE_DROIT, Ports.BRAS_INTAKE_DROIT_ENCODER_A,
         Ports.BRAS_INTAKE_DROIT_ENCODER_B, "bras droit");
+        
     brasGauche = new BrasIntake(Ports.BRAS_INTAKE_GAUCHE, Ports.BRAS_INTAKE_GAUCHE_ENCODER_A,
         Ports.BRAS_INTAKE_GAUCHE_ENCODER_B, "bras gauche");
     shooter = new Shooter();
@@ -134,7 +129,7 @@ public class RobotContainer {
 
     // new JoystickButton(joystick, 3).toggleWhenPressed(new
     // TournerRoulette(roulette));
-    new JoystickButton(joystick, 4).whenPressed(new Tirer(shooter, intake, vision));
+    new JoystickButton(joystick, 4).toggleWhenPressed(new Tirer(shooter, intake, vision));
     new JoystickButton(joystick, 5).toggleWhenPressed(new PrendreTransporterBallon(intake,brasDroit,brasGauche));
     // new JoystickButton(joystick, 7)
     // new JoystickButton(joystick, 7)
@@ -142,7 +137,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return null;
+    return new DescendreBrasInitial(brasDroit, brasGauche);
   }
 
   public void unlockRatchets() {

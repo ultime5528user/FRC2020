@@ -8,8 +8,9 @@
 package com.ultime5528.frc2020.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 
+import com.ultime5528.frc2020.commands.brasintake.DescendreLesBras;
 import com.ultime5528.frc2020.commands.brasintake.MonterLesBras;
 import com.ultime5528.frc2020.subsystems.Intake;
 import com.ultime5528.frc2020.subsystems.BrasIntake;
@@ -18,10 +19,19 @@ public class PrendreTransporterBallon extends ParallelCommandGroup {
   private Intake intake;
   private BrasIntake brasDroit;
   private BrasIntake brasGauche;
+  private boolean hasSchedule = false;
 
   public PrendreTransporterBallon(Intake intake, BrasIntake brasDroit, BrasIntake brasGauche) {
-    super(/*new MonterLesBras(brasDroit, brasGauche),*/ sequence(new PrendreBallon(intake), new TransporterBallon(intake)));
-    this.intake = intake;
+    super(new DescendreLesBras(brasDroit, brasGauche), sequence(new PrendreBallon(intake), new TransporterBallon(intake)));
+    this.intake = intake; 
+    this.brasDroit = brasDroit;
+    this.brasGauche = brasGauche;
+  }
+
+  @Override
+  public void initialize() {
+    super.initialize();
+    hasSchedule = false;
   }
 
   @Override
@@ -29,8 +39,10 @@ public class PrendreTransporterBallon extends ParallelCommandGroup {
     super.end(interrupted);
     if (!interrupted && !intake.hasBallonBas()) {
       schedule();
-    } else {
-      //new MonterLesBras(brasDroit, brasGauche);
+    } else if (!hasSchedule) {
+      hasSchedule = true;
+      new ScheduleCommand(new MonterLesBras(brasDroit, brasGauche)).schedule();
+   
     }
   }
 
