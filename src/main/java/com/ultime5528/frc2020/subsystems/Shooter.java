@@ -57,7 +57,12 @@ public class Shooter extends SubsystemBase implements Loggable {
   private CANPIDController pidController;
 
   private LinearInterpolator interpolator = new LinearInterpolator(
-      new Point[] { new Point(0.0, 0.0), new Point(1.0, 1.0) });
+      new Point[] { new Point(0.155, 2300), new Point(0.077, 3100), new Point(0.082, 2900), new Point(0.0916, 2600),
+          new Point(0.0958, 2500), new Point(0.1, 2400), new Point(0.105, 2400), new Point(0.11, 2400),
+          new Point(0.116, 2350), new Point(0.12, 2325), new Point(0.129, 2325), new Point(0.133, 2300),
+          new Point(0.141, 2290), new Point(0.145, 2290), new Point(0.15, 2270), new Point(0.155, 2250),
+          new Point(0.159, 2240), new Point(0.164, 2230), new Point(0.171, 2230), new Point(0.179, 2220),
+          new Point(0.1875, 2210), new Point(0.197, 2200) });
 
   public Shooter() {
 
