@@ -46,7 +46,11 @@ public class Grimpeur extends SubsystemBase implements Loggable {
    */
   public Grimpeur(int portServo, int portMoteur, int portLimitSwitchHaut, int portLimitSwitchBas, double ratchetLocked,
       double ratchetUnlocked, boolean inversed, String name) {
+          
     SendableRegistry.addLW(this, name, name);
+    this.name = name;
+    setName(name);
+    
     ratchet = new Servo(portServo);
     moteur = new VictorSP(portMoteur);
     limitSwitchBas = new DigitalInput(portLimitSwitchBas);
@@ -55,9 +59,6 @@ public class Grimpeur extends SubsystemBase implements Loggable {
     this.ratchetLocked = ratchetLocked;
     this.ratchetUnlocked = ratchetUnlocked;
     this.inversed = (inversed ? -1.0 : 1.0);
-
-    this.name = name;
-    setName(name);
 
     addChild("Servo Grimpeur", ratchet);
     addChild("Moteur Grimpeur", moteur);
