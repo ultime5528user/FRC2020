@@ -21,6 +21,7 @@ public class Tirer extends CommandBase {
 
   private Shooter shooter;
   private Timer timer;
+  private Timer timerShooter;
   private Intake intake;
   private VisionController vision;
 
@@ -29,6 +30,7 @@ public class Tirer extends CommandBase {
     this.intake = intake;
     this.vision = vision;
     this.timer = new Timer();
+    this.timerShooter = new Timer();
     addRequirements(shooter, intake);
   }
 
@@ -36,7 +38,7 @@ public class Tirer extends CommandBase {
   @Override
   public void initialize() {
     timer.reset();
-    shooter.resetFilter();
+    timerShooter.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -44,19 +46,38 @@ public class Tirer extends CommandBase {
   public void execute() {
 
     // shooter.tirer(vision.getHauteurCible());
-    shooter.tirer(OptionalDouble.empty());
+    shooter.tirer(OptionalDouble.empty()); // TODO Vitesse de la dernière cible vue, dans ajouter une variable qui la contient
 
     double vitesse = shooter.getVitesse();
-    SmartDashboard.putNumber("shooter vitesse", vitesse);
+    // SmartDashboard.putNumber("shooter vitesse", vitesse);
+    double erreurVitesse = Math.abs(vitesse / Shooter.kRPM - 1.0);
+    // SmartDashboard.putNumber("erreur vitesse", erreurVitesse);
+    boolean bonneVitesse = (erreurVitesse < Shooter.kToleranceVitesse);
+    // SmartDashboard.putBoolean("bonne vitesse", bonneVitesse);
 
-    if (vitesse >= Shooter.kRPM * Shooter.kPrecision) {
-       intake.transporter();
-       intake.prendreBallon();
+    if (bonneVitesse && !timerShooter.isRunning()) {
+      timerShooter.start();
+    } else if (!bonneVitesse) {
+      timerShooter.stop();
+      timerShooter.reset();
     }
 
-    if (!intake.hasBallonHaut() && !timer.isRunning()) {
+    double tempsBonneVitesse = timerShooter.get();
+    // SmartDashboard.putNumber("Temps bonne vitesse", tempsBonneVitesse);
+
+    boolean bonneVitesseLongtemps = (tempsBonneVitesse > 0.3);
+
+    if (bonneVitesseLongtemps) {
+       intake.transporter();
+       intake.prendreBallon();
+    } else {
+      intake.stopTransporteur();
+      intake.stopIntake();
+    }
+
+    if (bonneVitesseLongtemps && !intake.hasBallonHaut() && !timer.isRunning()) {
       timer.start();
-    } else if (timer.isRunning() && intake.hasBallonHaut()) {
+    } else if (timer.isRunning() && (!bonneVitesseLongtemps || intake.hasBallonHaut())) {
       timer.stop();
       timer.reset();
     }
@@ -69,8 +90,8 @@ public class Tirer extends CommandBase {
     intake.stopTransporteur();
     intake.stopIntake();
     timer.stop();
+    timerShooter.stop();
     intake.resetBallonDansIntake();;
-
   }
 
   // Returns true when the command should end.
