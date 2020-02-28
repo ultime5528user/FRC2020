@@ -54,5 +54,8 @@ public class BrasIntake extends SubsystemBase {
   public double getPosition(){
     return encoder.getDistance();
   }  
+  public void resetEncoder(){
+    encoder.reset();
+  }
 
 }
