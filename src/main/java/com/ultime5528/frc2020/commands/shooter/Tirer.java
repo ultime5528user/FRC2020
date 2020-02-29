@@ -39,21 +39,22 @@ public class Tirer extends CommandBase {
   public void initialize() {
     timer.reset();
     timerShooter.reset();
+    vision.enable();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    shooter.tirer(vision.getHauteurCible());
+    double vitesseGoal = shooter.tirer(vision.getHauteurCible());
     //shooter.tirer(OptionalDouble.empty()); // TODO Vitesse de la dernière cible vue, dans ajouter une variable qui la contient
 
     double vitesse = shooter.getVitesse();
-    // SmartDashboard.putNumber("shooter vitesse", vitesse);
-    double erreurVitesse = Math.abs(vitesse / Shooter.kRPM - 1.0);
-    // SmartDashboard.putNumber("erreur vitesse", erreurVitesse);
+    SmartDashboard.putNumber("shooter vitesse", vitesse);
+    double erreurVitesse = Math.abs(vitesse / vitesseGoal - 1.0);
+    SmartDashboard.putNumber("erreur vitesse", erreurVitesse);
     boolean bonneVitesse = (erreurVitesse < Shooter.kToleranceVitesse);
-    // SmartDashboard.putBoolean("bonne vitesse", bonneVitesse);
+    SmartDashboard.putBoolean("bonne vitesse", bonneVitesse);
 
     if (bonneVitesse && !timerShooter.isRunning()) {
       timerShooter.start();
@@ -63,7 +64,7 @@ public class Tirer extends CommandBase {
     }
 
     double tempsBonneVitesse = timerShooter.get();
-    // SmartDashboard.putNumber("Temps bonne vitesse", tempsBonneVitesse);
+    SmartDashboard.putNumber("Temps bonne vitesse", tempsBonneVitesse);
 
     boolean bonneVitesseLongtemps = (tempsBonneVitesse > 0.3);
 
@@ -91,7 +92,8 @@ public class Tirer extends CommandBase {
     intake.stopIntake();
     timer.stop();
     timerShooter.stop();
-    intake.resetBallonDansIntake();;
+    intake.resetBallonDansIntake();
+    vision.disable();
   }
 
   // Returns true when the command should end.

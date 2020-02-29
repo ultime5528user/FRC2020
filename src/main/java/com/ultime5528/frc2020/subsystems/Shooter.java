@@ -17,6 +17,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.LinearFilter;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ultime5528.frc2020.Constants;
@@ -56,13 +57,12 @@ public class Shooter extends SubsystemBase implements Loggable {
   @Config(rowIndex = 2, columnIndex = 2, width = 2, height = 2, methodName = "setFF", methodTypes = { double.class })
   private CANPIDController pidController;
 
-  private LinearInterpolator interpolator = new LinearInterpolator(
-      new Point[] { new Point(0.155, 2300), new Point(0.077, 3100), new Point(0.082, 2900), new Point(0.0916, 2600),
-          new Point(0.0958, 2500), new Point(0.1, 2400), new Point(0.105, 2400), new Point(0.11, 2400),
-          new Point(0.116, 2350), new Point(0.12, 2325), new Point(0.129, 2325), new Point(0.133, 2300),
-          new Point(0.141, 2290), new Point(0.145, 2290), new Point(0.15, 2270), new Point(0.155, 2250),
-          new Point(0.159, 2240), new Point(0.164, 2230), new Point(0.171, 2230), new Point(0.179, 2220),
-          new Point(0.1875, 2210), new Point(0.197, 2200) });
+  private LinearInterpolator interpolator = new LinearInterpolator(new Point[] { new Point(0.077, 3100),
+      new Point(0.082, 2900), new Point(0.0916, 2600), new Point(0.0958, 2500), new Point(0.1, 2400),
+      new Point(0.105, 2400), new Point(0.11, 2400), new Point(0.116, 2350), new Point(0.12, 2325),
+      new Point(0.129, 2325), new Point(0.133, 2300), new Point(0.141, 2290), new Point(0.145, 2290),
+      new Point(0.15, 2270), new Point(0.155, 2250), new Point(0.159, 2240), new Point(0.164, 2230),
+      new Point(0.171, 2230), new Point(0.179, 2220), new Point(0.1875, 2210), new Point(0.197, 2200) });
 
   public Shooter() {
 
@@ -95,30 +95,21 @@ public class Shooter extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-
   }
 
-  public void tirer(OptionalDouble optHauteur) {
+  public double tirer(OptionalDouble optHauteur) {
+    double vitesse = kRPM;
     if (Constants.ENABLE_CAN_SHOOTER) {
-      if (Constants.ENABLE_VISION) {
-
-        optHauteur.ifPresentOrElse(
-
-            hauteur -> {
-              double vitesse = interpolator.interpolate(hauteur);
-              pidController.setReference(vitesse, ControlType.kVelocity);
-            },
-
-            () -> pidController.setReference(kRPM, ControlType.kVelocity) // TODO est-ce qu'on veut vraiment kRPM si on
-                                                                          // voit pas la cible?
-
-        );
-
-      } else {
-        pidController.setReference(kRPM, ControlType.kVelocity);
-      }
-
+      if (Constants.ENABLE_VISION && optHauteur.isPresent()) {
+        double hauteur = optHauteur.getAsDouble();
+        vitesse = interpolator.interpolate(hauteur);
+        SmartDashboard.putNumber("Vitesse", vitesse);
+        SmartDashboard.putNumber("Hauteur", hauteur);
+      } 
+      pidController.setReference(vitesse, ControlType.kVelocity);
     }
+
+    return vitesse;
   }
 
   public void stop() {
