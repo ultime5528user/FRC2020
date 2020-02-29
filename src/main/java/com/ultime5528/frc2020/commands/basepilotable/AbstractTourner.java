@@ -71,7 +71,7 @@ public abstract class AbstractTourner extends CommandBase {
   }
 
   public boolean isFinished() {
-    return current.position >= goal.position && Math.abs(basePilotable.getAngleDegrees() - current.position) < kTolerance;
+    return current.position >= goal.position && Math.abs(basePilotable.getAngleRadians() - current.position) < kTolerance;
   }
 
   /**

@@ -33,11 +33,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import io.github.oblarg.oblog.Logger;
 
 public class RobotContainer {
 
   private final Joystick joystick;
+  private final Joystick A_Pac1;
+  private final Joystick A_Pac2;
 
   private final BasePilotable basePilotable;
   private final Grimpeur grimpeurDroit;
@@ -55,6 +58,8 @@ public class RobotContainer {
 
   public RobotContainer() {
     joystick = new Joystick(0);
+    A_Pac1 = new Joystick(1);
+    A_Pac2 = new Joystick(2);
 
     basePilotable = new BasePilotable();
     piloter = new Piloter(joystick, basePilotable);
@@ -117,22 +122,22 @@ public class RobotContainer {
     SmartDashboard.putData("Monter bras", new MonterBras(brasDroit));
     SmartDashboard.putData("Descendre bras", new DescendreBras(brasDroit));
 
-    new JoystickButton(joystick, 2).toggleWhenPressed(new Viser(basePilotable, vision));
+    new JoystickButton(A_Pac2, 2).toggleWhenPressed(new Viser(basePilotable, vision));
 
-    new JoystickButton(joystick, 7).whenHeld(new MonterGrimpeur(grimpeurDroit));
-    new JoystickButton(joystick, 8).whenHeld(new GrimperSansRatchet(grimpeurDroit));
-    new JoystickButton(joystick, 9).whenHeld(new Grimper(grimpeurDroit));
+    new Trigger( () -> A_Pac1.getRawAxis(0) < -0.5 ).whileActiveOnce(new MonterGrimpeur(grimpeurDroit));
+    new Trigger( () -> A_Pac1.getRawAxis(0) > 0.5 ).whileActiveOnce(new GrimperSansRatchet(grimpeurDroit));
+    new JoystickButton(A_Pac1, 1).whenHeld(new Grimper(grimpeurDroit));
 
-    new JoystickButton(joystick, 10).whenHeld(new MonterGrimpeur(grimpeurGauche));
-    new JoystickButton(joystick, 11).whenHeld(new GrimperSansRatchet(grimpeurGauche));
-    new JoystickButton(joystick, 12).whenHeld(new Grimper(grimpeurGauche));
+    new Trigger( () -> A_Pac1.getRawAxis(1) > 0.5 ).whileActiveOnce(new MonterGrimpeur(grimpeurGauche));
+    new Trigger( () -> A_Pac1.getRawAxis(1) < -0.5 ).whileActiveOnce(new GrimperSansRatchet(grimpeurGauche));
+    new JoystickButton(A_Pac1, 2).whenHeld(new Grimper(grimpeurGauche));
+   
 
     // new JoystickButton(joystick, 3).toggleWhenPressed(new
     // TournerRoulette(roulette));
-    new JoystickButton(joystick, 4).toggleWhenPressed(new Tirer(shooter, intake, vision));
-    new JoystickButton(joystick, 5).toggleWhenPressed(new PrendreTransporterBallon(intake,brasDroit,brasGauche));
-    // new JoystickButton(joystick, 7)
-    // new JoystickButton(joystick, 7)
+    new JoystickButton(A_Pac2, 1).toggleWhenPressed(new Tirer(shooter, intake, vision));
+    new JoystickButton(A_Pac2, 3).toggleWhenPressed(new PrendreTransporterBallon(intake,brasDroit,brasGauche));
+
 
   }
 
@@ -143,6 +148,10 @@ public class RobotContainer {
   public void unlockRatchets() {
     grimpeurGauche.unlockRatchet();
     grimpeurDroit.unlockRatchet();
+  }
+  public void resetEncoder(){
+    brasDroit.resetEncoder();
+    brasGauche.resetEncoder();
   }
 
 }

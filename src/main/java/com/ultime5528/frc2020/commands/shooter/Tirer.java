@@ -45,8 +45,8 @@ public class Tirer extends CommandBase {
   @Override
   public void execute() {
 
-    // shooter.tirer(vision.getHauteurCible());
-    shooter.tirer(OptionalDouble.empty()); // TODO Vitesse de la dernière cible vue, dans ajouter une variable qui la contient
+    shooter.tirer(vision.getHauteurCible());
+    //shooter.tirer(OptionalDouble.empty()); // TODO Vitesse de la dernière cible vue, dans ajouter une variable qui la contient
 
     double vitesse = shooter.getVitesse();
     // SmartDashboard.putNumber("shooter vitesse", vitesse);
