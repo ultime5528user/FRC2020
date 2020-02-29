@@ -39,7 +39,7 @@ public class MonterBras extends CommandBase {
   @Override
   public boolean isFinished() {
 
-    return brasIntake.getPosition() <= -75;
+    return brasIntake.getPosition() <= -80;
 
   }
 }
