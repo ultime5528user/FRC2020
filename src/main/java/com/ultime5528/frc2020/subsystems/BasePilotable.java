@@ -51,13 +51,14 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   public static final double kV = 4.16; // 3.16
   public static final double kA = 0.419; // .419
   public static final SimpleMotorFeedforward kFeedForward = new SimpleMotorFeedforward(kS, kV, kA);
-  
+
   public static final double kRS = 0.625;
   public static final double kRV = 3.0;
   public static final double kRA = 0.500;
   public static final SimpleMotorFeedforward kRotationFeedForward = new SimpleMotorFeedforward(kRS, kRV, kRA);
 
-  public static final double kTrackWidth = 0.686; // TODO Valider FRC Characterization, refaire depuis la correction gearbox gauche
+  public static final double kTrackWidth = 0.686; // TODO Valider FRC Characterization, refaire depuis la correction
+                                                  // gearbox gauche
   public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidth);
 
   public static final double kMaxSpeedMetersPerSecond = 3.0;
@@ -118,14 +119,14 @@ public class BasePilotable extends SubsystemBase implements Loggable {
       controllerDroit = moteurDroit.getPIDController();
 
       configureMasterMotor(moteurGauche, kMotorConfig);
-      configureSlaveMotor(moteurGauche2, moteurGauche,kMotorConfig);
+      configureSlaveMotor(moteurGauche2, moteurGauche, kMotorConfig);
       configureSlaveMotor(moteurGauche3, moteurGauche, kMotorConfig);
       controllerGauche = moteurGauche.getPIDController();
       moteurGauche.setInverted(true);
 
       encoderDroit = moteurDroit.getEncoder();
       configureEncoder(encoderDroit);
-      
+
       encoderGauche = moteurGauche.getEncoder();
       configureEncoder(encoderGauche);
 
@@ -137,10 +138,11 @@ public class BasePilotable extends SubsystemBase implements Loggable {
     addChild("navX", gyro);
     gyro.reset();
 
-    orientation_history = new OrientationHistory(new navXSensor(gyro, "NAVX"), gyro.getRequestedUpdateRate() * 10); // new SimpleOrientationHistory();
+    orientation_history = new OrientationHistory(new navXSensor(gyro, "NAVX"), gyro.getRequestedUpdateRate() * 10); // new
+                                                                                                                    // SimpleOrientationHistory();
 
     // for (int i = 0; i <= 1500; i+=2) {
-    //   orientation_history.addAngle(new TimestampedAngle(i, i*15+30));
+    // orientation_history.addAngle(new TimestampedAngle(i, i*15+30));
     // }
 
     // System.out.println(orientation_history.getAngleAtTimestamp(3));
@@ -156,21 +158,23 @@ public class BasePilotable extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    // orientation_history.addAngle(new TimestampedAngle(getGyroTimestamp(), getAngleDegrees()));
+    // orientation_history.addAngle(new TimestampedAngle(getGyroTimestamp(),
+    // getAngleDegrees()));
 
     // Update the odometry in the periodic block
     if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
-      odometry.update(Rotation2d.fromDegrees(getClampedHeading()), encoderGauche.getPosition(), encoderDroit.getPosition());
+      odometry.update(Rotation2d.fromDegrees(getClampedHeading()), encoderGauche.getPosition(),
+          encoderDroit.getPosition());
       handleFaults();
+
+      SmartDashboard.putNumber("left encoder", encoderGauche.getPosition());
+      SmartDashboard.putNumber("right encoder", encoderDroit.getPosition());
+
+      SmartDashboard.putNumber("angle", getAngleDegrees());
+      SmartDashboard.putNumber("x", odometry.getPoseMeters().getTranslation().getX());
+      SmartDashboard.putNumber("y", odometry.getPoseMeters().getTranslation().getY());
     }
 
-    SmartDashboard.putNumber("left encoder", encoderGauche.getPosition());
-    SmartDashboard.putNumber("right encoder", encoderDroit.getPosition());
-
-    SmartDashboard.putNumber("angle", getAngleDegrees());
-    SmartDashboard.putNumber("x", odometry.getPoseMeters().getTranslation().getX());
-    SmartDashboard.putNumber("y", odometry.getPoseMeters().getTranslation().getY());
-  
   }
 
   public Pose2d getPose() {
@@ -247,11 +251,11 @@ public class BasePilotable extends SubsystemBase implements Loggable {
     drive.setMaxOutput(maxOutput);
   }
 
-  public long getGyroTimestamp(){
+  public long getGyroTimestamp() {
     return gyro.getLastSensorTimestamp();
   }
 
-  public double getAngleAtGyroTimestamp(long timestamp){
+  public double getAngleAtGyroTimestamp(long timestamp) {
     return (GYRO_REVERSED ? -1.0 : 1.0) * orientation_history.getYawDegreesAtTime(timestamp);
   }
 
@@ -304,7 +308,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
     handleSlaveFault(moteurDroit3, moteurDroit, "Moteur Droit 3");
     handleSlaveFault(moteurGauche2, moteurGauche, "Moteur Gauche 2");
     handleSlaveFault(moteurGauche3, moteurGauche, "Moteur Gauche 3");
-  } 
+  }
 
   private void handleSlaveFault(CANSparkMax slave, CANSparkMax master, String name) {
     if (slave.getStickyFault(CANSparkMax.FaultID.kHasReset)) {
@@ -316,19 +320,24 @@ public class BasePilotable extends SubsystemBase implements Loggable {
 
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
-      handleCANError(controllerGauche.setReference(leftVolts, ControlType.kVoltage), "tankDriveVolts setReference", moteurGauche);
-      handleCANError(controllerDroit.setReference(rightVolts, ControlType.kVoltage), "tankDriveVolts setReference", moteurDroit);
+      handleCANError(controllerGauche.setReference(leftVolts, ControlType.kVoltage), "tankDriveVolts setReference",
+          moteurGauche);
+      handleCANError(controllerDroit.setReference(rightVolts, ControlType.kVoltage), "tankDriveVolts setReference",
+          moteurDroit);
       drive.feed();
     }
   }
 
   /**
    * Fais tourner le robot jusqu'à un angle absolu, à l'aide d'un PIDSVA.
+   * 
    * @param angleDegrees l'objectif absolu à atteindre, en degrés.
-   * @param speeds les vitesses souhaitées, en m/s.
-   * @param prevSpeeds les vitesses souhaitées à l'itération précédente (pour calculer l'accélération), en m/s.
+   * @param speeds       les vitesses souhaitées, en m/s.
+   * @param prevSpeeds   les vitesses souhaitées à l'itération précédente (pour
+   *                     calculer l'accélération), en m/s.
    */
-  public void turnToAngle(double angleDegrees, DifferentialDriveWheelSpeeds speeds, DifferentialDriveWheelSpeeds prevSpeeds) {
+  public void turnToAngle(double angleDegrees, DifferentialDriveWheelSpeeds speeds,
+      DifferentialDriveWheelSpeeds prevSpeeds) {
     if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
 
       double leftFeedforward = kRotationFeedForward.calculate(speeds.leftMetersPerSecond,
@@ -341,9 +350,10 @@ public class BasePilotable extends SubsystemBase implements Loggable {
       SmartDashboard.putNumber("pid correction", pidCorrection);
 
       /*
-       * Si le PID donne une correction positive, il faut tourner plus vite dans les angles positifs. 
-       * Une vitesse angulaire positive fait tourner le robot dans le sens anti-horaire, 
-       * donc il faut additionner la correction au côté droit et la soustraire du côté gauche.
+       * Si le PID donne une correction positive, il faut tourner plus vite dans les
+       * angles positifs. Une vitesse angulaire positive fait tourner le robot dans le
+       * sens anti-horaire, donc il faut additionner la correction au côté droit et la
+       * soustraire du côté gauche.
        */
       double leftOutput = leftFeedforward - pidCorrection;
       double rightOutput = rightFeedforward + pidCorrection;
