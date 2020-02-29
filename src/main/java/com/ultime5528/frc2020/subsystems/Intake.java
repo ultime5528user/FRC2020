@@ -42,6 +42,8 @@ public class Intake extends SubsystemBase implements Loggable {
   public static final double kMaxCurrent = 20;
   public static final double kVitesseBrasGauche = -6;
   public static final double kVitesseBrasDroit = 6;
+  public static final double kVitesseBrasGaucheBalayer = 12;
+  public static final double kVitesseBrasDroitBalayer = -12;
   public static final double kTempsStopIntake = 0.2;
 
   private boolean stopTransporteur = false;
@@ -92,10 +94,15 @@ public class Intake extends SubsystemBase implements Loggable {
       moteurTransporteur.setVoltage(0.0);
     }
   }
-
+  
   public void actionnerBras() {
     moteurBrasGauche.setVoltage(kVitesseBrasGauche);
     moteurBrasDroit.setVoltage(kVitesseBrasDroit);
+  }
+  
+  public void actionnerBrasInverse() {
+    moteurBrasGauche.setVoltage(kVitesseBrasGaucheBalayer);
+    moteurBrasDroit.setVoltage(kVitesseBrasDroitBalayer);
   }
 
   public void stopIntake() {
@@ -134,5 +141,6 @@ public class Intake extends SubsystemBase implements Loggable {
   public void prendreBallonInverse() {
     moteurIntake.setVoltage(-kVitesseAvaler - 0.4);
   }
+
 
 }
