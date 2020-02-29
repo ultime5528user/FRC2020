@@ -115,12 +115,17 @@ public class RobotContainer {
 
       CommandScheduler.getInstance()
           .onCommandInterrupt(command -> System.out.println(command.getName() + " interrupted"));
-
     }
+    
     tourner = new Tourner(basePilotable, 100.0, 1.25, 0.8);
     SmartDashboard.putData("Vider intake", new ViderIntake(intake).withTimeout(5.0));
     SmartDashboard.putData("Tourner 100", tourner);
     SmartDashboard.putData("Viser", new Viser(basePilotable, vision));
+
+    CommandScheduler.getInstance().onCommandInitialize(c -> System.out.println("Initialized : " + c.getName()));
+    CommandScheduler.getInstance().onCommandFinish(c -> System.out.println("Finish : " + c.getName()));
+    CommandScheduler.getInstance().onCommandInterrupt(c -> System.out.println("Interrupted : " + c.getName()));
+
   }
 
   private void configureButtonBindings() {
