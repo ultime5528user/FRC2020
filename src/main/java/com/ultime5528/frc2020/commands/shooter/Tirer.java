@@ -24,6 +24,7 @@ public class Tirer extends CommandBase {
   private Timer timerShooter;
   private Intake intake;
   private VisionController vision;
+  private boolean initialBonneVitesse = false;
 
   public Tirer(Shooter shooter, Intake intake, VisionController vision) {
     this.shooter = shooter;
@@ -40,6 +41,7 @@ public class Tirer extends CommandBase {
     timer.reset();
     timerShooter.reset();
     vision.enable();
+    initialBonneVitesse = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -66,9 +68,11 @@ public class Tirer extends CommandBase {
     double tempsBonneVitesse = timerShooter.get();
     SmartDashboard.putNumber("Temps bonne vitesse", tempsBonneVitesse);
 
-    boolean bonneVitesseLongtemps = (tempsBonneVitesse > 0.3);
+    boolean bonneVitesseLongtemps = (tempsBonneVitesse > 0.15);
+    bonneVitesseLongtemps = (bonneVitesseLongtemps || initialBonneVitesse);
 
     if (bonneVitesseLongtemps) {
+       initialBonneVitesse = true;
        intake.transporter();
        intake.prendreBallon();
     } else {
