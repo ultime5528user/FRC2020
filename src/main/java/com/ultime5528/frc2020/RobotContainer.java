@@ -7,21 +7,23 @@
 
 package com.ultime5528.frc2020;
 
-import java.util.List;
-
+import com.ultime5528.frc2020.commands.autonome.AutoTirer;
 import com.ultime5528.frc2020.commands.basepilotable.Piloter;
-import com.ultime5528.frc2020.commands.basepilotable.SuivreTrajectoire;
 import com.ultime5528.frc2020.commands.basepilotable.Tourner;
 import com.ultime5528.frc2020.commands.basepilotable.Viser;
+import com.ultime5528.frc2020.commands.brasintake.Balayer;
 import com.ultime5528.frc2020.commands.brasintake.DescendreBras;
-import com.ultime5528.frc2020.commands.brasintake.DescendreBrasInitial;
+import com.ultime5528.frc2020.commands.brasintake.DescendreLesBras;
 import com.ultime5528.frc2020.commands.brasintake.MonterBras;
+import com.ultime5528.frc2020.commands.brasintake.MonterLesBras;
 import com.ultime5528.frc2020.commands.grimpeur.Grimper;
 import com.ultime5528.frc2020.commands.grimpeur.GrimperSansRatchet;
 import com.ultime5528.frc2020.commands.grimpeur.MonterGrimpeur;
 import com.ultime5528.frc2020.commands.intake.PrendreTransporterBallon;
 import com.ultime5528.frc2020.commands.intake.ViderIntake;
+import com.ultime5528.frc2020.commands.shooter.DemarrerShooter;
 import com.ultime5528.frc2020.commands.shooter.Tirer;
+import com.ultime5528.frc2020.commands.shooter.ViserTirer;
 import com.ultime5528.frc2020.subsystems.BasePilotable;
 import com.ultime5528.frc2020.subsystems.BrasIntake;
 import com.ultime5528.frc2020.subsystems.Grimpeur;
@@ -32,15 +34,12 @@ import com.ultime5528.frc2020.subsystems.VisionController;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import io.github.oblarg.oblog.Logger;
 
 public class RobotContainer {
 
@@ -61,6 +60,8 @@ public class RobotContainer {
 
   private final Piloter piloter;
   private final Tourner tourner;
+
+  private final Command autonomousCommand;
 
   public RobotContainer() {
     joystick = new Joystick(0);
@@ -126,6 +127,8 @@ public class RobotContainer {
     CommandScheduler.getInstance().onCommandFinish(c -> System.out.println("Finish : " + c.getName()));
     CommandScheduler.getInstance().onCommandInterrupt(c -> System.out.println("Interrupted : " + c.getName()));
 
+    autonomousCommand = new AutoTirer(basePilotable, vision, shooter, intake);
+
   }
 
   private void configureButtonBindings() {
@@ -133,39 +136,46 @@ public class RobotContainer {
     SmartDashboard.putData("Monter bras", new MonterBras(brasDroit));
     SmartDashboard.putData("Descendre bras", new DescendreBras(brasDroit));
 
-    new JoystickButton(A_Pac2, 2).toggleWhenPressed(new Viser(basePilotable, vision));
+    new JoystickButton(joystick, 9).toggleWhenPressed(new ViserTirer(basePilotable, shooter, intake, vision));
 
-    new Trigger( () -> A_Pac1.getRawAxis(0) < -0.5 ).whileActiveOnce(new MonterGrimpeur(grimpeurDroit));
-    new Trigger( () -> A_Pac1.getRawAxis(0) > 0.5 ).whileActiveOnce(new GrimperSansRatchet(grimpeurDroit));
-    new JoystickButton(A_Pac1, 1).whenHeld(new Grimper(grimpeurDroit));
+    // new JoystickButton(A_Pac2, 2).toggleWhenPressed(new Viser(basePilotable, vision));
 
-    new Trigger( () -> A_Pac1.getRawAxis(1) > 0.5 ).whileActiveOnce(new MonterGrimpeur(grimpeurGauche));
-    new Trigger( () -> A_Pac1.getRawAxis(1) < -0.5 ).whileActiveOnce(new GrimperSansRatchet(grimpeurGauche));
-    new JoystickButton(A_Pac1, 2).whenHeld(new Grimper(grimpeurGauche));
+    new Trigger( () -> A_Pac1.getRawAxis(1) < -0.5 ).whileActiveOnce(new MonterGrimpeur(grimpeurDroit));
+    new Trigger( () -> A_Pac1.getRawAxis(1)  > 0.5 ).whileActiveOnce(new GrimperSansRatchet(grimpeurDroit));
+    new JoystickButton(A_Pac1, 2).whenHeld(new Grimper(grimpeurDroit));
+
+    new Trigger( () -> A_Pac1.getRawAxis(0)> 0.5).whileActiveOnce(new MonterGrimpeur(grimpeurGauche));
+    new Trigger( () -> A_Pac1.getRawAxis(0) < -0.5 ).whileActiveOnce(new GrimperSansRatchet(grimpeurGauche));
+    new JoystickButton(A_Pac1, 1).whenHeld(new Grimper(grimpeurGauche));
    
-
     // new JoystickButton(joystick, 3).toggleWhenPressed(new
     // TournerRoulette(roulette));
     new JoystickButton(A_Pac2, 1).toggleWhenPressed(new Tirer(shooter, intake, vision));
-    new JoystickButton(A_Pac2, 3).toggleWhenPressed(new PrendreTransporterBallon(intake,brasDroit,brasGauche));
-
-
+    new JoystickButton(A_Pac2, 2).toggleWhenPressed(new Viser(basePilotable, vision));
+    
+    new JoystickButton(A_Pac1, 5).toggleWhenPressed(new PrendreTransporterBallon(intake,brasDroit,brasGauche));
+    new JoystickButton(A_Pac1, 3).toggleWhenPressed(new MonterLesBras( brasDroit , brasGauche));
+    new JoystickButton(A_Pac1, 4).toggleWhenPressed(new DescendreLesBras(brasDroit ,brasGauche));
+    new JoystickButton(A_Pac1, 6).toggleWhenPressed(new InstantCommand(this::resetEncodersBras, brasDroit, brasGauche));
+    new JoystickButton(A_Pac1, 7).whenHeld(new Balayer(intake, brasDroit, brasGauche));
+    new JoystickButton(A_Pac1, 8).toggleWhenPressed(new ViderIntake(intake));
   }
 
   public Command getAutonomousCommand() {
     // return new DescendreBrasInitial(brasDroit, brasGauche);
-    return SuivreTrajectoire.from(basePilotable,
-        new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)),
-        List.of(),
-        new Pose2d(3.0, -2.0, Rotation2d.fromDegrees(-90.0)
-    ), 0.5, 0.5);
+    // return SuivreTrajectoire.from(basePilotable,
+    //     new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)),
+    //     List.of(),
+    //     new Pose2d(3.0, -2.0, Rotation2d.fromDegrees(-90.0)
+    // ), 0.5, 0.5);
+    return autonomousCommand;
   }
 
   public void unlockRatchets() {
     grimpeurGauche.unlockRatchet();
     grimpeurDroit.unlockRatchet();
   }
-  public void resetEncoder(){
+  public void resetEncodersBras(){
     brasDroit.resetEncoder();
     brasGauche.resetEncoder();
   }
