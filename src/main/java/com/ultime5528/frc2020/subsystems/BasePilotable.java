@@ -68,7 +68,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
 
   public static final double kRamseteB = 2.0;
   public static final double kRamseteZeta = 0.7;
-  public static final double kPDriveVel = 0.2; // 2.0; // 1.41
+  public static final double kPDriveVel = 0.0; // 2.0; // 1.41
 
   public static final SparkMaxConfig kMotorConfig = new SparkMaxConfig(1.0, 40, 50);
 
@@ -92,11 +92,10 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   private CANPIDController controllerGauche;
   private CANPIDController controllerDroit;
 
-  private PIDController pidDroit = BasePilotable.createPIDController();
-  private PIDController pidGauche = BasePilotable.createPIDController();
+  private PIDController pidRotation = new PIDController(0.2, 0.0, 0.0);
 
   private AHRS gyro;
-  private SimpleOrientationHistory orientation_history;
+  private OrientationHistory orientation_history;
 
   private DifferentialDrive drive;
 
@@ -122,6 +121,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
       configureSlaveMotor(moteurGauche2, moteurGauche,kMotorConfig);
       configureSlaveMotor(moteurGauche3, moteurGauche, kMotorConfig);
       controllerGauche = moteurGauche.getPIDController();
+      moteurGauche.setInverted(true);
 
       encoderDroit = moteurDroit.getEncoder();
       configureEncoder(encoderDroit);
@@ -130,19 +130,20 @@ public class BasePilotable extends SubsystemBase implements Loggable {
       configureEncoder(encoderGauche);
 
       drive = new DifferentialDrive(moteurGauche, moteurDroit);
+      drive.setRightSideInverted(false);
     }
 
     gyro = new AHRS(Port.kUSB);
     addChild("navX", gyro);
     gyro.reset();
 
-    orientation_history = new SimpleOrientationHistory();
+    orientation_history = new OrientationHistory(new navXSensor(gyro, "NAVX"), gyro.getRequestedUpdateRate() * 10); // new SimpleOrientationHistory();
 
-    for (int i = 0; i <= 1500; i+=2) {
-      orientation_history.addAngle(new TimestampedAngle(i, i*15+30));
-    }
+    // for (int i = 0; i <= 1500; i+=2) {
+    //   orientation_history.addAngle(new TimestampedAngle(i, i*15+30));
+    // }
 
-    System.out.println(orientation_history.getAngleAtTimestamp(3));
+    // System.out.println(orientation_history.getAngleAtTimestamp(3));
 
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getClampedHeading()));
   }
@@ -150,18 +151,26 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   private void configureEncoder(CANEncoder encoder) {
     handleCANError(encoder.setPositionConversionFactor(kPositionConversionFactor), "setPositionConversionFactor");
     handleCANError(encoder.setVelocityConversionFactor(kVelocityConversionFactor), "setVelocityConversionFactor");
+    handleCANError(encoder.setPosition(0.0), "setPosition(0.0)");
   }
 
   @Override
   public void periodic() {
-    orientation_history.addAngle(new TimestampedAngle(getGyroTimestamp(), getAngleDegrees()));
+    // orientation_history.addAngle(new TimestampedAngle(getGyroTimestamp(), getAngleDegrees()));
 
     // Update the odometry in the periodic block
     if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
       odometry.update(Rotation2d.fromDegrees(getClampedHeading()), encoderGauche.getPosition(), encoderDroit.getPosition());
       handleFaults();
     }
+
+    SmartDashboard.putNumber("left encoder", encoderGauche.getPosition());
+    SmartDashboard.putNumber("right encoder", encoderDroit.getPosition());
+
     SmartDashboard.putNumber("angle", getAngleDegrees());
+    SmartDashboard.putNumber("x", odometry.getPoseMeters().getTranslation().getX());
+    SmartDashboard.putNumber("y", odometry.getPoseMeters().getTranslation().getY());
+  
   }
 
   public Pose2d getPose() {
@@ -243,7 +252,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   }
 
   public double getAngleAtGyroTimestamp(long timestamp){
-    return (GYRO_REVERSED ? -1.0 : 1.0) * orientation_history.getAngleAtTimestamp(timestamp);
+    return (GYRO_REVERSED ? -1.0 : 1.0) * orientation_history.getYawDegreesAtTime(timestamp);
   }
 
   /**
@@ -286,8 +295,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   }
 
   public void resetPID() {
-    pidGauche.reset();
-    pidDroit.reset();
+    pidRotation.reset();
   }
 
   private void handleFaults() {
@@ -307,7 +315,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
 
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
-      handleCANError(controllerGauche.setReference(-leftVolts, ControlType.kVoltage), "tankDriveVolts setReference", moteurGauche);
+      handleCANError(controllerGauche.setReference(leftVolts, ControlType.kVoltage), "tankDriveVolts setReference", moteurGauche);
       handleCANError(controllerDroit.setReference(rightVolts, ControlType.kVoltage), "tankDriveVolts setReference", moteurDroit);
       drive.feed();
     }
@@ -328,7 +336,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
       double rightFeedforward = kRotationFeedForward.calculate(speeds.rightMetersPerSecond,
           (speeds.rightMetersPerSecond - prevSpeeds.rightMetersPerSecond) / TimedRobot.kDefaultPeriod);
 
-      double pidCorrection = pidGauche.calculate(getAngleDegrees(), angleDegrees);
+      double pidCorrection = pidRotation.calculate(getAngleDegrees(), angleDegrees);
       SmartDashboard.putNumber("pid correction", pidCorrection);
 
       /*

@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Viser extends AbstractTourner {
 
-  public static double kTolerance = 1;
+  public static double kTolerance = 0.5;
 
   private VisionController vision;
 
