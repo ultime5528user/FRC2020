@@ -66,9 +66,9 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   public static final double kMaxSpeedRadianPerSecond = toRadial(kMaxSpeedMetersPerSecond);
   public static final double kMaxAccelerationRadianPerSecondSquared = toRadial(kMaxAccelerationMetersPerSecondSquared);
 
-  public static final double kRamseteB = 2.0;
-  public static final double kRamseteZeta = 0.7;
-  public static final double kPDriveVel = 0.0; // 2.0; // 1.41
+  public static final double kRamseteB = 2.0; // 3
+  public static final double kRamseteZeta = 0.7; // 0.2
+  public static final double kPDriveVel = 5.0; // 2.0; // 1.41
 
   public static final SparkMaxConfig kMotorConfig = new SparkMaxConfig(1.0, 40, 50);
 
@@ -282,7 +282,8 @@ public class BasePilotable extends SubsystemBase implements Loggable {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getClampedHeading() {
-    return Math.IEEEremainder(getAngleDegrees(), 360);
+    // return Math.IEEEremainder(getAngleDegrees(), 360);
+    return getAngleDegrees();
   }
 
   /**

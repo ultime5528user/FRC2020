@@ -7,7 +7,10 @@
 
 package com.ultime5528.frc2020;
 
+import java.util.List;
+
 import com.ultime5528.frc2020.commands.basepilotable.Piloter;
+import com.ultime5528.frc2020.commands.basepilotable.SuivreTrajectoire;
 import com.ultime5528.frc2020.commands.basepilotable.Tourner;
 import com.ultime5528.frc2020.commands.basepilotable.Viser;
 import com.ultime5528.frc2020.commands.brasintake.DescendreBras;
@@ -29,6 +32,9 @@ import com.ultime5528.frc2020.subsystems.VisionController;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -75,7 +81,7 @@ public class RobotContainer {
 
     brasDroit = new BrasIntake(Ports.BRAS_INTAKE_DROIT, Ports.BRAS_INTAKE_DROIT_ENCODER_A,
         Ports.BRAS_INTAKE_DROIT_ENCODER_B, "bras droit");
-        
+
     brasGauche = new BrasIntake(Ports.BRAS_INTAKE_GAUCHE, Ports.BRAS_INTAKE_GAUCHE_ENCODER_A,
         Ports.BRAS_INTAKE_GAUCHE_ENCODER_B, "bras gauche");
     shooter = new Shooter();
@@ -95,7 +101,7 @@ public class RobotContainer {
 
     configureButtonBindings();
 
-    Logger.configureLoggingAndConfig(this, false);
+    // Logger.configureLoggingAndConfig(this, false);
     // LiveWindow.disableAllTelemetry();
 
     SmartDashboard.putData(CommandScheduler.getInstance());
@@ -142,7 +148,12 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return new DescendreBrasInitial(brasDroit, brasGauche);
+    // return new DescendreBrasInitial(brasDroit, brasGauche);
+    return SuivreTrajectoire.from(basePilotable,
+        new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)),
+        List.of(),
+        new Pose2d(3.0, -2.0, Rotation2d.fromDegrees(-90.0)
+    ), 0.5, 0.5);
   }
 
   public void unlockRatchets() {

@@ -9,7 +9,6 @@ package com.ultime5528.frc2020.commands.basepilotable;
 
 import java.util.List;
 
-import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
@@ -20,6 +19,7 @@ import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConst
 import edu.wpi.first.wpilibj2.command.Command;
 import com.ultime5528.frc2020.subsystems.BasePilotable;
 import com.ultime5528.util.RamseteCommand;
+import com.ultime5528.util.RamseteController;
 
 public class SuivreTrajectoire {
 
