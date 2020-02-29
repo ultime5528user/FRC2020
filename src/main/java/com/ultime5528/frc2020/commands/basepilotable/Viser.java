@@ -35,6 +35,7 @@ public class Viser extends AbstractTourner {
     super.initialize();
     vision.enable();
     goalAngle = basePilotable.getAngleDegrees();
+    angle = OptionalDouble.empty();
   }
 
   @Override
@@ -64,7 +65,6 @@ public class Viser extends AbstractTourner {
   @Override
   public boolean isFinished() {
     if (angle.isPresent()) {
-      System.out.println("Angle is present");
       return Math.abs(angle.getAsDouble()) < kTolerance;
     } else {
       return false;
