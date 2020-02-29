@@ -19,7 +19,7 @@ public class PrendreTransporterBallon extends ParallelCommandGroup {
   private Intake intake;
   private BrasIntake brasDroit;
   private BrasIntake brasGauche;
-  private boolean hasSchedule = false;
+  private boolean hasScheduled = false;
 
   public PrendreTransporterBallon(Intake intake, BrasIntake brasDroit, BrasIntake brasGauche) {
     super(new DescendreLesBras(brasDroit, brasGauche), sequence(new PrendreBallon(intake), new TransporterBallon(intake)));
@@ -31,7 +31,7 @@ public class PrendreTransporterBallon extends ParallelCommandGroup {
   @Override
   public void initialize() {
     super.initialize();
-    hasSchedule = false;
+    hasScheduled = false;
   }
 
   @Override
@@ -39,8 +39,8 @@ public class PrendreTransporterBallon extends ParallelCommandGroup {
     super.end(interrupted);
     if (!interrupted && !intake.hasBallonBas()) {
       schedule();
-    } else if (!hasSchedule) {
-      hasSchedule = true;
+    } else if (!hasScheduled) {
+      hasScheduled = true;
       new ScheduleCommand(new MonterLesBras(brasDroit, brasGauche)).schedule();
    
     }

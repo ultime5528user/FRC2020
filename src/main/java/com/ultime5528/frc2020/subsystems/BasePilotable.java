@@ -141,12 +141,6 @@ public class BasePilotable extends SubsystemBase implements Loggable {
     orientation_history = new OrientationHistory(new navXSensor(gyro, "NAVX"), gyro.getRequestedUpdateRate() * 10); // new
                                                                                                                     // SimpleOrientationHistory();
 
-    // for (int i = 0; i <= 1500; i+=2) {
-    // orientation_history.addAngle(new TimestampedAngle(i, i*15+30));
-    // }
-
-    // System.out.println(orientation_history.getAngleAtTimestamp(3));
-
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getClampedHeading()));
   }
 
