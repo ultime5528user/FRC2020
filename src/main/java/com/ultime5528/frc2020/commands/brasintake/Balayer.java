@@ -23,7 +23,8 @@ public class Balayer extends ParallelCommandGroup {
   public Balayer(Intake intake, BrasIntake brasDroit, BrasIntake brasGauche) {
     super(
       new DescendreLesBras(brasDroit, brasGauche),
-      new ActionnerBrasInverse(intake)
-    )
+      new ActionnerBrasInverse(intake),
+      new MonterLesBras(brasDroit, brasGauche)
+    );
   }
 }
