@@ -56,7 +56,7 @@ public class Piloter extends CommandBase implements Loggable {
   @Override
   public void execute() {
     basePilotable.drive(cubicInterpolatorY.interpolate(joystick.getY()),
-        cubicInterpolatorX.interpolate(joystick.getX()));
+        -cubicInterpolatorX.interpolate(joystick.getX()));
   }
 
   @Override
