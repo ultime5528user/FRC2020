@@ -24,7 +24,7 @@ import com.ultime5528.util.RamseteController;
 public class SuivreTrajectoire {
 
   public static Command from(BasePilotable basePilotable, Pose2d positionDepart, List<Translation2d> waypoints,
-      Pose2d positionFin, double maxSpeed, double maxAcceleration) {
+      Pose2d positionFin, double maxSpeed, double maxAcceleration, boolean reversed) {
 
     var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
         new SimpleMotorFeedforward(BasePilotable.kS, BasePilotable.kV, BasePilotable.kA),
@@ -34,6 +34,7 @@ public class SuivreTrajectoire {
     TrajectoryConfig config = new TrajectoryConfig(maxSpeed, maxAcceleration)
             // Add kinematics to ensure max speed is actually obeyed
             .setKinematics(BasePilotable.kDriveKinematics)
+            .setReversed(reversed)
             // Apply the voltage constraint
             .addConstraint(autoVoltageConstraint);
 
