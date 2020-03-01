@@ -38,6 +38,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
+import io.github.oblarg.oblog.annotations.Config.Exclude;
+
 import static com.ultime5528.util.SparkMaxUtil.*;
 
 public class BasePilotable extends SubsystemBase implements Loggable {
@@ -96,7 +98,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   private PIDController pidRotation = new PIDController(0.2, 0.0, 0.0);
 
   private AHRS gyro;
-  private OrientationHistory orientation_history;
+  private SimpleOrientationHistory orientation_history;
 
   private DifferentialDrive drive;
 
@@ -138,9 +140,8 @@ public class BasePilotable extends SubsystemBase implements Loggable {
     addChild("navX", gyro);
     gyro.reset();
 
-    orientation_history = new OrientationHistory(new navXSensor(gyro, "NAVX"), gyro.getRequestedUpdateRate() * 10); // new
-                                                                                                                    // SimpleOrientationHistory();
-
+    orientation_history = new SimpleOrientationHistory((int)(5/TimedRobot.kDefaultPeriod));
+  
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getClampedHeading()));
   }
 
@@ -152,8 +153,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    // orientation_history.addAngle(new TimestampedAngle(getGyroTimestamp(),
-    // getAngleDegrees()));
+    orientation_history.addAngle(getGyroTimestamp(), getAngleDegrees());
 
     // Update the odometry in the periodic block
     if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
@@ -250,7 +250,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   }
 
   public double getAngleAtGyroTimestamp(long timestamp) {
-    return (GYRO_REVERSED ? -1.0 : 1.0) * orientation_history.getYawDegreesAtTime(timestamp);
+    return orientation_history.getAngleAtTimestamp(timestamp);
   }
 
   /**
