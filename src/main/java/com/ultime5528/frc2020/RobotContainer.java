@@ -21,7 +21,6 @@ import com.ultime5528.frc2020.commands.grimpeur.GrimperSansRatchet;
 import com.ultime5528.frc2020.commands.grimpeur.MonterGrimpeur;
 import com.ultime5528.frc2020.commands.intake.PrendreTransporterBallon;
 import com.ultime5528.frc2020.commands.intake.ViderIntake;
-import com.ultime5528.frc2020.commands.shooter.DemarrerShooter;
 import com.ultime5528.frc2020.commands.shooter.Tirer;
 import com.ultime5528.frc2020.commands.shooter.ViserTirer;
 import com.ultime5528.frc2020.subsystems.BasePilotable;

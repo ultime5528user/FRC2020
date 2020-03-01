@@ -10,9 +10,6 @@ package com.ultime5528.frc2020.commands.autonome;
 import java.util.List;
 
 import com.ultime5528.frc2020.commands.basepilotable.SuivreTrajectoire;
-import com.ultime5528.frc2020.commands.basepilotable.Viser;
-import com.ultime5528.frc2020.commands.shooter.DemarrerShooter;
-import com.ultime5528.frc2020.commands.shooter.Tirer;
 import com.ultime5528.frc2020.commands.shooter.ViserTirer;
 import com.ultime5528.frc2020.subsystems.BasePilotable;
 import com.ultime5528.frc2020.subsystems.Intake;
