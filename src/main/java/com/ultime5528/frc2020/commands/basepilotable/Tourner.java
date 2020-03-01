@@ -1,8 +1,6 @@
 package com.ultime5528.frc2020.commands.basepilotable;
 
 import com.ultime5528.frc2020.subsystems.BasePilotable;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import io.github.oblarg.oblog.annotations.Config;
 
 /**

@@ -5,7 +5,6 @@ import com.ultime5528.frc2020.subsystems.BasePilotable;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -14,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  */
 public abstract class AbstractTourner extends CommandBase {
 
-  public static double kTolerance = 3.0;
+  public static double kTolerance = Math.toRadians(1.0);
 
   protected BasePilotable basePilotable;
 
@@ -51,14 +50,13 @@ public abstract class AbstractTourner extends CommandBase {
     goal = new TrapezoidProfile.State(goalAngleRad, 0);
 
     TrapezoidProfile profile = new TrapezoidProfile(constraints, goal, current);
-
     current = profile.calculate(TimedRobot.kDefaultPeriod);
     
     var speeds = BasePilotable.kDriveKinematics
         .toWheelSpeeds(new ChassisSpeeds(0, 0, current.velocity));
 
-    SmartDashboard.putNumber("goal", speeds.leftMetersPerSecond);
-    SmartDashboard.putNumber("current", basePilotable.getLeftEncoder().getVelocity());
+    // SmartDashboard.putNumber("goal", speeds.leftMetersPerSecond);
+    // SmartDashboard.putNumber("current", basePilotable.getLeftEncoder().getVelocity());
 
     basePilotable.turnToAngle(Math.toDegrees(current.position), speeds, prevSpeeds);
 
@@ -71,8 +69,8 @@ public abstract class AbstractTourner extends CommandBase {
   }
 
   public boolean isFinished() {
-    return current.position >= goal.position && Math.abs(basePilotable.getAngleRadians() - current.position) < kTolerance;
-  }
+    return Math.abs(current.position - goal.position) <= kTolerance && Math.abs(basePilotable.getAngleRadians() - goal.position) < kTolerance;
+  } 
 
   /**
    * Retourne l'angle absolu que l'on veut atteindre, en degrés.

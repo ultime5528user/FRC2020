@@ -7,9 +7,10 @@
 
 package com.ultime5528.frc2020;
 
+import com.ultime5528.frc2020.commands.autonome.AutoSixBallon;
 import com.ultime5528.frc2020.commands.autonome.AutoTirer;
 import com.ultime5528.frc2020.commands.basepilotable.Piloter;
-import com.ultime5528.frc2020.commands.basepilotable.Tourner;
+import com.ultime5528.frc2020.commands.basepilotable.TournerAbsolue;
 import com.ultime5528.frc2020.commands.basepilotable.Viser;
 import com.ultime5528.frc2020.commands.brasintake.Balayer;
 import com.ultime5528.frc2020.commands.brasintake.DescendreBras;
@@ -34,6 +35,7 @@ import com.ultime5528.frc2020.subsystems.VisionController;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -59,7 +61,7 @@ public class RobotContainer {
   private final PowerDistributionPanel pdp;
 
   private final Piloter piloter;
-  private final Tourner tourner;
+  private final TournerAbsolue tourner;
 
   private final Command autonomousCommand;
 
@@ -118,7 +120,7 @@ public class RobotContainer {
           .onCommandInterrupt(command -> System.out.println(command.getName() + " interrupted"));
     }
     
-    tourner = new Tourner(basePilotable, 100.0, 1.25, 0.8);
+    tourner = new TournerAbsolue(basePilotable, 100.0, 1.25, 0.8);
     SmartDashboard.putData("Vider intake", new ViderIntake(intake).withTimeout(5.0));
     SmartDashboard.putData("Tourner 100", tourner);
     SmartDashboard.putData("Viser", new Viser(basePilotable, vision));
@@ -127,7 +129,7 @@ public class RobotContainer {
     CommandScheduler.getInstance().onCommandFinish(c -> System.out.println("Finish : " + c.getName()));
     CommandScheduler.getInstance().onCommandInterrupt(c -> System.out.println("Interrupted : " + c.getName()));
 
-    autonomousCommand = new AutoTirer(basePilotable, vision, shooter, intake);
+    autonomousCommand = new AutoSixBallon(basePilotable, brasDroit, brasGauche, vision, shooter, intake);
 
   }
 
@@ -137,6 +139,7 @@ public class RobotContainer {
     SmartDashboard.putData("Descendre bras", new DescendreBras(brasDroit));
 
     new JoystickButton(joystick, 9).toggleWhenPressed(new ViserTirer(basePilotable, shooter, intake, vision));
+    new JoystickButton(joystick, 1).toggleWhenPressed(new TournerAbsolue(basePilotable, 0, 0.5, 0.10));
 
     // new JoystickButton(A_Pac2, 2).toggleWhenPressed(new Viser(basePilotable, vision));
 
@@ -178,6 +181,10 @@ public class RobotContainer {
   public void resetEncodersBras(){
     brasDroit.resetEncoder();
     brasGauche.resetEncoder();
+  }
+  public void resetBasePilotable(){
+    basePilotable.resetGyro();
+    basePilotable.resetOdometry(new Pose2d());
   }
 
 }

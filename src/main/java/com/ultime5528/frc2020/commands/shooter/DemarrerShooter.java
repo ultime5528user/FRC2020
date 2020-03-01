@@ -7,15 +7,10 @@
 
 package com.ultime5528.frc2020.commands.shooter;
 
-import java.util.OptionalDouble;
-
-import com.ultime5528.frc2020.subsystems.Intake;
 import com.ultime5528.frc2020.subsystems.Shooter;
 import com.ultime5528.frc2020.subsystems.VisionController;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import com.ultime5528.util.Timer;
 
 public class DemarrerShooter extends CommandBase {
 

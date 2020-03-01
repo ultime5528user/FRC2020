@@ -19,11 +19,11 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
 public class ViserTirer extends SequentialCommandGroup {
-  /**
-   * Creates a new ViserTirer.
-   */
+  
+  private Shooter shooter;
+  
   public ViserTirer(BasePilotable basePilotable, Shooter shooter, Intake intake, VisionController vision) {
-
+ 
     super(
       deadline(
         new Viser(basePilotable, vision),
@@ -31,5 +31,13 @@ public class ViserTirer extends SequentialCommandGroup {
         new DemarrerShooter(shooter, vision)
       ), 
       new Tirer(shooter, intake, vision));
+  
+    this.shooter = shooter;}
+
+  @Override
+  public void end(boolean interrupted) {
+    super.end(interrupted);
+    shooter.stop();
   }
+
 }

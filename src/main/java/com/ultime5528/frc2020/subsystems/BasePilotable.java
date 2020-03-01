@@ -203,6 +203,9 @@ public class BasePilotable extends SubsystemBase implements Loggable {
       encoderDroit.setPosition(0);
     }
   }
+  public void resetGyro(){
+    gyro.reset();
+  }
 
   /**
    * Gets the average distance of the two encoders.
