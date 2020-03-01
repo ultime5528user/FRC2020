@@ -7,6 +7,8 @@
 
 package com.ultime5528.frc2020.subsystems;
 
+import com.ultime5528.frc2020.Constants;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.VictorSP;
@@ -16,6 +18,8 @@ import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
 
+@Log.Exclude(exclude = Constants.OBLOG_MATCH)
+@Config.Exclude(exclude = Constants.OBLOG_MATCH)
 public class Grimpeur extends SubsystemBase implements Loggable {
 
   private Servo ratchet;

@@ -7,11 +7,17 @@
 
 package com.ultime5528.frc2020.subsystems;
 
+import com.ultime5528.frc2020.Constants;
+
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import io.github.oblarg.oblog.annotations.Config;
+import io.github.oblarg.oblog.annotations.Log;
 
+@Log.Exclude(exclude = Constants.OBLOG_MATCH)
+@Config.Exclude(exclude = Constants.OBLOG_MATCH)
 public class BrasIntake extends SubsystemBase {
 
   private VictorSP moteur;

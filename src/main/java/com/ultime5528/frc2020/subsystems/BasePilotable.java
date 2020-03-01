@@ -10,8 +10,6 @@ package com.ultime5528.frc2020.subsystems;
 import static com.ultime5528.util.SparkMaxUtil.handleCANError;
 
 import com.kauailabs.navx.frc.AHRS;
-import com.kauailabs.sf2.frc.navXSensor;
-import com.kauailabs.sf2.orientation.OrientationHistory;
 
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
@@ -22,7 +20,6 @@ import com.ultime5528.frc2020.Constants;
 import com.ultime5528.frc2020.Ports;
 import com.ultime5528.util.LogUtil;
 import com.ultime5528.util.SimpleOrientationHistory;
-import com.ultime5528.util.SimpleOrientationHistory.TimestampedAngle;
 
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -31,17 +28,20 @@ import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
-import io.github.oblarg.oblog.annotations.Config.Exclude;
 
 import static com.ultime5528.util.SparkMaxUtil.*;
 
+@Log.Exclude(exclude = Constants.OBLOG_MATCH)
+@Config.Exclude(exclude = Constants.OBLOG_MATCH)
 public class BasePilotable extends SubsystemBase implements Loggable {
 
   public static final double kWheelDiameter = 8 * 0.0254; // 8 pouces en mètres
@@ -104,6 +104,8 @@ public class BasePilotable extends SubsystemBase implements Loggable {
 
   private DifferentialDriveOdometry odometry;
 
+  private Translation2d position = new Translation2d();
+
   public BasePilotable() {
     if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
 
@@ -164,6 +166,8 @@ public class BasePilotable extends SubsystemBase implements Loggable {
       SmartDashboard.putNumber("left encoder", encoderGauche.getPosition());
       SmartDashboard.putNumber("right encoder", encoderDroit.getPosition());
 
+      position = getPose().getTranslation();
+
       SmartDashboard.putNumber("angle", getAngleDegrees());
       SmartDashboard.putNumber("x", odometry.getPoseMeters().getTranslation().getX());
       SmartDashboard.putNumber("y", odometry.getPoseMeters().getTranslation().getY());
@@ -173,6 +177,14 @@ public class BasePilotable extends SubsystemBase implements Loggable {
 
   public Pose2d getPose() {
     return odometry.getPoseMeters();
+  }
+
+  public double getX() {
+    return position.getX();
+  }
+
+  public double getY() {
+    return position.getY();
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
@@ -229,6 +241,10 @@ public class BasePilotable extends SubsystemBase implements Loggable {
     return encoderGauche;
   }
 
+  public double getPositionEncoderGauche() {
+    return encoderGauche.getPosition();
+}
+
   /**
    * Gets the right drive encoder.
    *
@@ -236,6 +252,10 @@ public class BasePilotable extends SubsystemBase implements Loggable {
    */
   public CANEncoder getRightEncoder() {
     return encoderGauche;
+  }
+
+  public double getPositionEncoderDroit() {
+      return encoderDroit.getPosition();
   }
 
   /**

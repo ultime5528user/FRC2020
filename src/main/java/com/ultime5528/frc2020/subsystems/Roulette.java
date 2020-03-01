@@ -9,6 +9,8 @@ package com.ultime5528.frc2020.subsystems;
 
 import java.util.Map;
 
+import com.ultime5528.frc2020.Constants;
+
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorSensorV3;
 import com.ultime5528.frc2020.Ports;
@@ -23,7 +25,10 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
+import io.github.oblarg.oblog.annotations.Log;
 
+@Log.Exclude(exclude = Constants.OBLOG_MATCH)
+@Config.Exclude(exclude = Constants.OBLOG_MATCH)
 public class Roulette extends SubsystemBase implements Loggable {
 
   @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1)
