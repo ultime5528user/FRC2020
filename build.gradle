@@ -59,6 +59,7 @@ dependencies {
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
     implementation "com.github.etiennebeaulac.Oblog:lib:3.1.1"
+    implementation 'com.github.Ultime5528:SimpleOrientationHistory:master-SNAPSHOT'
 
 	// implementation 'com.github.OnyxTronix2231:sf2:Tag'
     implementation name: "sf2-frc"
