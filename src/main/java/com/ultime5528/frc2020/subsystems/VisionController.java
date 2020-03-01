@@ -10,6 +10,7 @@ package com.ultime5528.frc2020.subsystems;
 import java.util.OptionalDouble;
 import java.util.function.Supplier;
 
+import com.ultime5528.frc2020.Constants;
 import com.ultime5528.frc2020.Ports;
 
 import org.opencv.core.Core;
@@ -28,7 +29,11 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import io.github.oblarg.oblog.annotations.Config;
+import io.github.oblarg.oblog.annotations.Log;
 
+@Log.Exclude(exclude = Constants.OBLOG_MATCH)
+@Config.Exclude(exclude = Constants.OBLOG_MATCH)
 public class VisionController extends SubsystemBase {
 
   private NetworkTableEntry snapshotEntry;
@@ -143,10 +148,13 @@ public class VisionController extends SubsystemBase {
     isEnabled = false;
     led.set(Value.kOff);
   }
+  
+  public String getRasbperryPiData(){
+    return snapshotEntry.getString("0;false;0;0");
+  }
 
   public void readSnapshot() {
-    String data = snapshotEntry.getString("0;false;0;0");
-    currentSnapshot = VisionSnapshot.fromRasperryPiData(data);
+    currentSnapshot = VisionSnapshot.fromRasperryPiData(getRasbperryPiData());
   }
 
   public OptionalDouble getHauteurCible() {

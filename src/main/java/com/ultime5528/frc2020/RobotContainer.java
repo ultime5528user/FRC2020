@@ -40,6 +40,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import io.github.oblarg.oblog.Logger;
+import io.github.oblarg.oblog.annotations.Log;
 
 public class RobotContainer {
 
@@ -47,13 +49,43 @@ public class RobotContainer {
   private final Joystick A_Pac1;
   private final Joystick A_Pac2;
 
+  @Log.Include(include = Constants.OBLOG_MATCH)
+  @Log.Graph(name = "BP Position Encoder Droit", methodName = "getPositionEncoderDroit", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
+  @Log.Graph(name = "BP Position Encoder Gauche", methodName = "getPositionEncoderGauche", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
+  @Log(name = "X Position", methodName = "getX", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
+  @Log(name = "Y Position", methodName = "getY", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
+  @Log.Gyro(name = "Gyro", methodName = "getGyro", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
+  @Log(name = "Timestamp", methodName = "getGyroTimestamp", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
   private final BasePilotable basePilotable;
+
+  @Log.Include(include = Constants.OBLOG_MATCH)
+  @Log.BooleanBox(name = "Grimpeur Droit En Haut", methodName = "estEnHaut", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
+  @Log.BooleanBox(name = "Grimpeur Droit En Bas", methodName = "estEnBas", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
   private final Grimpeur grimpeurDroit;
+
+  @Log.Include(include = Constants.OBLOG_MATCH)
+  @Log.BooleanBox(name = "Grimpeur Gauche En Haut", methodName = "estEnHaut", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
+  @Log.BooleanBox(name = "Grimpeur Gauche En Bas", methodName = "estEnBas", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
   private final Grimpeur grimpeurGauche;
+
   private final Shooter shooter;
+
   private final Roulette roulette = null;
+
+  @Log.Include(include = Constants.OBLOG_MATCH)
+  @Log(name = "Nombre ballons Intake", methodName = "getNombreBallonsDansIntake", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
   private final Intake intake;
-  public final BrasIntake brasDroit, brasGauche;
+
+  @Log.Include(include = Constants.OBLOG_MATCH)
+  @Log(name = "Bras Droit Position Encoder", methodName = "getPosition", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
+  private final BrasIntake brasDroit;
+
+  @Log.Include(include = Constants.OBLOG_MATCH)
+  @Log(name = "Bras Droit Position Encoder", methodName = "getPosition", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
+  private final BrasIntake brasGauche;
+
+  @Log.Include(include = Constants.OBLOG_MATCH)
+  @Log(name = "Vision Snapshot", methodName = "getRasbperryPiData", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
   private final VisionController vision;
 
   private final PowerDistributionPanel pdp;
@@ -102,7 +134,7 @@ public class RobotContainer {
 
     configureButtonBindings();
 
-    // Logger.configureLoggingAndConfig(this, false);
+    Logger.configureLoggingAndConfig(this, false);
     // LiveWindow.disableAllTelemetry();
 
     SmartDashboard.putData(CommandScheduler.getInstance());

@@ -18,7 +18,10 @@ import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
+import io.github.oblarg.oblog.annotations.Log;
 
+@Log.Exclude(exclude = Constants.OBLOG_MATCH)
+@Config.Exclude(exclude = Constants.OBLOG_MATCH)
 public class Intake extends SubsystemBase implements Loggable {
 
   private VictorSP moteurIntake;
@@ -124,6 +127,10 @@ public class Intake extends SubsystemBase implements Loggable {
 
   public boolean hasBallonHaut() {
     return photocellHaut.get();
+  }
+
+  public int getNombreBallonsDansIntake(){
+    return ballonDansIntake;
   }
 
   public void ballonDePlus() {

@@ -31,6 +31,8 @@ import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
 
+@Log.Exclude(exclude = Constants.OBLOG_MATCH)
+@Config.Exclude(exclude = Constants.OBLOG_MATCH)
 public class Shooter extends SubsystemBase implements Loggable {
 
   public static double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
