@@ -39,7 +39,7 @@ public class Intake extends SubsystemBase implements Loggable {
   public static final double kVitesseAvaler = 4;
   public static final double kVitesseTransporter = -6.7; // -7.2
   public static final double kCurrentFilterTime = 2;
-  public static final double kMaxCurrent = 20;
+  public static final double kMaxCurrent = 12;
   public static final double kVitesseBrasGauche = -6;
   public static final double kVitesseBrasDroit = 6;
   public static final double kVitesseBrasGaucheBalayer = 10;

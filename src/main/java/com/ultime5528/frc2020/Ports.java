@@ -55,7 +55,7 @@ public class Ports {
     public static final int VISION_LED = 0;              
 
     public static class PDP {
-        public static final int INTAKE_MOTEUR_TRANSPORTEUR = 2;
+        public static final int INTAKE_MOTEUR_TRANSPORTEUR = 8;
     }
     
 }
