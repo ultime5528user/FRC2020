@@ -22,18 +22,24 @@ public class BrasIntake extends SubsystemBase {
 
   private VictorSP moteur;
   private Encoder encoder;
+  private double inverted;
 
   public static double kVitesseMonter = -7;
   public static double kVitesseDescendre = 7;
-  
-  public BrasIntake(int portMoteur, int portEncoderA, int portEncoderB, String name) {
 
-    SendableRegistry.addLW(this,name,name);
+  public static double kHauteurGauche = -82;
+  public static double kHauteurDroit = -77;
+  
+  public BrasIntake(int portMoteur, int portEncoderA, int portEncoderB, boolean inverted, String name) {
+
+    SendableRegistry.addLW(this, name, name);
     setName(name);
-    
+
+    this.inverted = (inverted ? -1.0 : 1.0);
+
     moteur = new VictorSP(portMoteur);
     addChild("moteur", moteur);
-    encoder = new Encoder(portEncoderA,portEncoderB);
+    encoder = new Encoder(portEncoderA, portEncoderB);
     addChild("encoder", encoder);
 
   }
@@ -42,25 +48,29 @@ public class BrasIntake extends SubsystemBase {
   public void periodic() {
 
   }
-  public void monterBras(){
-    moteur.setVoltage(kVitesseMonter);
+
+  public void monterBras() {
+    moteur.setVoltage(kVitesseMonter * inverted);
 
   }
-  public void descendreBras(){
-    moteur.setVoltage(kVitesseDescendre);
+
+  public void descendreBras() {
+    moteur.setVoltage(kVitesseDescendre * inverted);
   }
-  public void stopBras(){
+
+  public void stopBras() {
     moteur.setVoltage(0.0);
   }
 
-  public double getVitesse(){
-   return encoder.getRate();
+  public double getVitesse() {
+    return encoder.getRate();
   }
 
-  public double getPosition(){
-    return encoder.getDistance();
-  }  
-  public void resetEncoder(){
+  public double getPosition() {
+    return encoder.getDistance() * inverted;
+  }
+
+  public void resetEncoder() {
     encoder.reset();
   }
 

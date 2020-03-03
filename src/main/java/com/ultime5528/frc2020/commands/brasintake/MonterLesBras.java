@@ -15,7 +15,7 @@ public class MonterLesBras extends ParallelCommandGroup {
 
   public MonterLesBras(BrasIntake brasDroit, BrasIntake brasGauche) {
 
-    super(new MonterBras(brasDroit), new MonterBras(brasGauche));
+    super(new MonterBras(brasDroit, -77), new MonterBras(brasGauche, -82));
 
   }
 

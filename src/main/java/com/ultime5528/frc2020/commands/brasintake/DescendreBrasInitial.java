@@ -10,13 +10,14 @@ package com.ultime5528.frc2020.commands.brasintake;
 import com.ultime5528.frc2020.subsystems.BrasIntake;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class DescendreBrasInitial extends ParallelCommandGroup {
 
   public DescendreBrasInitial(BrasIntake brasDroit,BrasIntake brasGauche) {
 
-    super(sequence(new MonterBras(brasDroit), new DescendreBras(brasDroit)),
-        sequence(new MonterBras(brasGauche), new DescendreBras(brasGauche)));
+    super(sequence(new MonterBras(brasDroit, -80), new WaitCommand(0.5), new DescendreBras(brasDroit)),
+        sequence(new MonterBras(brasGauche, -86), new WaitCommand(0.5), new DescendreBras(brasGauche)));
 
   }
 
