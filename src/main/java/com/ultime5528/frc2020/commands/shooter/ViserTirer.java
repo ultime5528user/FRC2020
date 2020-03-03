@@ -8,6 +8,7 @@
 package com.ultime5528.frc2020.commands.shooter;
 
 import com.ultime5528.frc2020.commands.basepilotable.Viser;
+import com.ultime5528.frc2020.commands.intake.TransporterBallonHaut;
 import com.ultime5528.frc2020.subsystems.BasePilotable;
 import com.ultime5528.frc2020.subsystems.Intake;
 import com.ultime5528.frc2020.subsystems.Shooter;
@@ -22,15 +23,15 @@ public class ViserTirer extends SequentialCommandGroup {
   
   private Shooter shooter;
   
-  public ViserTirer(BasePilotable basePilotable, Shooter shooter, Intake intake, VisionController vision) {
+  public ViserTirer(BasePilotable basePilotable, Shooter shooter, Intake intake, VisionController vision, double tempsFin) {
  
     super(
       deadline(
         new Viser(basePilotable, vision),
-        
+        new TransporterBallonHaut(intake),
         new DemarrerShooter(shooter, vision)
       ), 
-      new Tirer(shooter, intake, vision));
+      new Tirer(shooter, intake, vision, tempsFin));
   
     this.shooter = shooter;}
 

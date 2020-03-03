@@ -7,15 +7,13 @@
 
 package com.ultime5528.frc2020;
 
-import com.ultime5528.frc2020.commands.autonome.AutoSixBallon;
-import com.ultime5528.frc2020.commands.autonome.AutoTirer;
+import com.ultime5528.frc2020.commands.autonome.AutoCinqBallons;
+
 import com.ultime5528.frc2020.commands.basepilotable.Piloter;
 import com.ultime5528.frc2020.commands.basepilotable.TournerAbsolue;
 import com.ultime5528.frc2020.commands.basepilotable.Viser;
 import com.ultime5528.frc2020.commands.brasintake.Balayer;
-import com.ultime5528.frc2020.commands.brasintake.DescendreBras;
 import com.ultime5528.frc2020.commands.brasintake.DescendreLesBras;
-import com.ultime5528.frc2020.commands.brasintake.MonterBras;
 import com.ultime5528.frc2020.commands.brasintake.MonterLesBras;
 import com.ultime5528.frc2020.commands.grimpeur.Grimper;
 import com.ultime5528.frc2020.commands.grimpeur.GrimperSansRatchet;
@@ -55,7 +53,7 @@ public class RobotContainer {
   @Log.Graph(name = "BP Position Encoder Gauche", methodName = "getPositionEncoderGauche", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
   @Log(name = "X Position", methodName = "getX", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
   @Log(name = "Y Position", methodName = "getY", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
-  @Log.Gyro(name = "Gyro", methodName = "getGyro", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
+  @Log(name = "Gyro", methodName = "getAngleDegrees", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
   @Log(name = "Timestamp", methodName = "getGyroTimestamp", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
   private final BasePilotable basePilotable;
 
@@ -71,7 +69,7 @@ public class RobotContainer {
 
   private final Shooter shooter;
 
-  private final Roulette roulette = null;
+ // private final Roulette roulette = null;
 
   @Log.Include(include = Constants.OBLOG_MATCH)
   @Log(name = "Nombre ballons Intake", methodName = "getNombreBallonsDansIntake", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
@@ -82,7 +80,7 @@ public class RobotContainer {
   private final BrasIntake brasDroit;
 
   @Log.Include(include = Constants.OBLOG_MATCH)
-  @Log(name = "Bras Droit Position Encoder", methodName = "getPosition", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
+  @Log(name = "Bras Gauche Position Encoder", methodName = "getPosition", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
   private final BrasIntake brasGauche;
 
   @Log.Include(include = Constants.OBLOG_MATCH)
@@ -114,10 +112,10 @@ public class RobotContainer {
         "Grimpeur Gauche");
 
     brasDroit = new BrasIntake(Ports.BRAS_INTAKE_DROIT, Ports.BRAS_INTAKE_DROIT_ENCODER_A,
-        Ports.BRAS_INTAKE_DROIT_ENCODER_B, "bras droit");
+        Ports.BRAS_INTAKE_DROIT_ENCODER_B, true, "bras droit");
 
     brasGauche = new BrasIntake(Ports.BRAS_INTAKE_GAUCHE, Ports.BRAS_INTAKE_GAUCHE_ENCODER_A,
-        Ports.BRAS_INTAKE_GAUCHE_ENCODER_B, "bras gauche");
+        Ports.BRAS_INTAKE_GAUCHE_ENCODER_B, false, "bras gauche");
     shooter = new Shooter();
 
     // roulette = new Roulette();
@@ -150,7 +148,7 @@ public class RobotContainer {
       CommandScheduler.getInstance()
           .onCommandInterrupt(command -> System.out.println(command.getName() + " interrupted"));
     }
-    
+
     tourner = new TournerAbsolue(basePilotable, 100.0, 1.25, 0.8);
     SmartDashboard.putData("Vider intake", new ViderIntake(intake).withTimeout(5.0));
     SmartDashboard.putData("Tourner 100", tourner);
@@ -160,47 +158,44 @@ public class RobotContainer {
     CommandScheduler.getInstance().onCommandFinish(c -> System.out.println("Finish : " + c.getName()));
     CommandScheduler.getInstance().onCommandInterrupt(c -> System.out.println("Interrupted : " + c.getName()));
 
-    autonomousCommand = new AutoSixBallon(basePilotable, brasDroit, brasGauche, vision, shooter, intake);
+    autonomousCommand = new AutoCinqBallons(basePilotable, brasDroit, brasGauche, vision, shooter, intake);
 
   }
 
   private void configureButtonBindings() {
 
-    SmartDashboard.putData("Monter bras", new MonterBras(brasDroit));
-    SmartDashboard.putData("Descendre bras", new DescendreBras(brasDroit));
+    new JoystickButton(joystick, 9).toggleWhenPressed(new ViserTirer(basePilotable, shooter, intake, vision, 2.0));
 
-    new JoystickButton(joystick, 9).toggleWhenPressed(new ViserTirer(basePilotable, shooter, intake, vision));
-    new JoystickButton(joystick, 1).toggleWhenPressed(new TournerAbsolue(basePilotable, 0, 0.5, 0.10));
+    // new JoystickButton(A_Pac2, 2).toggleWhenPressed(new Viser(basePilotable,
+    // vision));
 
-    // new JoystickButton(A_Pac2, 2).toggleWhenPressed(new Viser(basePilotable, vision));
-
-    new Trigger( () -> A_Pac1.getRawAxis(1) < -0.5 ).whileActiveOnce(new MonterGrimpeur(grimpeurDroit));
-    new Trigger( () -> A_Pac1.getRawAxis(1)  > 0.5 ).whileActiveOnce(new GrimperSansRatchet(grimpeurDroit));
+    new Trigger(() -> A_Pac1.getRawAxis(1) < -0.5).whileActiveOnce(new MonterGrimpeur(grimpeurDroit));
+    new Trigger(() -> A_Pac1.getRawAxis(1) > 0.5).whileActiveOnce(new GrimperSansRatchet(grimpeurDroit));
     new JoystickButton(A_Pac1, 2).whenHeld(new Grimper(grimpeurDroit));
 
-    new Trigger( () -> A_Pac1.getRawAxis(0)> 0.5).whileActiveOnce(new MonterGrimpeur(grimpeurGauche));
-    new Trigger( () -> A_Pac1.getRawAxis(0) < -0.5 ).whileActiveOnce(new GrimperSansRatchet(grimpeurGauche));
+    new Trigger(() -> A_Pac1.getRawAxis(0) > 0.5).whileActiveOnce(new MonterGrimpeur(grimpeurGauche));
+    new Trigger(() -> A_Pac1.getRawAxis(0) < -0.5).whileActiveOnce(new GrimperSansRatchet(grimpeurGauche));
     new JoystickButton(A_Pac1, 1).whenHeld(new Grimper(grimpeurGauche));
-   
+
     // new JoystickButton(joystick, 3).toggleWhenPressed(new
     // TournerRoulette(roulette));
-    new JoystickButton(A_Pac2, 1).toggleWhenPressed(new Tirer(shooter, intake, vision));
+    new JoystickButton(A_Pac2, 1).toggleWhenPressed(new Tirer(shooter, intake, vision, 2.0));
     new JoystickButton(A_Pac2, 2).toggleWhenPressed(new Viser(basePilotable, vision));
-    
-    new JoystickButton(A_Pac1, 5).toggleWhenPressed(new PrendreTransporterBallon(intake,brasDroit,brasGauche));
-    new JoystickButton(A_Pac1, 3).toggleWhenPressed(new MonterLesBras( brasDroit , brasGauche));
-    new JoystickButton(A_Pac1, 4).toggleWhenPressed(new DescendreLesBras(brasDroit ,brasGauche));
+
+    new JoystickButton(A_Pac1, 5).toggleWhenPressed(new PrendreTransporterBallon(intake, brasDroit, brasGauche));
+    new JoystickButton(A_Pac1, 4).toggleWhenPressed(new MonterLesBras(brasDroit, brasGauche));
+    new JoystickButton(A_Pac1, 3).toggleWhenPressed(new DescendreLesBras(brasDroit, brasGauche));
     new JoystickButton(A_Pac1, 6).toggleWhenPressed(new InstantCommand(this::resetEncodersBras, brasDroit, brasGauche));
-    new JoystickButton(A_Pac1, 7).whenHeld(new Balayer(intake, brasDroit, brasGauche));
-    new JoystickButton(A_Pac1, 8).toggleWhenPressed(new ViderIntake(intake));
+    new JoystickButton(A_Pac1, 8).whenHeld(new Balayer(intake, brasDroit, brasGauche));
+    new JoystickButton(A_Pac1, 7).toggleWhenPressed(new ViderIntake(intake));
   }
 
   public Command getAutonomousCommand() {
     // return new DescendreBrasInitial(brasDroit, brasGauche);
     // return SuivreTrajectoire.from(basePilotable,
-    //     new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)),
-    //     List.of(),
-    //     new Pose2d(3.0, -2.0, Rotation2d.fromDegrees(-90.0)
+    // new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)),
+    // List.of(),
+    // new Pose2d(3.0, -2.0, Rotation2d.fromDegrees(-90.0)
     // ), 0.5, 0.5);
     return autonomousCommand;
   }
@@ -209,11 +204,13 @@ public class RobotContainer {
     grimpeurGauche.unlockRatchet();
     grimpeurDroit.unlockRatchet();
   }
-  public void resetEncodersBras(){
+
+  public void resetEncodersBras() {
     brasDroit.resetEncoder();
     brasGauche.resetEncoder();
   }
-  public void resetBasePilotable(){
+
+  public void resetBasePilotable() {
     basePilotable.resetGyro();
     basePilotable.resetOdometry(new Pose2d());
   }

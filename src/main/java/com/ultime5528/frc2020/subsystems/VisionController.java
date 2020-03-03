@@ -46,6 +46,7 @@ public class VisionController extends SubsystemBase {
 
   private static double kFOV = 49.8; // Degrés
   private static double kFocale = 1 / Math.tan(Math.toRadians(kFOV) / 2);
+  private static double kOffset = 0.75; // Si positif, va viser un peu plus a gauche
 
   private VisionSnapshot currentSnapshot;
 
@@ -141,6 +142,7 @@ public class VisionController extends SubsystemBase {
 
   public void enable() {
     isEnabled = true;
+    readSnapshot();
     led.set(Value.kOn);
   }
 
@@ -170,10 +172,10 @@ public class VisionController extends SubsystemBase {
   }
 
   public OptionalDouble getAngleCible() {
-    if (currentSnapshot.found) {
+    if (currentSnapshot.found) { 
       double x = currentSnapshot.centreX;
       double angle = Math.atan(-x / kFocale); // TODO vérifier "-x / kFocale"
-      angle = Math.toDegrees(angle);
+      angle = Math.toDegrees(angle) + kOffset;
       return OptionalDouble.of(angle);
     } else {
       return OptionalDouble.empty();

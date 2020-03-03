@@ -7,7 +7,6 @@
 
 package com.ultime5528.frc2020.commands.shooter;
 
-import java.util.OptionalDouble;
 
 import com.ultime5528.frc2020.subsystems.Intake;
 import com.ultime5528.frc2020.subsystems.Shooter;
@@ -25,13 +24,15 @@ public class Tirer extends CommandBase {
   private Intake intake;
   private VisionController vision;
   private boolean initialBonneVitesse = false;
+  private double tempsFin;
 
-  public Tirer(Shooter shooter, Intake intake, VisionController vision) {
+  public Tirer(Shooter shooter, Intake intake, VisionController vision, double tempsFin) {
     this.shooter = shooter;
     this.intake = intake;
     this.vision = vision;
     this.timer = new Timer();
     this.timerShooter = new Timer();
+    this.tempsFin = tempsFin;
     addRequirements(shooter, intake);
   }
 
@@ -103,6 +104,6 @@ public class Tirer extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.get() >= 2;
+    return timer.get() >= tempsFin;
   }
 }

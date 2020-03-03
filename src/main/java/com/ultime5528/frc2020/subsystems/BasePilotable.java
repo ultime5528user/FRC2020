@@ -71,7 +71,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
 
   public static final double kRamseteB = 2.0; // 3
   public static final double kRamseteZeta = 0.7; // 0.2
-  public static final double kPDriveVel = 5.0; // 2.0; // 1.41
+  public static final double kPDriveVel = 3.0; // 2.0; // 1.41
 
   public static final SparkMaxConfig kMotorConfig = new SparkMaxConfig(1.0, 40, 50);
 

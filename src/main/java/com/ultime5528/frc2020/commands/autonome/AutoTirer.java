@@ -31,7 +31,7 @@ public class AutoTirer extends SequentialCommandGroup {
                 new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)), 
                 1.0, 0.5, true
             )),
-            new ViserTirer(basePilotable, shooter, intake, vision)
+            new ViserTirer(basePilotable, shooter, intake, vision, 1.0)
           );
     }
 }
