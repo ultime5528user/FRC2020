@@ -34,6 +34,7 @@ import com.ultime5528.frc2020.subsystems.VisionController;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -50,44 +51,44 @@ public class RobotContainer {
   private final Joystick A_Pac2;
 
   @Log.Include(include = Constants.OBLOG_MATCH)
-  @Log.Graph(name = "BP Position Encoder Droit", methodName = "getPositionEncoderDroit", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
-  @Log.Graph(name = "BP Position Encoder Gauche", methodName = "getPositionEncoderGauche", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
-  @Log(name = "X Position", methodName = "getX", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
-  @Log(name = "Y Position", methodName = "getY", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
-  @Log(name = "Gyro", methodName = "getAngleDegrees", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
-  @Log(name = "Timestamp", methodName = "getGyroTimestamp", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
+  @Log(name = "BP Position Encoder Droit", methodName = "getPositionEncoderDroit", tabName = "Secondaire")
+  @Log(name = "BP Position Encoder Gauche", methodName = "getPositionEncoderGauche", tabName = "Secondaire")
+  @Log(name = "X Position", methodName = "getX", tabName = "Secondaire")
+  @Log(name = "Y Position", methodName = "getY", tabName = "Secondaire")
+  @Log(name = "Gyro", methodName = "getAngleDegrees", tabName = "Secondaire")
+  @Log(name = "Timestamp", methodName = "getGyroTimestamp", tabName = "Secondaire")
   private final BasePilotable basePilotable;
 
   @Log.Include(include = Constants.OBLOG_MATCH)
-  @Log.BooleanBox(name = "Grimpeur Droit En Haut", methodName = "estEnHaut", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
-  @Log.BooleanBox(name = "Grimpeur Droit En Bas", methodName = "estEnBas", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
+  @Log.BooleanBox(name = "Grimpeur Droit En Haut", methodName = "estEnHaut", tabName = "Secondaire")
+  @Log.BooleanBox(name = "Grimpeur Droit En Bas", methodName = "estEnBas", tabName = "Secondaire")
   private final Grimpeur grimpeurDroit;
 
   @Log.Include(include = Constants.OBLOG_MATCH)
-  @Log.BooleanBox(name = "Grimpeur Gauche En Haut", methodName = "estEnHaut", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
-  @Log.BooleanBox(name = "Grimpeur Gauche En Bas", methodName = "estEnBas", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
+  @Log.BooleanBox(name = "Grimpeur Gauche En Haut", methodName = "estEnHaut", tabName = "Secondaire")
+  @Log.BooleanBox(name = "Grimpeur Gauche En Bas", methodName = "estEnBas", tabName = "Secondaire")
   private final Grimpeur grimpeurGauche;
 
   @Log.Include(include = Constants.OBLOG_MATCH)
-  @Log.Graph(name = "Vitesse", methodName = "getVitesse", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
+  @Log(name = "Vitesse", methodName = "getVitesse", tabName = "Secondaire")
   private final Shooter shooter;
 
  // private final Roulette roulette = null;
 
   @Log.Include(include = Constants.OBLOG_MATCH)
-  @Log(name = "Nombre ballons Intake", methodName = "getNombreBallonsDansIntake", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
+  @Log(name = "Nombre ballons Intake", methodName = "getNombreBallonsDansIntake", tabName = "Principale")
   private final Intake intake;
 
   @Log.Include(include = Constants.OBLOG_MATCH)
-  @Log(name = "Bras Droit Position Encoder", methodName = "getPosition", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
+  @Log(name = "Bras Droit Position Encoder", methodName = "getPosition", tabName = "Secondaire")
   private final BrasIntake brasDroit;
 
   @Log.Include(include = Constants.OBLOG_MATCH)
-  @Log(name = "Bras Gauche Position Encoder", methodName = "getPosition", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
+  @Log(name = "Bras Gauche Position Encoder", methodName = "getPosition", tabName = "Secondaire")
   private final BrasIntake brasGauche;
 
   @Log.Include(include = Constants.OBLOG_MATCH)
-  @Log(name = "Vision Snapshot", methodName = "getRasbperryPiData", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
+  @Log(name = "Vision Snapshot", methodName = "getRasbperryPiData", tabName = "Secondaire")
   private final VisionController vision;
 
   private final PowerDistributionPanel pdp;
@@ -136,7 +137,7 @@ public class RobotContainer {
     configureButtonBindings();
 
     Logger.configureLoggingAndConfig(this, false);
-    // LiveWindow.disableAllTelemetry();
+    LiveWindow.disableAllTelemetry();
 
     SmartDashboard.putData(CommandScheduler.getInstance());
 
