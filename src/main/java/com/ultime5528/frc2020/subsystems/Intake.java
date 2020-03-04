@@ -146,7 +146,7 @@ public class Intake extends SubsystemBase implements Loggable {
   }
 
   public void prendreBallonInverse() {
-    moteurIntake.setVoltage(-kVitesseAvaler - 0.4);
+    moteurIntake.setVoltage(-kVitesseAvaler - 1);
   }
 
 
