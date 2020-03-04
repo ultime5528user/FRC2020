@@ -8,6 +8,8 @@
 package com.ultime5528.frc2020.commands.shooter;
 
 
+import java.util.OptionalDouble;
+
 import com.ultime5528.frc2020.subsystems.Intake;
 import com.ultime5528.frc2020.subsystems.Shooter;
 import com.ultime5528.frc2020.subsystems.VisionController;
@@ -25,6 +27,7 @@ public class Tirer extends CommandBase {
   private VisionController vision;
   private boolean initialBonneVitesse = false;
   private double tempsFin;
+  private OptionalDouble lastHauteur;
 
   public Tirer(Shooter shooter, Intake intake, VisionController vision, double tempsFin) {
     this.shooter = shooter;
@@ -43,13 +46,20 @@ public class Tirer extends CommandBase {
     timerShooter.reset();
     vision.enable();
     initialBonneVitesse = false;
+    lastHauteur = OptionalDouble.empty();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    double vitesseGoal = shooter.tirer(vision.getHauteurCible());
+    OptionalDouble hauteur = vision.getHauteurCible();
+
+    if (hauteur.isPresent()) {
+      lastHauteur = hauteur;
+    }
+
+    double vitesseGoal = shooter.tirer(lastHauteur);
 
     double vitesse = shooter.getVitesse();
     double erreurVitesse = Math.abs(vitesse / vitesseGoal - 1.0);

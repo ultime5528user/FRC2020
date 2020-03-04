@@ -7,6 +7,8 @@
 
 package com.ultime5528.frc2020.commands.shooter;
 
+import java.util.OptionalDouble;
+
 import com.ultime5528.frc2020.subsystems.Shooter;
 import com.ultime5528.frc2020.subsystems.VisionController;
 
@@ -16,6 +18,7 @@ public class DemarrerShooter extends CommandBase {
 
   private Shooter shooter;
   private VisionController vision;
+  private OptionalDouble lastHauteur;
 
   public DemarrerShooter(Shooter shooter, VisionController vision) {
     this.shooter = shooter;
@@ -28,14 +31,21 @@ public class DemarrerShooter extends CommandBase {
   @Override
   public void initialize() {
     vision.enable();
+    lastHauteur = OptionalDouble.empty();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    shooter.tirer(vision.getHauteurCible());
-    //shooter.tirer(OptionalDouble.empty()); // TODO Vitesse de la dernière cible vue, dans ajouter une variable qui la contient
+    OptionalDouble hauteur = vision.getHauteurCible();
+
+    if (hauteur.isPresent()) {
+      lastHauteur = hauteur;
+    }
+
+    shooter.tirer(lastHauteur);
+    
   }
 
   // Called once the command ends or is interrupted.
