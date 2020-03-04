@@ -37,7 +37,7 @@ public class Shooter extends SubsystemBase implements Loggable {
   public static double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
 
   @Config(rowIndex = 1, columnIndex = 2, width = 2, height = 1)
-  public static double kRPM = 3500;
+  public static double kRPM = 2500;
 
   @Config(rowIndex = 2, columnIndex = 2, width = 2, height = 1)
   public static double kToleranceVitesse = 0.05;
