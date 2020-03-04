@@ -50,8 +50,7 @@ public class VisionController extends SubsystemBase {
 
   private VisionSnapshot currentSnapshot;
 
-  private boolean isEnabled = true; // TODO remettre à false ?
-  private boolean hasSynchronized = false;
+  private boolean isEnabled = false;
   private long doSynchronizeTime, lag;
 
   private Supplier<Long> timestampSupplier;
@@ -114,7 +113,6 @@ public class VisionController extends SubsystemBase {
 
   @Override
   public void periodic() {
-    led.set(Value.kOn); // TODO ENLEVERRRRR!
 
     if (isEnabled) {
       readSnapshot();
@@ -129,7 +127,6 @@ public class VisionController extends SubsystemBase {
       long newTime = timestampSupplier.get();
       lag = (newTime - doSynchronizeTime) / 2;
       NetworkTableInstance.getDefault().getTable("vision").getEntry("lag").setNumber(lag);
-      hasSynchronized = true;
     }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 
     doSynchronizeTime = timestampSupplier.get();
@@ -172,7 +169,7 @@ public class VisionController extends SubsystemBase {
   public OptionalDouble getAngleCible() {
     if (currentSnapshot.found) { 
       double x = currentSnapshot.centreX;
-      double angle = Math.atan(-x / kFocale); // TODO vérifier "-x / kFocale"
+      double angle = Math.atan(-x / kFocale);
       angle = Math.toDegrees(angle) + kOffset;
       return OptionalDouble.of(angle);
     } else {

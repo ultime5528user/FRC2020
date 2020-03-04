@@ -45,7 +45,6 @@ public class TournerRoulette extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.get() >= Roulette.kTempsTourner; // TODO regarder si c'est le bon temps (28 tour de moteur devrait
-                                                  // faire l'affaire)
+    return timer.get() >= Roulette.kTempsTourner;
   }
 }
