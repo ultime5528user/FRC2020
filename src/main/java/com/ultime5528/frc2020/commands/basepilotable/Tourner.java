@@ -1,11 +1,13 @@
 package com.ultime5528.frc2020.commands.basepilotable;
 
+import com.ultime5528.frc2020.Constants;
 import com.ultime5528.frc2020.subsystems.BasePilotable;
 import io.github.oblarg.oblog.annotations.Config;
 
 /**
  * Tourner
  */
+@Config.Exclude(exclude = Constants.OBLOG_MATCH)
 public class Tourner extends AbstractTourner {
 
     public static double kTolerance = 1;
