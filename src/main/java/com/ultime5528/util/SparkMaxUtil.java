@@ -46,7 +46,7 @@ public final class SparkMaxUtil {
     }
 
     public static void configureMotor(CANSparkMax motor, SparkMaxConfig config) {
-        handleCANError(motor.setIdleMode(IdleMode.kCoast), "setIdleMode", motor);
+        handleCANError(motor.setIdleMode(config.idleMode), "setIdleMode", motor);
         handleCANError(motor.enableVoltageCompensation(kVoltageCompensation), "enableVoltageCompensation", motor);
         handleCANError(motor.setSmartCurrentLimit(config.kCurrentLimit), "setSmartCurrentLimit", motor);
         handleCANError(motor.setSecondaryCurrentLimit(config.kSecCurrentLimit), "setSecondaryCurrentLimit", motor);
@@ -58,11 +58,13 @@ public final class SparkMaxUtil {
     }
 
     public static class SparkMaxConfig {
+        public final IdleMode idleMode;
         public final double kRampRate;
         public final int kCurrentLimit;
         public final int kSecCurrentLimit;
 
-        public SparkMaxConfig(double kRampRate, int kCurrentLimit, int kSecCurrentLimit) {
+        public SparkMaxConfig(IdleMode idleMode, double kRampRate, int kCurrentLimit, int kSecCurrentLimit) {
+            this.idleMode = idleMode;
             this.kRampRate = kRampRate;
             this.kCurrentLimit = kCurrentLimit;
             this.kSecCurrentLimit = kSecCurrentLimit;

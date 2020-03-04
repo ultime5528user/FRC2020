@@ -13,6 +13,7 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -46,7 +47,7 @@ public class Shooter extends SubsystemBase implements Loggable {
   private CANSparkMax moteur;
   private CANSparkMax moteur2;
 
-  public static final SparkMaxConfig kMotorConfig = new SparkMaxConfig(0.1, 40, 50);
+  public static final SparkMaxConfig kMotorConfig = new SparkMaxConfig(IdleMode.kCoast, 0.1, 40, 50);
 
   @Log.Graph(name = "Vitesse Encoder Shooter", methodName = "getVelocity", rowIndex = 0, columnIndex = 4, width = 5, height = 5)
   private CANEncoder encoder;

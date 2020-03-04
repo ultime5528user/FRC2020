@@ -16,6 +16,7 @@ import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.ultime5528.frc2020.Constants;
 import com.ultime5528.frc2020.Ports;
 import com.ultime5528.util.LogUtil;
@@ -73,7 +74,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   public static final double kRamseteZeta = 0.7; // 0.2
   public static final double kPDriveVel = 3.0; // 2.0; // 1.41
 
-  public static final SparkMaxConfig kMotorConfig = new SparkMaxConfig(1.0, 40, 50);
+  public static final SparkMaxConfig kMotorConfig = new SparkMaxConfig(IdleMode.kBrake, 1.0, 40, 50);
 
   public static final boolean GYRO_REVERSED = true;
 
