@@ -13,9 +13,11 @@ import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Config.Exclude;
 
+import com.ultime5528.frc2020.Constants;
 import com.ultime5528.frc2020.subsystems.BasePilotable;
 import com.ultime5528.util.CubicInterpolator;
 
+@Config.Exclude(exclude = Constants.OBLOG_MATCH)
 public class Piloter extends CommandBase implements Loggable {
 
 
@@ -23,13 +25,13 @@ public class Piloter extends CommandBase implements Loggable {
   private BasePilotable basePilotable;
   private Joystick joystick;
 
-  public static double kCourbureX = 0;
+  public static double kCourbureX = 0.5;
   public static double kDeadzoneJoystickX = 0.05;
-  public static double kDeadzoneVitesseX = 0.05;
+  public static double kDeadzoneVitesseX = 0.02;
 
-  public static double kCourbureY = 0;
-  public static double kDeadzoneJoystickY = 0.05;
-  public static double kDeadzoneVitesseY = 0.05;
+  public static double kCourbureY = 0.35;
+  public static double kDeadzoneJoystickY = 0.08;
+  public static double kDeadzoneVitesseY = 0.2;
 
   @Config.NumberSlider(name = "Courbure X", min = 0, max = 1, methodName = "setCourbure", methodTypes = {double.class}, rowIndex = 0, columnIndex = 0, width = 2, height = 2)
   @Config.NumberSlider(name = "Deadzone Joystick X", min = 0, max = 1, methodName = "setDeadzoneX", methodTypes = {double.class}, rowIndex = 2, columnIndex = 0, width = 2, height = 2)
