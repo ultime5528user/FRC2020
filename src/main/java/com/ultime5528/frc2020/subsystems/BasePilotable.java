@@ -60,8 +60,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   public static final double kRA = 0.500;
   public static final SimpleMotorFeedforward kRotationFeedForward = new SimpleMotorFeedforward(kRS, kRV, kRA);
 
-  public static final double kTrackWidth = 0.686; // TODO Valider FRC Characterization, refaire depuis la correction
-                                                  // gearbox gauche
+  public static final double kTrackWidth = 0.686;
   public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackWidth);
 
   public static final double kMaxSpeedMetersPerSecond = 3.0;
@@ -189,7 +188,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
     }
   }
 
-  public void resetOdometry(Pose2d pose) { // TODO Méthode vraiment nécessaire? C'est quelque chose que l'on veut éviter
+  public void resetOdometry(Pose2d pose) {
     resetEncoders();
     odometry.resetPosition(pose, Rotation2d.fromDegrees(getClampedHeading()));
   }
@@ -236,7 +235,11 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   }
 
   public double getPositionEncoderGauche() {
-    return encoderGauche.getPosition();
+    if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
+      return encoderGauche.getPosition();
+    } else {
+      return 0.0;
+    }
 }
 
   /**
@@ -249,7 +252,11 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   }
 
   public double getPositionEncoderDroit() {
+    if (Constants.ENABLE_CAN_BASE_PILOTABLE) {
       return encoderDroit.getPosition();
+    } else {
+      return 0.0;
+    }
   }
 
   /**
