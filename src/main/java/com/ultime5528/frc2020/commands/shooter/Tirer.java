@@ -50,7 +50,6 @@ public class Tirer extends CommandBase {
   public void execute() {
 
     double vitesseGoal = shooter.tirer(vision.getHauteurCible());
-    //shooter.tirer(OptionalDouble.empty()); // TODO Vitesse de la dernière cible vue, dans ajouter une variable qui la contient
 
     double vitesse = shooter.getVitesse();
     SmartDashboard.putNumber("shooter vitesse", vitesse);
@@ -69,11 +68,11 @@ public class Tirer extends CommandBase {
     double tempsBonneVitesse = timerShooter.get();
     SmartDashboard.putNumber("Temps bonne vitesse", tempsBonneVitesse);
 
-    boolean bonneVitesseLongtemps = (tempsBonneVitesse > 0.15);
+    boolean bonneVitesseLongtemps = (tempsBonneVitesse > 0.1);
     bonneVitesseLongtemps = (bonneVitesseLongtemps || initialBonneVitesse);
 
     if (bonneVitesseLongtemps) {
-       initialBonneVitesse = true;
+      //  initialBonneVitesse = true;
        intake.transporter();
        intake.prendreBallon();
     } else {
