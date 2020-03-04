@@ -104,8 +104,6 @@ public class Shooter extends SubsystemBase implements Loggable {
       if (Constants.ENABLE_VISION && optHauteur.isPresent()) {
         double hauteur = optHauteur.getAsDouble();
         vitesse = interpolator.interpolate(hauteur);
-        SmartDashboard.putNumber("Vitesse", vitesse);
-        SmartDashboard.putNumber("Hauteur", hauteur);
       } 
       pidController.setReference(vitesse, ControlType.kVelocity);
     }

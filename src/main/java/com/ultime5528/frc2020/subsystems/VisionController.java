@@ -82,8 +82,6 @@ public class VisionController extends SubsystemBase {
     led.set(Value.kOn);
 
     readSnapshot();
-
-    SmartDashboard.putNumber("kFocale", kFocale);
   }
 
   public void initTestCamera() {

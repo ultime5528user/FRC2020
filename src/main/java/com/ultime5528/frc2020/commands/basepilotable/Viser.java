@@ -45,12 +45,9 @@ public class Viser extends AbstractTourner {
     angle = vision.getAngleCible();
 
     if (angle.isPresent() && timestamp != lastTimestamp) {
-      SmartDashboard.putNumber("angle_history", basePilotable.getAngleAtGyroTimestamp(timestamp));
       lastTimestamp = timestamp;
       goalAngle = basePilotable.getAngleAtGyroTimestamp(timestamp) + angle.orElse(0.0);
     }
-
-    SmartDashboard.putNumber("goal angle", angle.orElse(0.0));
 
     return goalAngle;
 

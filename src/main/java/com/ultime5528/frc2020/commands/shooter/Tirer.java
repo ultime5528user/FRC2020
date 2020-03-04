@@ -52,11 +52,8 @@ public class Tirer extends CommandBase {
     double vitesseGoal = shooter.tirer(vision.getHauteurCible());
 
     double vitesse = shooter.getVitesse();
-    SmartDashboard.putNumber("shooter vitesse", vitesse);
     double erreurVitesse = Math.abs(vitesse / vitesseGoal - 1.0);
-    SmartDashboard.putNumber("erreur vitesse", erreurVitesse);
     boolean bonneVitesse = (erreurVitesse < Shooter.kToleranceVitesse);
-    SmartDashboard.putBoolean("bonne vitesse", bonneVitesse);
 
     if (bonneVitesse && !timerShooter.isRunning()) {
       timerShooter.start();
@@ -66,7 +63,6 @@ public class Tirer extends CommandBase {
     }
 
     double tempsBonneVitesse = timerShooter.get();
-    SmartDashboard.putNumber("Temps bonne vitesse", tempsBonneVitesse);
 
     boolean bonneVitesseLongtemps = (tempsBonneVitesse > 0.1);
     bonneVitesseLongtemps = (bonneVitesseLongtemps || initialBonneVitesse);

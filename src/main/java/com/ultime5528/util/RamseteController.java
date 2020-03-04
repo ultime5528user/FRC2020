@@ -121,11 +121,11 @@ public class RamseteController {
 
     // Aliases for equation readability
     final double eX = m_poseError.getTranslation().getX();
-    SmartDashboard.putNumber("eX", eX);
+    // SmartDashboard.putNumber("eX", eX);
     final double eY = m_poseError.getTranslation().getY();
-    SmartDashboard.putNumber("eY", eY);
+    // SmartDashboard.putNumber("eY", eY);
     final double eTheta = m_poseError.getRotation().getRadians();
-    SmartDashboard.putNumber("eTheta", eTheta);
+    // SmartDashboard.putNumber("eTheta", eTheta);
     final double vRef = linearVelocityRefMeters;
     final double omegaRef = angularVelocityRefRadiansPerSecond;
 

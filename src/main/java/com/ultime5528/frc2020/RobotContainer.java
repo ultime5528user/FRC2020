@@ -68,6 +68,8 @@ public class RobotContainer {
   @Log.BooleanBox(name = "Grimpeur Gauche En Bas", methodName = "estEnBas", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
   private final Grimpeur grimpeurGauche;
 
+  @Log.Include(include = Constants.OBLOG_MATCH)
+  @Log.Graph(name = "Vitesse", methodName = "getVitesse", rowIndex = 3, columnIndex = 2, width = 3, height = 2)
   private final Shooter shooter;
 
  // private final Roulette roulette = null;
@@ -91,7 +93,6 @@ public class RobotContainer {
   private final PowerDistributionPanel pdp;
 
   private final Piloter piloter;
-  private final TournerAbsolue tourner;
 
   private final Command autonomousCommand;
 
@@ -149,11 +150,6 @@ public class RobotContainer {
       CommandScheduler.getInstance()
           .onCommandInterrupt(command -> System.out.println(command.getName() + " interrupted"));
     }
-
-    tourner = new TournerAbsolue(basePilotable, 100.0, 1.25, 0.8);
-    SmartDashboard.putData("Vider intake", new ViderIntake(intake).withTimeout(5.0));
-    SmartDashboard.putData("Tourner 100", tourner);
-    SmartDashboard.putData("Viser", new Viser(basePilotable, vision));
 
     CommandScheduler.getInstance().onCommandInitialize(c -> System.out.println("Initialized : " + c.getName()));
     CommandScheduler.getInstance().onCommandFinish(c -> System.out.println("Finish : " + c.getName()));

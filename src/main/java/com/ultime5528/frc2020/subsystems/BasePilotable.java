@@ -164,14 +164,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
           encoderDroit.getPosition());
       handleFaults();
 
-      SmartDashboard.putNumber("left encoder", encoderGauche.getPosition());
-      SmartDashboard.putNumber("right encoder", encoderDroit.getPosition());
-
       position = getPose().getTranslation();
-
-      SmartDashboard.putNumber("angle", getAngleDegrees());
-      SmartDashboard.putNumber("x", odometry.getPoseMeters().getTranslation().getX());
-      SmartDashboard.putNumber("y", odometry.getPoseMeters().getTranslation().getY());
     }
 
   }
@@ -365,7 +358,6 @@ public class BasePilotable extends SubsystemBase implements Loggable {
           (speeds.rightMetersPerSecond - prevSpeeds.rightMetersPerSecond) / TimedRobot.kDefaultPeriod);
 
       double pidCorrection = pidRotation.calculate(getAngleDegrees(), angleDegrees);
-      SmartDashboard.putNumber("pid correction", pidCorrection);
 
       /*
        * Si le PID donne une correction positive, il faut tourner plus vite dans les

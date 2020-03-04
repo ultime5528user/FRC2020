@@ -173,16 +173,11 @@ public class RamseteCommand extends CommandBase {
 
   @Override
   public void execute() {
-
-    SmartDashboard.putString("transform", m_transform.toString());
-
     double curTime = m_timer.get();
     double dt = curTime - m_prevTime;
 
     var state = m_currentTrajectory.sample(curTime);
     // state.poseMeters = new Pose2d(state.poseMeters.getTranslation().plus(m_transform.getTranslation()), new Rotation2d(state.poseMeters.getRotation().getRadians() + m_transform.getRotation().getRadians()));
-    SmartDashboard.putNumber("pose_x", state.poseMeters.getTranslation().getX());
-    SmartDashboard.putNumber("pose_y", state.poseMeters.getTranslation().getY());
 
     // var currentPose = m_pose.get().plus(m_transform);
     // SmartDashboard.putString("current pose corrected", currentPose.toString());
@@ -205,17 +200,17 @@ public class RamseteCommand extends CommandBase {
           m_feedforward.calculate(rightSpeedSetpoint,
               (rightSpeedSetpoint - m_prevSpeeds.rightMetersPerSecond) / dt);
 
-      SmartDashboard.putNumber("actual left speed", m_speeds.get().leftMetersPerSecond);
-      SmartDashboard.putNumber("setpoint left speed", leftSpeedSetpoint);
+      // SmartDashboard.putNumber("actual left speed", m_speeds.get().leftMetersPerSecond);
+      // SmartDashboard.putNumber("setpoint left speed", leftSpeedSetpoint);
       double pidLeft = m_leftController.calculate(m_speeds.get().leftMetersPerSecond,
       leftSpeedSetpoint);
-      SmartDashboard.putNumber("pid left speed", pidLeft);
+      // SmartDashboard.putNumber("pid left speed", pidLeft);
       leftOutput = leftFeedforward + pidLeft;
       
-      SmartDashboard.putNumber("actual right speed", m_speeds.get().rightMetersPerSecond);
-      SmartDashboard.putNumber("setpoint right speed", rightSpeedSetpoint);
+      // SmartDashboard.putNumber("actual right speed", m_speeds.get().rightMetersPerSecond);
+      // SmartDashboard.putNumber("setpoint right speed", rightSpeedSetpoint);
       double pidRight = m_rightController.calculate(m_speeds.get().rightMetersPerSecond, rightSpeedSetpoint);
-      SmartDashboard.putNumber("pid right speed", pidRight);
+      // SmartDashboard.putNumber("pid right speed", pidRight);
       rightOutput = rightFeedforward + pidRight;
     } else {
       leftOutput = leftSpeedSetpoint;
