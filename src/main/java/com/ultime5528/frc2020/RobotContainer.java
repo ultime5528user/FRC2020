@@ -13,6 +13,7 @@ import com.ultime5528.frc2020.commands.basepilotable.Piloter;
 import com.ultime5528.frc2020.commands.basepilotable.TournerAbsolue;
 import com.ultime5528.frc2020.commands.basepilotable.Viser;
 import com.ultime5528.frc2020.commands.brasintake.Balayer;
+import com.ultime5528.frc2020.commands.brasintake.DescendreBrasInitial;
 import com.ultime5528.frc2020.commands.brasintake.DescendreLesBras;
 import com.ultime5528.frc2020.commands.brasintake.MonterLesBras;
 import com.ultime5528.frc2020.commands.grimpeur.Grimper;
@@ -166,9 +167,6 @@ public class RobotContainer {
 
     new JoystickButton(joystick, 9).toggleWhenPressed(new ViserTirer(basePilotable, shooter, intake, vision, 2.0));
 
-    // new JoystickButton(A_Pac2, 2).toggleWhenPressed(new Viser(basePilotable,
-    // vision));
-
     new Trigger(() -> A_Pac1.getRawAxis(1) < -0.5).whileActiveOnce(new MonterGrimpeur(grimpeurDroit));
     new Trigger(() -> A_Pac1.getRawAxis(1) > 0.5).whileActiveOnce(new GrimperSansRatchet(grimpeurDroit));
     new JoystickButton(A_Pac1, 2).whenHeld(new Grimper(grimpeurDroit));
@@ -177,15 +175,14 @@ public class RobotContainer {
     new Trigger(() -> A_Pac1.getRawAxis(0) < -0.5).whileActiveOnce(new GrimperSansRatchet(grimpeurGauche));
     new JoystickButton(A_Pac1, 1).whenHeld(new Grimper(grimpeurGauche));
 
-    // new JoystickButton(joystick, 3).toggleWhenPressed(new
-    // TournerRoulette(roulette));
-    new JoystickButton(A_Pac2, 1).toggleWhenPressed(new Tirer(shooter, intake, vision, 2.0));
+    new JoystickButton(A_Pac2, 1).toggleWhenPressed(new ViserTirer(basePilotable, shooter, intake, vision, 2.0));
     new JoystickButton(A_Pac2, 2).toggleWhenPressed(new Viser(basePilotable, vision));
+    new JoystickButton(A_Pac2, 3).toggleWhenPressed(new Tirer(shooter, intake, vision, 2.0));
 
     new JoystickButton(A_Pac1, 5).toggleWhenPressed(new PrendreTransporterBallon(intake, brasDroit, brasGauche));
     new JoystickButton(A_Pac1, 4).toggleWhenPressed(new MonterLesBras(brasDroit, brasGauche));
     new JoystickButton(A_Pac1, 3).toggleWhenPressed(new DescendreLesBras(brasDroit, brasGauche));
-    new JoystickButton(A_Pac1, 6).toggleWhenPressed(new InstantCommand(this::resetEncodersBras, brasDroit, brasGauche));
+    new JoystickButton(A_Pac1, 6).toggleWhenPressed(new DescendreBrasInitial(brasDroit, brasGauche));
     new JoystickButton(A_Pac1, 8).whenHeld(new Balayer(intake, brasDroit, brasGauche));
     new JoystickButton(A_Pac1, 7).toggleWhenPressed(new ViderIntake(intake));
   }
