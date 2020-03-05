@@ -8,7 +8,7 @@
 package com.ultime5528.frc2020;
 
 import com.ultime5528.frc2020.commands.autonome.AutoCinqBallons;
-
+import com.ultime5528.frc2020.commands.autonome.AutoCoop;
 import com.ultime5528.frc2020.commands.basepilotable.Piloter;
 import com.ultime5528.frc2020.commands.basepilotable.TournerAbsolue;
 import com.ultime5528.frc2020.commands.basepilotable.Viser;
@@ -19,6 +19,7 @@ import com.ultime5528.frc2020.commands.brasintake.MonterLesBras;
 import com.ultime5528.frc2020.commands.grimpeur.Grimper;
 import com.ultime5528.frc2020.commands.grimpeur.GrimperSansRatchet;
 import com.ultime5528.frc2020.commands.grimpeur.MonterGrimpeur;
+import com.ultime5528.frc2020.commands.intake.DecoincerBallons;
 import com.ultime5528.frc2020.commands.intake.PrendreTransporterBallon;
 import com.ultime5528.frc2020.commands.intake.ViderIntake;
 import com.ultime5528.frc2020.commands.shooter.Tirer;
@@ -148,7 +149,7 @@ public class RobotContainer {
     CommandScheduler.getInstance().onCommandFinish(c -> System.out.println("Finish : " + c.getName()));
     CommandScheduler.getInstance().onCommandInterrupt(c -> System.out.println("Interrupted : " + c.getName()));
 
-    autonomousCommand = new AutoCinqBallons(basePilotable, brasDroit, brasGauche, vision, shooter, intake);
+    autonomousCommand = new AutoCoop(basePilotable, vision, shooter, intake);
 
   }
 
@@ -171,9 +172,12 @@ public class RobotContainer {
     new JoystickButton(A_Pac1, 5).toggleWhenPressed(new PrendreTransporterBallon(intake, brasDroit, brasGauche));
     new JoystickButton(A_Pac1, 4).toggleWhenPressed(new MonterLesBras(brasDroit, brasGauche));
     new JoystickButton(A_Pac1, 3).toggleWhenPressed(new DescendreLesBras(brasDroit, brasGauche));
-    new JoystickButton(A_Pac1, 6).toggleWhenPressed(new DescendreBrasInitial(brasDroit, brasGauche));
+    new JoystickButton(A_Pac1, 6).whenHeld(new DecoincerBallons(intake));
     new JoystickButton(A_Pac1, 8).whenHeld(new Balayer(intake, brasDroit, brasGauche));
     new JoystickButton(A_Pac1, 7).toggleWhenPressed(new ViderIntake(intake));
+
+
+    new JoystickButton(joystick, 4).toggleWhenPressed(new DescendreBrasInitial(brasDroit, brasGauche));
   }
 
   public Command getAutonomousCommand() {
