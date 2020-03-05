@@ -119,7 +119,7 @@ public class VisionController extends SubsystemBase {
     }
 
     timestampEntry.setNumber(timestampSupplier.get());
-
+    led.set(Value.kOn);
   }
 
   private void synchronize() {
