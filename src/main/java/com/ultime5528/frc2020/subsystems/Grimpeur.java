@@ -22,7 +22,9 @@ import io.github.oblarg.oblog.annotations.Log;
 @Config.Exclude(exclude = Constants.OBLOG_MATCH)
 public class Grimpeur extends SubsystemBase implements Loggable {
 
+  @Log(rowIndex = 1, columnIndex = 0, methodName = "get")
   private Servo ratchet;
+  @Log(rowIndex = 2, columnIndex = 0, methodName = "get")
   private VictorSP moteur;
   private DigitalInput limitSwitchHaut;
   private DigitalInput limitSwitchBas;
@@ -31,18 +33,19 @@ public class Grimpeur extends SubsystemBase implements Loggable {
 
   private double inversed;
 
+  @Log.BooleanBox(rowIndex = 0, columnIndex = 0)
   private boolean isLocked = false;
 
-  @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 2)
+  @Config(rowIndex = 0, columnIndex = 1)
   private double ratchetLocked;
-  @Config(rowIndex = 2, columnIndex = 0, width = 2, height = 2)
+  @Config(rowIndex = 1, columnIndex = 1)
   private double ratchetUnlocked;
 
-  @Config(rowIndex = 4, columnIndex = 0, width = 2, height = 2)
+  @Config(rowIndex = 2, columnIndex = 1)
   public static double kVitesseDescendre = -6;
-  @Config(rowIndex = 0, columnIndex = 2, width = 2, height = 2)
+  @Config(rowIndex = 3, columnIndex = 1)
   public static double kVitesseMonter = 12;
-  @Config(rowIndex = 0, columnIndex = 2, width = 2, height = 2)
+  @Config(rowIndex = 4, columnIndex = 1)
   public static double kVitesseGrimper = -12;
 
   /**
@@ -54,7 +57,6 @@ public class Grimpeur extends SubsystemBase implements Loggable {
     SendableRegistry.addLW(this, name, name);
     this.name = name;
     setName(name);
-
     ratchet = new Servo(portServo);
     moteur = new VictorSP(portMoteur);
     limitSwitchBas = new DigitalInput(portLimitSwitchBas);
@@ -110,12 +112,12 @@ public class Grimpeur extends SubsystemBase implements Loggable {
     isLocked = false;
   }
 
-  @Log.BooleanBox(rowIndex = 0, columnIndex = 4)
+  @Log.BooleanBox(rowIndex = 3, columnIndex = 0)
   public boolean estEnBas() {
     return !limitSwitchBas.get();
   }
 
-  @Log.BooleanBox(rowIndex = 3, columnIndex = 4)
+  @Log.BooleanBox(rowIndex = 4, columnIndex = 0)
   public boolean estEnHaut() {
     return limitSwitchHaut.get();
   }

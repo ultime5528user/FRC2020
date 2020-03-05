@@ -50,7 +50,6 @@ public class RobotContainer {
   private final Joystick A_Pac1;
   private final Joystick A_Pac2;
 
-  @Log.Include(include = Constants.OBLOG_MATCH)
   @Log(name = "BP Position Encoder Droit", methodName = "getPositionEncoderDroit", tabName = "Secondaire")
   @Log(name = "BP Position Encoder Gauche", methodName = "getPositionEncoderGauche", tabName = "Secondaire")
   @Log(name = "X Position", methodName = "getX", tabName = "Secondaire")
@@ -59,35 +58,28 @@ public class RobotContainer {
   @Log(name = "Timestamp", methodName = "getGyroTimestamp", tabName = "Secondaire")
   private final BasePilotable basePilotable;
 
-  @Log.Include(include = Constants.OBLOG_MATCH)
   @Log.BooleanBox(name = "Grimpeur Droit En Haut", methodName = "estEnHaut", tabName = "Secondaire")
   @Log.BooleanBox(name = "Grimpeur Droit En Bas", methodName = "estEnBas", tabName = "Secondaire")
   private final Grimpeur grimpeurDroit;
 
-  @Log.Include(include = Constants.OBLOG_MATCH)
   @Log.BooleanBox(name = "Grimpeur Gauche En Haut", methodName = "estEnHaut", tabName = "Secondaire")
   @Log.BooleanBox(name = "Grimpeur Gauche En Bas", methodName = "estEnBas", tabName = "Secondaire")
   private final Grimpeur grimpeurGauche;
 
-  @Log.Include(include = Constants.OBLOG_MATCH)
   @Log(name = "Vitesse", methodName = "getVitesse", tabName = "Secondaire")
   private final Shooter shooter;
 
  // private final Roulette roulette = null;
 
-  @Log.Include(include = Constants.OBLOG_MATCH)
   @Log(name = "Nombre ballons Intake", methodName = "getNombreBallonsDansIntake", tabName = "Principale")
   private final Intake intake;
 
-  @Log.Include(include = Constants.OBLOG_MATCH)
   @Log(name = "Bras Droit Position Encoder", methodName = "getPosition", tabName = "Secondaire")
   private final BrasIntake brasDroit;
 
-  @Log.Include(include = Constants.OBLOG_MATCH)
   @Log(name = "Bras Gauche Position Encoder", methodName = "getPosition", tabName = "Secondaire")
   private final BrasIntake brasGauche;
 
-  @Log.Include(include = Constants.OBLOG_MATCH)
   @Log(name = "Vision Snapshot", methodName = "getRasbperryPiData", tabName = "Secondaire")
   private final VisionController vision;
 

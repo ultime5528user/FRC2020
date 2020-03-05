@@ -24,10 +24,16 @@ public class BrasIntake extends SubsystemBase {
   private Encoder encoder;
   private double inverted;
 
+  @Config
   public static double kVitesseMonter = -7;
+  
+  @Config
   public static double kVitesseDescendre = 7;
 
+  @Config
   public static double kHauteurGauche = -82;
+  
+  @Config
   public static double kHauteurDroit = -77;
   
   public BrasIntake(int portMoteur, int portEncoderA, int portEncoderB, boolean inverted, String name) {

@@ -42,8 +42,6 @@ public class Shooter extends SubsystemBase implements Loggable {
   @Config(rowIndex = 2, columnIndex = 2, width = 2, height = 1)
   public static double kToleranceVitesse = 0.05;
 
-  @Config.NumberSlider(min = 0, max = 60, rowIndex = 0, columnIndex = 2, width = 2, height = 1)
-  public static double kTempsTir = 5;
   private CANSparkMax moteur;
   private CANSparkMax moteur2;
 

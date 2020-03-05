@@ -14,11 +14,19 @@ import com.ultime5528.frc2020.subsystems.Intake;
 import com.ultime5528.frc2020.subsystems.Shooter;
 import com.ultime5528.frc2020.subsystems.VisionController;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
+
 import com.ultime5528.util.Timer;
 
-public class Tirer extends CommandBase {
+public class Tirer extends CommandBase implements Loggable {
+
+  @Config
+  private static double kDelay = 0.1;
+
+  @Config.ToggleButton
+  private static boolean kUseDelay = false;
 
   private Shooter shooter;
   private Timer timer;
@@ -74,11 +82,13 @@ public class Tirer extends CommandBase {
 
     double tempsBonneVitesse = timerShooter.get();
 
-    boolean bonneVitesseLongtemps = (tempsBonneVitesse > 0.1);
+    boolean bonneVitesseLongtemps = (tempsBonneVitesse > kDelay);
     bonneVitesseLongtemps = (bonneVitesseLongtemps || initialBonneVitesse);
 
     if (bonneVitesseLongtemps) {
-      //  initialBonneVitesse = true;
+      if (kUseDelay) {
+         initialBonneVitesse = true;
+      }
        intake.transporter();
        intake.prendreBallon();
     } else {

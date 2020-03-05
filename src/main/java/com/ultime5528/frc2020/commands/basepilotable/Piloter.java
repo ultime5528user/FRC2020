@@ -11,17 +11,18 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
-import io.github.oblarg.oblog.annotations.Config.Exclude;
+import io.github.oblarg.oblog.annotations.Log;
 
 import com.ultime5528.frc2020.Constants;
 import com.ultime5528.frc2020.subsystems.BasePilotable;
 import com.ultime5528.util.CubicInterpolator;
 
+@Log.Exclude(exclude = Constants.OBLOG_MATCH)
 @Config.Exclude(exclude = Constants.OBLOG_MATCH)
 public class Piloter extends CommandBase implements Loggable {
 
 
-  @Exclude
+  @Config.Exclude
   private BasePilotable basePilotable;
   private Joystick joystick;
 

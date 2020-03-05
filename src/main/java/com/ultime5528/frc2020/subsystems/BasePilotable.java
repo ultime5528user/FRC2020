@@ -142,6 +142,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
     addChild("navX", gyro);
     gyro.reset();
 
+    // Historique des 5 dernières secondes
     orientation_history = new SimpleOrientationHistory((int)(5/TimedRobot.kDefaultPeriod));
   
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getClampedHeading()));
@@ -287,6 +288,7 @@ public class BasePilotable extends SubsystemBase implements Loggable {
   /**
    * @return la valeur du gyro, en valeur continue, en degrés.
    */
+  @Log(rowIndex = 0, columnIndex = 4)
   public double getAngleDegrees() {
     return (GYRO_REVERSED ? -1.0 : 1.0) * gyro.getAngle();
   }

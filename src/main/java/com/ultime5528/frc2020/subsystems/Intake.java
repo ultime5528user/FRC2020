@@ -24,9 +24,13 @@ import io.github.oblarg.oblog.annotations.Log;
 @Config.Exclude(exclude = Constants.OBLOG_MATCH)
 public class Intake extends SubsystemBase implements Loggable {
 
+  @Log(methodName = "get")
   private VictorSP moteurIntake;
+  @Log(methodName = "get")
   private VictorSP moteurTransporteur;
+  @Log(methodName = "get")
   private VictorSP moteurBrasGauche;
+  @Log(methodName = "get")
   private VictorSP moteurBrasDroit;
 
   private DigitalInput photocellBas;
@@ -36,18 +40,28 @@ public class Intake extends SubsystemBase implements Loggable {
 
   private PowerDistributionPanel pdp;
 
-  @Config(rowIndex = 0, columnIndex = 0, width = 2, height = 1)
+  @Log
   private int ballonDansIntake;
+  
+  @Config
+  public static double kVitesseAvaler = 4;
+  @Config
+  public static double kVitesseTransporter = -6.7; // -7.2
 
-  public static final double kVitesseAvaler = 4;
-  public static final double kVitesseTransporter = -6.7; // -7.2
-  public static final double kCurrentFilterTime = 2;
-  public static final double kMaxCurrent = 12;
-  public static final double kVitesseBrasGauche = -6;
-  public static final double kVitesseBrasDroit = 6;
-  public static final double kVitesseBrasGaucheBalayer = 10;
-  public static final double kVitesseBrasDroitBalayer = -10;
-  public static final double kTempsStopIntake = 0.2;
+  public final static double kCurrentFilterTime = 1.0;
+  
+  @Config
+  public static double kMaxCurrent = 12;
+  @Config
+  public static double kVitesseBrasGauche = -6;
+  @Config
+  public static double kVitesseBrasDroit = 6;
+  @Config
+  public static double kVitesseBrasGaucheBalayer = 10;
+  @Config
+  public static double kVitesseBrasDroitBalayer = -10;
+  @Config
+  public static double kTempsStopIntake = 0.2;
 
   private boolean stopTransporteur = false;
 
@@ -78,11 +92,19 @@ public class Intake extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    if (Constants.ENABLE_PDP
-        && linearFilter.calculate(pdp.getCurrent(Ports.PDP.INTAKE_MOTEUR_TRANSPORTEUR)) >= kMaxCurrent) {
+    if (Constants.ENABLE_PDP && linearFilter.calculate(getCurrent()) >= kMaxCurrent) {
       stopTransporteur = true;
     } else {
       stopTransporteur = false;
+    }
+  }
+
+  @Log
+  private double getCurrent() {
+    if (Constants.ENABLE_PDP) {
+      return pdp.getCurrent(Ports.PDP.INTAKE_MOTEUR_TRANSPORTEUR);
+    } else {
+      return 0.0;
     }
   }
 
@@ -121,10 +143,12 @@ public class Intake extends SubsystemBase implements Loggable {
     moteurBrasDroit.setVoltage(0.0);
   }
 
+  @Log.BooleanBox
   public boolean hasBallonBas() {
     return photocellBas.get();
   }
-
+  
+  @Log.BooleanBox
   public boolean hasBallonHaut() {
     return photocellHaut.get();
   }
@@ -148,6 +172,5 @@ public class Intake extends SubsystemBase implements Loggable {
   public void prendreBallonInverse() {
     moteurIntake.setVoltage(-kVitesseAvaler - 1);
   }
-
 
 }
