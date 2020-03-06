@@ -86,7 +86,7 @@ public class Tirer extends CommandBase implements Loggable {
     bonneVitesseLongtemps = (bonneVitesseLongtemps || initialBonneVitesse);
 
     if (bonneVitesseLongtemps) {
-      if (kUseDelay) {
+      if (!kUseDelay) {
          initialBonneVitesse = true;
       }
        intake.transporter();
