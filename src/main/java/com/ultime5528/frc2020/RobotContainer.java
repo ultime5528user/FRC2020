@@ -9,6 +9,8 @@ package com.ultime5528.frc2020;
 
 import com.ultime5528.frc2020.commands.autonome.AutoCinqBallons;
 import com.ultime5528.frc2020.commands.autonome.AutoCoop;
+import com.ultime5528.frc2020.commands.autonome.AutoSixBallons;
+import com.ultime5528.frc2020.commands.autonome.AutoTirer;
 import com.ultime5528.frc2020.commands.basepilotable.Piloter;
 import com.ultime5528.frc2020.commands.basepilotable.TournerAbsolue;
 import com.ultime5528.frc2020.commands.basepilotable.Viser;
@@ -36,6 +38,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -43,6 +46,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import io.github.oblarg.oblog.Logger;
+import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
 
 public class RobotContainer {
@@ -164,7 +168,7 @@ public class RobotContainer {
     new Trigger(() -> A_Pac1.getRawAxis(0) < -0.5).whileActiveOnce(new GrimperSansRatchet(grimpeurGauche));
     new JoystickButton(A_Pac1, 1).whenHeld(new Grimper(grimpeurGauche));
 
-    new JoystickButton(A_Pac2, 1).toggleWhenPressed(new ViserTirer(basePilotable, shooter, intake, vision, 2.0));
+    new JoystickButton(A_Pac2, 1).toggleWhenPressed(new ViserTirer(basePilotable, shooter, intake, vision, 1.0));
     new JoystickButton(A_Pac2, 2).toggleWhenPressed(new Viser(basePilotable, vision));
     new JoystickButton(A_Pac2, 3).toggleWhenPressed(new Tirer(shooter, intake, vision, 2.0));
 
@@ -175,8 +179,6 @@ public class RobotContainer {
     new JoystickButton(A_Pac1, 8).whenHeld(new Balayer(intake, brasDroit, brasGauche));
     new JoystickButton(A_Pac1, 7).toggleWhenPressed(new ViderIntake(intake));
 
-
-    new JoystickButton(joystick, 4).toggleWhenPressed(new DescendreBrasInitial(brasDroit, brasGauche));
   }
 
   public Command getAutonomousCommand() {
