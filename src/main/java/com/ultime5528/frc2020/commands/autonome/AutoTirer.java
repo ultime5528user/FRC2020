@@ -25,7 +25,7 @@ public class AutoTirer extends SequentialCommandGroup {
     public AutoTirer(BasePilotable basePilotable, VisionController vision, Shooter shooter, Intake intake) {
         super(
             SuivreTrajectoire.from(basePilotable, 
-                new Pose2d(1.5, 0.0, Rotation2d.fromDegrees(0.0)),
+                new Pose2d(0.75, 0.0, Rotation2d.fromDegrees(0.0)),
                 List.of(), 
                 new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)), 
                 1.0, 0.5, true
