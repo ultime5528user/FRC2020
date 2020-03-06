@@ -40,6 +40,8 @@ public class Intake extends SubsystemBase implements Loggable {
 
   private PowerDistributionPanel pdp;
 
+  private boolean isGobing = false;
+
   @Log
   private int ballonDansIntake;
   
@@ -151,6 +153,14 @@ public class Intake extends SubsystemBase implements Loggable {
   @Log.BooleanBox
   public boolean hasBallonHaut() {
     return photocellHaut.get();
+  }
+
+  public void setGobing(boolean value) {
+    this.isGobing = value;
+  }
+ 
+  public boolean isGobing() {
+    return isGobing;
   }
 
   public int getNombreBallonsDansIntake(){

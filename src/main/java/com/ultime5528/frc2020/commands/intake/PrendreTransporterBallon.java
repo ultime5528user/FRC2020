@@ -32,6 +32,7 @@ public class PrendreTransporterBallon extends ParallelCommandGroup {
   public void initialize() {
     super.initialize();
     hasScheduled = false;
+    this.intake.setGobing(true);
   }
 
   @Override
@@ -44,6 +45,7 @@ public class PrendreTransporterBallon extends ParallelCommandGroup {
       new ScheduleCommand(new MonterLesBras(brasDroit, brasGauche)).schedule();
    
     }
+    this.intake.setGobing(false);
   }
 
 }

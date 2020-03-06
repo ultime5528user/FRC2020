@@ -73,6 +73,7 @@ public class RobotContainer {
  // private final Roulette roulette = null;
 
   @Log(name = "Nombre ballons Intake", methodName = "getNombreBallonsDansIntake", tabName = "Principale")
+  @Log.BooleanBox(name = "Gobe?", methodName = "isGobing", tabName = "Principale")
   private final Intake intake;
 
   @Log(name = "Bras Droit Position Encoder", methodName = "getPosition", tabName = "Secondaire")
