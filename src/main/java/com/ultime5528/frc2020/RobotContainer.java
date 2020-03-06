@@ -90,7 +90,8 @@ public class RobotContainer {
 
   private final Piloter piloter;
 
-  private final Command autonomousCommand;
+  @Config(name = "Autonome", tabName = "Principale")
+  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   public RobotContainer() {
     joystick = new Joystick(0);
@@ -131,33 +132,29 @@ public class RobotContainer {
 
     configureButtonBindings();
 
-    Logger.configureLoggingAndConfig(this, false);
-    LiveWindow.disableAllTelemetry();
-
+    
     SmartDashboard.putData(CommandScheduler.getInstance());
-
-    if (Constants.ENABLE_COMMAND_TROUBLESHOOTING_PRINTS) {
-
-      CommandScheduler.getInstance()
-          .onCommandInitialize(command -> System.out.println(command.getName() + " initialized"));
-
-      CommandScheduler.getInstance().onCommandFinish(command -> System.out.println(command.getName() + " finished"));
-
-      CommandScheduler.getInstance()
-          .onCommandInterrupt(command -> System.out.println(command.getName() + " interrupted"));
-    }
-
+    
     CommandScheduler.getInstance().onCommandInitialize(c -> System.out.println("Initialized : " + c.getName()));
     CommandScheduler.getInstance().onCommandFinish(c -> System.out.println("Finish : " + c.getName()));
     CommandScheduler.getInstance().onCommandInterrupt(c -> System.out.println("Interrupted : " + c.getName()));
+    
+    configureAuto();
+        
+    Logger.configureLoggingAndConfig(this, false);
+    LiveWindow.disableAllTelemetry();
+  }
 
-    autonomousCommand = new AutoCoop(basePilotable, vision, shooter, intake);
-
+  private void configureAuto() {
+    autoChooser.setDefaultOption("Tirer 3 ballons", new AutoTirer(basePilotable, vision, shooter, intake));
+    autoChooser.addOption("Tirer 5 ballons", new AutoCinqBallons(basePilotable, brasDroit, brasGauche, vision, shooter, intake));
+    // autoChooser.addOption("Tirer 6 ballons", new AutoSixBallons(basePilotable, brasDroit, brasGauche, vision, shooter, intake));
+    autoChooser.addOption("Coop", new AutoCoop(basePilotable, vision, shooter, intake));
   }
 
   private void configureButtonBindings() {
 
-    new JoystickButton(joystick, 9).toggleWhenPressed(new ViserTirer(basePilotable, shooter, intake, vision, 2.0));
+    new JoystickButton(joystick, 9).toggleWhenPressed(new ViserTirer(basePilotable, shooter, intake, vision, 1.0));
 
     new Trigger(() -> A_Pac1.getRawAxis(1) < -0.5).whileActiveOnce(new MonterGrimpeur(grimpeurDroit));
     new Trigger(() -> A_Pac1.getRawAxis(1) > 0.5).whileActiveOnce(new GrimperSansRatchet(grimpeurDroit));
@@ -189,7 +186,7 @@ public class RobotContainer {
     // List.of(),
     // new Pose2d(3.0, -2.0, Rotation2d.fromDegrees(-90.0)
     // ), 0.5, 0.5);
-    return autonomousCommand;
+    return autoChooser.getSelected();
   }
 
   public void unlockRatchets() {
