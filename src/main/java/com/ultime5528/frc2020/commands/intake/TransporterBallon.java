@@ -35,6 +35,8 @@ public class TransporterBallon extends CommandBase {
   public void execute() {
     intake.transporter();
 
+    intake.actionnerBras();
+
     if (timer.get() >= Intake.kTempsStopIntake) {
       intake.stopIntake();
     } else {
@@ -47,7 +49,9 @@ public class TransporterBallon extends CommandBase {
   public void end(boolean interrupted) {
     intake.stopTransporteur();
     intake.stopIntake();
+    intake.stopBras();
     timer.stop();
+    
     if (!interrupted) {
       intake.ballonDePlus();
     }
