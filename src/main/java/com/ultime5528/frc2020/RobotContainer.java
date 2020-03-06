@@ -83,6 +83,7 @@ public class RobotContainer {
   private final BrasIntake brasGauche;
 
   @Log(name = "Vision Snapshot", methodName = "getRasbperryPiData", tabName = "Secondaire")
+  @Log(name = "Vision Lag", methodName = "getLag", tabName = "Secondaire")
   private final VisionController vision;
 
   private final PowerDistributionPanel pdp;

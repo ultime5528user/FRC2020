@@ -18,7 +18,10 @@ import org.opencv.core.Mat;
 
 import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.CvSource;
+import edu.wpi.cscore.HttpCamera;
 import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoSource;
+import edu.wpi.cscore.HttpCamera.HttpCameraKind;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -27,6 +30,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Relay.Value;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.annotations.Config;
@@ -49,6 +53,7 @@ public class VisionController extends SubsystemBase {
   private static double kOffset = 0.75; // Si positif, va viser un peu plus a gauche
 
   private VisionSnapshot currentSnapshot;
+  private HttpCamera stream = new HttpCamera("Camera", "http://10.55.28.107:1181/?action=stream", HttpCameraKind.kMJPGStreamer);
 
   private boolean isEnabled = false;
   private long doSynchronizeTime, lag;
@@ -76,7 +81,7 @@ public class VisionController extends SubsystemBase {
     }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate | EntryListenerFlags.kImmediate);
 
     startVisionEntry.setBoolean(true);
-
+    
     led = new Relay(Ports.VISION_LED);
     led.set(Value.kOn);
 
@@ -118,6 +123,7 @@ public class VisionController extends SubsystemBase {
       readSnapshot();
     }
 
+
     timestampEntry.setNumber(timestampSupplier.get());
     led.set(Value.kOn);
   }
@@ -126,13 +132,17 @@ public class VisionController extends SubsystemBase {
     gotSynchronizeEntry.addListener(notif -> {
       long newTime = timestampSupplier.get();
       lag = (newTime - doSynchronizeTime) / 2;
-      NetworkTableInstance.getDefault().getTable("vision").getEntry("lag").setNumber(lag);
+      // NetworkTableInstance.getDefault().getTable("vision").getEntry("lag").setNumber(lag);
     }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 
     doSynchronizeTime = timestampSupplier.get();
     doSynchronizeEntry.setDouble(doSynchronizeEntry.getDouble(0.0) + 1.0);
     NetworkTableInstance.getDefault().flush();
 
+  }
+
+  public long getLag() {
+    return lag;
   }
 
   public void enable() {
@@ -148,6 +158,10 @@ public class VisionController extends SubsystemBase {
   
   public String getRasbperryPiData(){
     return snapshotEntry.getString("0;false;0;0");
+  }
+
+  public VideoSource getStream() {
+    return stream;
   }
 
   public void readSnapshot() {
