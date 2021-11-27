@@ -5,6 +5,7 @@ import com.ultime5528.frc2020.subsystems.BasePilotable;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -48,6 +49,8 @@ public abstract class AbstractTourner extends CommandBase {
     double goalAngleDegrees = calculateGoalAngleDegrees();
     double goalAngleRad = Math.toRadians(goalAngleDegrees);
     goal = new TrapezoidProfile.State(goalAngleRad, 0);
+
+    SmartDashboard.putNumber("Goal angle degrees", goalAngleDegrees);
 
     TrapezoidProfile profile = new TrapezoidProfile(constraints, goal, current);
     current = profile.calculate(TimedRobot.kDefaultPeriod);

@@ -12,6 +12,7 @@ import java.util.List;
 import com.ultime5528.frc2020.commands.basepilotable.SuivreTrajectoire;
 import com.ultime5528.frc2020.commands.brasintake.DescendreBrasInitial;
 import com.ultime5528.frc2020.commands.intake.PrendreBallon;
+import com.ultime5528.frc2020.commands.intake.TransporterBallonAuto;
 import com.ultime5528.frc2020.commands.intake.TransporterBallon;
 import com.ultime5528.frc2020.commands.shooter.DemarrerShooter;
 import com.ultime5528.frc2020.commands.shooter.ViserTirer;
@@ -28,21 +29,35 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class AutoCinqBallons extends SequentialCommandGroup {
 
-  public AutoCinqBallons(BasePilotable basePilotable, BrasIntake brasDroit, BrasIntake brasGauche,
-      VisionController vision, Shooter shooter, Intake intake) {
+    public AutoCinqBallons(BasePilotable basePilotable, BrasIntake brasDroit, BrasIntake brasGauche,
+            VisionController vision, Shooter shooter, Intake intake) {
 
-    super(
-        deadline(
-            SuivreTrajectoire.from(basePilotable, new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)), List.of(),
-                new Pose2d(-4.2, 0.0, Rotation2d.fromDegrees(0.0)), 1.3, 1.1, true),
-            new DescendreBrasInitial(brasDroit, brasGauche), new DemarrerShooter(shooter, vision),
-            sequence(new PrendreBallon(intake), new TransporterBallon(intake), new WaitCommand(0.2),
-                new PrendreBallon(intake), new TransporterBallon(intake))),
-        SuivreTrajectoire.from(basePilotable, new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)), List.of(),
-            new Pose2d(3.5, 1.65, Rotation2d.fromDegrees(0.0)), 1.2, 0.7, false),
-        new ViserTirer(basePilotable, shooter, intake, vision, 1.0)
+        super(
+                deadline(
+                        sequence(
+                                deadline(
+                                        SuivreTrajectoire.from(basePilotable, 
+                                                new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)), 
+                                                List.of(),
+                                                new Pose2d(-4.2, 0.0, Rotation2d.fromDegrees(0.0)),
+                                                        .75, 1.1, true),
+                                        new DescendreBrasInitial(brasDroit, brasGauche)
+                                ),
+                                deadline(
+                                        SuivreTrajectoire.from(basePilotable, new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)), List.of(),
+                                                new Pose2d(3.5, 1.65, Rotation2d.fromDegrees(0.0)), 1.2, 0.7, false),
+                                        new DemarrerShooter(shooter, vision)
+                                )
+                        ),
+                
 
-    );
+                
+                sequence(new PrendreBallon(intake), new TransporterBallon(intake),
+                        new PrendreBallon(intake), new TransporterBallonAuto(intake))
+                ),
+                new ViserTirer(basePilotable, shooter, intake, vision, 1.0)
 
-  }
+        );
+
+    }
 }

@@ -26,6 +26,7 @@ public class BrasIntake extends SubsystemBase {
 
   @Config
   public static double kVitesseMonter = -7;
+  //Vitesse bras gauche initiale a monter  
   
   @Config
   public static double kVitesseDescendre = 7;

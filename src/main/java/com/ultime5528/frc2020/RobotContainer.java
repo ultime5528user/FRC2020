@@ -38,6 +38,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.shuffleboard.EventImportance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -138,15 +140,20 @@ public class RobotContainer {
 
     
     SmartDashboard.putData(CommandScheduler.getInstance());
-    
-    CommandScheduler.getInstance().onCommandInitialize(c -> System.out.println("Initialized : " + c.getName()));
-    CommandScheduler.getInstance().onCommandFinish(c -> System.out.println("Finish : " + c.getName()));
-    CommandScheduler.getInstance().onCommandInterrupt(c -> System.out.println("Interrupted : " + c.getName()));
+    CommandScheduler.getInstance().onCommandInitialize(c -> printEventCommand("Initialized : " + c.getName()));
+    CommandScheduler.getInstance().onCommandFinish(c -> printEventCommand("Finish : " + c.getName()));
+    CommandScheduler.getInstance().onCommandInterrupt(c -> printEventCommand("Interrupted : " + c.getName()));
     
     configureAuto();
         
     Logger.configureLoggingAndConfig(this, false);
     LiveWindow.disableAllTelemetry();
+    
+  }
+
+  private void printEventCommand(String message) {
+    // Shuffleboard.addEventMarker(message, EventImportance.kTrivial);
+    System.out.println(message);
   }
 
   private void configureAuto() {

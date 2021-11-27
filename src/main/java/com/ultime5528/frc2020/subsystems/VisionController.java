@@ -123,7 +123,6 @@ public class VisionController extends SubsystemBase {
       readSnapshot();
     }
 
-
     timestampEntry.setNumber(timestampSupplier.get());
     led.set(Value.kOn);
   }
@@ -177,7 +176,7 @@ public class VisionController extends SubsystemBase {
   }
 
   public long getLastTimestamp() {
-    return currentSnapshot.timestamp + lag + (long)(TimedRobot.kDefaultPeriod / 2 * 1000);
+    return currentSnapshot.timestamp + (long)(TimedRobot.kDefaultPeriod / 2 * 1000); // + lag ;
   }
 
   public OptionalDouble getAngleCible() {
